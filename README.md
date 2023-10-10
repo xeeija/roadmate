@@ -17,7 +17,7 @@
   - [Building the project](#building-the-project)
   - [Migrations](#migrations)
 - [⛏️ Built Using](#️-built-using)
-- [✍️ Authors](#️-authors) 
+- [✍️ Authors](#️-authors)
 -->
 
 ## 🏁 Getting Started<a name="getting-started"></a>

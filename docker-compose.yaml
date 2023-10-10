@@ -1,0 +1,15 @@
+version: '3.1'
+name: roadmate
+services:
+  postgres:
+    image: postgres:14.8
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: raodmate
+      POSTGRES_USER: roadmate
+      POSTGRES_PASSWORD: Pa55w.rd
+    volumes:
+      - ./docker/data/PostgresData:/var/lib/postgresql/data
+      - ./docker/config/postgres/docker-entrypoint-initdb:/docker-entrypoint-initdb.d/

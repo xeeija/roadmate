@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-ef": {
+      "version": "7.0.12",
+      "commands": [
+        "dotnet-ef"
+      ]
+    },
+    "jetbrains.resharper.globaltools": {
+      "version": "2023.2.2",
+      "commands": [
+        "jb"
+      ]
+    }
+  }
+}
