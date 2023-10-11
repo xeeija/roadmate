@@ -7,7 +7,7 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_DB: raodmate
+      POSTGRES_DB: roadmate
       POSTGRES_USER: roadmate
       POSTGRES_PASSWORD: Pa55w.rd
     volumes:

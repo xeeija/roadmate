@@ -10,9 +10,12 @@ csharp_style_var_for_built_in_types = true #:suggestion
 csharp_style_var_when_type_is_apparent = true #:suggestion
 csharp_brace_style = end_of_line
 csharp_namespace_body = file_scoped
+csharp_prefer_braces = true
 csharp_style_namespace_declarations = file_scoped:errors
 # csharp_style_namespace_declarations = file_scoped
+csharp_indent_method_decl_pars = inside
 
+dotnet_sort_system_directives_first = true
 dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:none
 dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:none
 dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:none
@@ -26,6 +29,12 @@ dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggest
 dotnet_diagnostic.ide0161.severity = error
 # Suppress non-null warnings for uninitialized properties
 dotnet_diagnostic.cs8618.severity = none
+# Supress missing await in async function
+# dotnet_diagnostic.cs1998.severity = none
+# Supress nullability mismatch of TEntity? as type param T (without ?)
+# dotnet_diagnostic.cs8634.severity = none
+# Supress nullability of Class<T?> does not match Class<T>
+# dotnet_diagnostic.cs8619.severity = none
 
 # ReSharper inspection severities
 resharper_arrange_redundant_parentheses_highlighting = hint
