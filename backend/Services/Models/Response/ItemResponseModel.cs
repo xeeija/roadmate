@@ -5,7 +5,6 @@ public class ItemResponseModel<T> : ResponseModel where T : class {
   }
 
   public ItemResponseModel(ResponseModel model) {
-    HasError = model.HasError;
     ErrorMessages = model.ErrorMessages;
     IsAuthorized = model.IsAuthorized;
   }

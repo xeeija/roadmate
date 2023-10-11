@@ -47,7 +47,6 @@ public class BaseService<TEntity> where TEntity : Entity {
 
     // DB operation check
     if (dbResponse.State != EntityState.Unchanged) {
-      response.HasError = true;
       response.ErrorMessages.Add("Wrong database response state. (State: " + dbResponse.State + ")");
       return response;
     }
@@ -81,7 +80,6 @@ public class BaseService<TEntity> where TEntity : Entity {
 
     // DB operation check
     if (dbResponse.State != EntityState.Unchanged) {
-      response.HasError = true;
       response.ErrorMessages.Add("Wrong database response state. (State: " + dbResponse.State + ")");
       return response;
     }
@@ -98,7 +96,6 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// <returns>Returns the operating entity and error information.</returns>
   public virtual async Task<ItemResponseModel<TEntity>> Delete(TEntity entity) {
     var response = new ItemResponseModel<TEntity> {
-      HasError = false,
       IsAuthorized = await Authorize(entity)
     };
 
@@ -112,7 +109,6 @@ public class BaseService<TEntity> where TEntity : Entity {
 
     // DB operation check
     if (dbResponse.State != EntityState.Detached) {
-      response.HasError = true;
       response.ErrorMessages.Add("Wrong database response state. (State: " + dbResponse.State + ")");
       return response;
     }
@@ -128,16 +124,13 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// <param name="id">Unique DB id.</param>
   /// <returns>Returns the operating entity and error information.</returns>
   public virtual async Task<ItemResponseModel<TEntity>> Delete(string id) {
-    var response = new ItemResponseModel<TEntity> {
-      HasError = false
-    };
+    var response = new ItemResponseModel<TEntity>();
 
     // Check GUID
     var guid = Guid.Empty;
     var guidValid = Guid.TryParse(id, out guid);
 
     if (!guidValid) {
-      response.HasError = true;
       response.ErrorMessages.Add("Invalid UUID format");
       return response;
     }
@@ -166,7 +159,6 @@ public class BaseService<TEntity> where TEntity : Entity {
 
     // DB operation check
     if (dbResponse == 0) {
-      response.HasError = true;
       response.ErrorMessages.Add("No data deleted.");
       return response;
     }
@@ -194,16 +186,13 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// </summary>
   /// <param name="id">Unique DB id.</param>
   /// <returns>Returns the operating entity and error information.</returns>
-  public virtual async Task<ItemResponseModel<TEntity?>> Get(string id, List<string>? includes) {
-    var response = new ItemResponseModel<TEntity?> {
-      HasError = false
-    };
+  public virtual async Task<ItemResponseModel<TEntity>> Get(string id, List<string>? includes) {
+    var response = new ItemResponseModel<TEntity>();
 
     var guid = Guid.Empty;
     var guidValid = Guid.TryParse(id, out guid);
 
     if (!guidValid) {
-      response.HasError = true;
       response.ErrorMessages.Add("Invalid UUID format");
       return response;
     }
@@ -220,7 +209,6 @@ public class BaseService<TEntity> where TEntity : Entity {
 
     // DB operation check
     if (dbResponse.Count() > 1) {
-      response.HasError = true;
       response.ErrorMessages.Add("Multiple return values.");
       return response;
     }
@@ -246,7 +234,7 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// </summary>
   /// <param name="id">Unique DB id.</param>
   /// <returns>Returns the operating entity and error information.</returns>
-  public virtual async Task<ItemResponseModel<TEntity?>> Get(string id) {
+  public virtual async Task<ItemResponseModel<TEntity>> Get(string id) {
     return await Get(id, null);
   }
 
@@ -254,10 +242,8 @@ public class BaseService<TEntity> where TEntity : Entity {
   ///   Gets all entries of the entity.
   /// </summary>
   /// <returns>Returns the operating entity and error information.</returns>
-  public virtual async Task<ItemResponseModel<List<TEntity?>>> GetAll(List<string>? includes) {
-    var response = new ItemResponseModel<List<TEntity>> {
-      HasError = false
-    };
+  public virtual async Task<ItemResponseModel<List<TEntity>>> GetAll(List<string>? includes) {
+    var response = new ItemResponseModel<List<TEntity>>();
 
     // DB operation
     var dbResponse = Context.Set<TEntity>().Select(x => x);
@@ -288,9 +274,7 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// <param name="filterExpression">Defines what should be filtered by</param>
   /// <returns>Returns the operating entities and error information.</returns>
   public virtual async Task<ItemResponseModel<List<TEntity>>> Filter(Expression<Func<TEntity, bool>> filterExpression) {
-    var response = new ItemResponseModel<List<TEntity>> {
-      HasError = false
-    };
+    var response = new ItemResponseModel<List<TEntity>>();
 
     // DB operation
     var dbResponse = Context.Set<TEntity>().Where(filterExpression);
@@ -319,7 +303,6 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// <returns>Returns the error information.</returns>
   public virtual async Task<ResponseModel> ValidateBase(TEntity entity) {
     var response = new ResponseModel {
-      HasError = false,
       IsAuthorized = await Authorize(entity)
     };
 
@@ -332,15 +315,12 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// <param name="entity">Represents the operating entity.</param>
   /// <returns>Returns the error information.</returns>
   public virtual async Task<ResponseModel> ValidateCreate(TEntity entity) {
-    var response = new ResponseModel {
-      HasError = false
-    };
+    var response = new ResponseModel();
 
     var baseValidation = await ValidateBase(entity);
     response.IsAuthorized = baseValidation.IsAuthorized;
 
     if (baseValidation.HasError) {
-      response.HasError = true;
       response.ErrorMessages.AddRange(baseValidation.ErrorMessages);
       return response;
     }
@@ -354,15 +334,12 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// <param name="entity">Represents the operating entity.</param>
   /// <returns>Returns the error information.</returns>
   public virtual async Task<ResponseModel> ValidateUpdate(TEntity entity) {
-    var response = new ResponseModel {
-      HasError = false
-    };
+    var response = new ResponseModel();
 
     var baseValidation = await ValidateBase(entity);
     response.IsAuthorized = baseValidation.IsAuthorized;
 
     if (baseValidation.HasError) {
-      response.HasError = true;
       response.ErrorMessages.AddRange(baseValidation.ErrorMessages);
       return response;
     }
