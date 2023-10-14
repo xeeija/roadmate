@@ -1,0 +1,32 @@
+/* overrides h1, h2 and h3*/
+
+h1 {
+  font-size: 26px;
+  line-height: 34px;
+}
+
+h2 {
+  font-size: 22px;
+  line-height: 30px;
+}
+
+h3 {
+  font-size: 18px;
+  line-height: 24px;
+}
+
+/* tabBar*/
+ion-tab-bar, ion-tab-button {
+    border-radius: 20px 20px 0px 0px;
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-light-shade);
+    --ion-tab-bar-color-selected: var(--ion-color-primary-contrast)
+}
+
+ion-icon{
+    font-size: 36px;
+}
+
+ion-tab-button-selected {
+  border-bottom: 2px solid white; /* Customize the border as needed */
+}
