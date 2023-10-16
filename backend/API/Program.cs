@@ -1,8 +1,13 @@
 using System.Text.Json.Serialization;
+using API.OpenApi;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Services;
+using Services.Authentication;
+using Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,42 +39,53 @@ builder.Services.AddHealthChecks();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerGenOptions>();
+// builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => {
+  options.OperationFilter<SwaggerDefaultValues>();
+  options.IncludeXmlComments(Path.Combine(Constants.CurrentFolder, "API.xml"));
+});
 
 // authentication
-// builder.Services.AddAuthentication(x =>
-// {
-//     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-// }).AddJwtBearer(options => { options.TokenValidationParameters = Authentication.ValidationParams; });
+builder.Services.AddAuthentication(x => {
+  x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+  x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options => { options.TokenValidationParameters = Authentication.ValidationParams; });
 
 // Add authentication to Swagger
-// builder.Services.AddSwaggerGen(doc => {
-//   doc.OperationFilter<OptionalRouteParamOperationFilter>();
+builder.Services.AddSwaggerGen(options => {
+  options.SwaggerDoc("v1", new OpenApiInfo {
+    Version = "v1",
+    Title = "Roadmate API"
+    // Description = "Roadmate backend description"
+  });
 
-//   doc.AddSecurityDefinition("Bearer",
-//     new OpenApiSecurityScheme {
-//       Type = SecuritySchemeType.ApiKey,
-//       Name = "Authorization",
-//       In = ParameterLocation.Header,
-//       Scheme = "Bearer",
-//       BearerFormat = "JWT",
-//       Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n
-//                       Enter 'Bearer' [space] and then your token in the text input below.
-//                       \r\n\r\nExample: 'Bearer ey12345abcdef'"
-//     });
-//   doc.AddSecurityRequirement(new OpenApiSecurityRequirement {
-//     {
-//       new OpenApiSecurityScheme {
-//         Reference = new OpenApiReference {
-//           Type = ReferenceType.SecurityScheme,
-//           Id = "Bearer"
-//         }
-//       },
-//       Array.Empty<string>()
-//     }
-//   });
-// });
+  options.OperationFilter<OptionalRouteParamOperationFilter>();
+
+  options.AddSecurityDefinition("Bearer",
+    new OpenApiSecurityScheme {
+      Type = SecuritySchemeType.ApiKey,
+      Name = "Authorization",
+      In = ParameterLocation.Header,
+      Scheme = "Bearer",
+      BearerFormat = "JWT",
+      Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer ey12345abcdef'"
+    });
+
+  options.AddSecurityRequirement(new OpenApiSecurityRequirement {
+    {
+      new OpenApiSecurityScheme {
+        Reference = new OpenApiReference {
+          Type = ReferenceType.SecurityScheme,
+          Id = "Bearer"
+        }
+      },
+      Array.Empty<string>()
+    }
+  });
+});
 
 var app = builder.Build();
 
