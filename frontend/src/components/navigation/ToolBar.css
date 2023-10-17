@@ -1,0 +1,10 @@
+ion-toolbar{
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-light);
+
+}
+
+ion-title{
+  padding-inline: 0px;
+  color: white;
+}
