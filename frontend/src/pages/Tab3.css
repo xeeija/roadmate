@@ -1,0 +1,12 @@
+.rounded-modal {
+    --border-radius: 35px; /* Passen Sie die Rundung nach Bedarf an */
+    border-radius: var(--border-radius);
+  }
+  
+.distance {
+    margin-left: 15px;
+}
+
+.iconColor {
+    color: black;
+}
