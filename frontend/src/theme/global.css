@@ -17,16 +17,18 @@ h3 {
 
 /* tabBar*/
 ion-tab-bar, ion-tab-button {
-    border-radius: 20px 20px 0px 0px;
-    --background: var(--ion-color-primary);
-    --color: var(--ion-color-light-shade);
-    --ion-tab-bar-color-selected: var(--ion-color-primary-contrast)
+  border-radius: 20px 20px 0 0;
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-light-shade);
+  --ion-tab-bar-color-selected: var(--ion-color-primary-contrast)
 }
 
+/* icon size*/
 ion-icon{
-    font-size: 36px;
+  font-size: 36px;
 }
-
-ion-tab-button-selected {
-  border-bottom: 2px solid white; /* Customize the border as needed */
+/* background image */
+body{
+  background: url('../resources/images/Background.png');
+  background-size: cover;
 }
