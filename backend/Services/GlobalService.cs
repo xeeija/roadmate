@@ -10,6 +10,12 @@ public class GlobalService {
     ExpertRequestService = new ExpertRequestService(context);
   }
 
-  public UserService UserService { get; set; }
+  public DangerService DangerService { get; set; }
+  public DangerCategoryService DangerCategoryService { get; set; }
+  public DangerMessageService DangerMessageService { get; set; }
+  public DangerRequestService DangerRequestService { get; set; }
   public ExpertRequestService ExpertRequestService { get; set; }
+  public NotificationService NotificationService { get; set; }
+  public RouteService RouteService { get; set; }
+  public UserService UserService { get; set; }
 }
