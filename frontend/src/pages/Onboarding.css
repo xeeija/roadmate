@@ -1,0 +1,85 @@
+.color-primary{
+    --color: #00C49A;
+}
+.color-background{
+    --color: #F0F8F9;
+}
+.color-text{
+    --color: #4D4C4C;
+}
+
+.background{
+    background-image: url("../theme/App_Hintergrund.svg");
+    background-size: cover;
+    background-repeat: no-repeat; 
+    height: 100vh;
+}
+
+.onboarding-menu{
+    background-color: #F0F8F9;
+    width: 70%;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 16px;
+}
+
+.center-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 35px auto;
+  }
+  
+.logo-container{
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.logo{
+    width: 70%;
+}
+
+.divider-container {
+    display: flex;
+    margin-top: 5px;
+  }
+
+.divider {
+    flex-grow: 1;
+    height: 1px;
+    background-color: #4D4C4C;
+    margin: 8px;
+  }
+
+.reset-password{
+    color: #00C49A;
+    text-decoration: none;
+    font-size: 13px;
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.checkbox{
+    color:#4D4C4C;
+    background-color: #F0F8F9;
+    font-size: 16px;
+    margin-right:6px;
+    margin-bottom: 10px;
+}
+
+.expert-description{
+    --color: #4D4C4C;
+    --background-color: #F0F8F9;
+}
+.lowercase {
+    text-transform: none;
+}
+.login-button{
+    --background: #00C49A;
+}
+
+.register-button{
+    --background: white;
+    --color: #00C49A;
+    --border-color: #00C49A;
+}
