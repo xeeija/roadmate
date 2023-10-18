@@ -27,7 +27,7 @@ public static class Logger {
 
       var configuration = new ConfigurationBuilder()
         .SetBasePath(folder)
-        .AddJsonFile("loggerconfig.json")
+        // .AddJsonFile("loggerconfig.json")
         // If differentiation between dev and prod is needed, uncomment and add loggerconfig.Development.json
         // .AddJsonFile("loggerconfig.Development.json")
         .Build();
