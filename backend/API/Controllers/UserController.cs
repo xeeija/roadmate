@@ -10,10 +10,12 @@ namespace API.Controllers;
 public class UserController : BaseController<User, RegisterRequest> {
   private readonly GlobalService globalService;
   private readonly UserService userService;
+  private readonly ExpertRequestService expertRequestService;
 
   public UserController(GlobalService service, IHttpContextAccessor accessor) : base(service.UserService, accessor) {
     globalService = service;
     userService = service.UserService;
+    expertRequestService = service.ExpertRequestService;
   }
 
   #region Login/Register
@@ -25,7 +27,7 @@ public class UserController : BaseController<User, RegisterRequest> {
   /// <returns>Returns the response information with user.</returns>
   [HttpPost("Login")]
   [AllowAnonymous]
-  public async Task<ActionResult<ItemResponseModel<User>>> Login([FromBody] LoginRequest request) {
+  public async Task<ActionResult<ItemResponseModel<UserResponse>>> Login([FromBody] LoginRequest request) {
     var result = await userService.Login(request);
 
     if (result.HasError) {
@@ -43,11 +45,27 @@ public class UserController : BaseController<User, RegisterRequest> {
   [HttpPost("Register")]
   [AllowAnonymous]
   [ProducesResponseType(StatusCodes.Status201Created)]
-  public async Task<ActionResult<ItemResponseModel<User>>> Register([FromBody] RegisterRequest request) {
+  public async Task<ActionResult<ItemResponseModel<UserResponse>>> Register([FromBody] RegisterRequest request) {
     var registerResult = await userService.Register(request);
 
     if (registerResult.HasError) {
       return BadRequest(registerResult);
+    }
+
+    var expertRequestErrors = new List<string>();
+
+    if (request.RequestExpert) {
+      var expertRequest = new ExpertRequestModel {
+        Description = request.ExpertDescription ?? "",
+        UserId = registerResult.Data?.ID ?? Guid.Empty
+      };
+
+      var response = await expertRequestService.Create(expertRequest.ToEntity());
+
+      if (response.HasError || !response.IsAuthorized) {
+        Log.Warning($"Failed to create ExpertRequest: ${string.Join("\n", response.ErrorMessages)}");
+        expertRequestErrors = response.ErrorMessages;
+      }
     }
 
     var loginRequest = new LoginRequest(request.Email, request.Password);
@@ -56,6 +74,8 @@ public class UserController : BaseController<User, RegisterRequest> {
     if (loginResult.HasError) {
       return BadRequest(loginResult);
     }
+
+    loginResult.ErrorMessages.AddRange(expertRequestErrors);
 
     return Created(loginResult?.Data?.User?.ID.ToString() ?? "", loginResult);
   }
