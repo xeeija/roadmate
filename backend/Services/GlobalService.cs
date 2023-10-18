@@ -6,10 +6,10 @@ public class GlobalService {
   public GlobalService() {
     var context = new PostgresDbContext();
 
-    // UserServices = new UserService(context);
-    // BadgeService = new BaseService<Badge>(context);
+    UserService = new UserService(context);
+    ExpertRequestService = new ExpertRequestService(context);
   }
 
-  // public UserService UserServices { get; set; }
-  // public BaseService<Badge> BadgeService { get; set; }
+  public UserService UserService { get; set; }
+  public ExpertRequestService ExpertRequestService { get; set; }
 }

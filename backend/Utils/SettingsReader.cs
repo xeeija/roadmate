@@ -14,7 +14,7 @@ public static class SettingsReader {
       builder.AddJsonFile("appsettings.Development.json");
     }
     else if (Constants.IsHosted) {
-      builder.AddJsonFile("dbconnection.json");
+      // builder.AddJsonFile("dbconnection.json");
     }
 
     // If we are in production, we want to read the AWS credentials from the environment variables,
@@ -23,7 +23,7 @@ public static class SettingsReader {
       builder.AddEnvironmentVariables("AWS_");
     }
     else {
-      builder.AddJsonFile("awscredentials.json");
+      // builder.AddJsonFile("awscredentials.json");
     }
 
     // If we are in production, we want to read the AWS credentials from the environment variables,
@@ -32,7 +32,7 @@ public static class SettingsReader {
       builder.AddEnvironmentVariables();
     }
     else {
-      builder.AddJsonFile("smtpconnection.json");
+      // builder.AddJsonFile("smtpconnection.json");
     }
 
     return builder.Build().GetSection(section).Get<T>();
