@@ -18,8 +18,6 @@ public class User : Entity {
   [JsonIgnore]
   public string Password { get; set; }
 
-  public string? Displayname { get; set; }
-
   public Role Role { get; set; } = Role.User;
   public bool IsBanned { get; set; }
   public bool NotificationAllowed { get; set; }

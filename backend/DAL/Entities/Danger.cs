@@ -3,12 +3,12 @@
 namespace DAL;
 
 public class Danger : Entity {
-  public string Title { get; set; }
+  public DangerType Type { get; set; }
   public string Description { get; set; }
   public double Lat { get; set; }
   public double Lon { get; set; }
   public string? AddressName { get; set; }
-  public DangerType Type { get; set; }
+  public string? Title { get; set; }
   public Guid CategoryId { get; set; }
   public string? OtherCategory { get; set; }
   public DateTime? ActiveAt { get; set; }

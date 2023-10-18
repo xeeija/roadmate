@@ -73,10 +73,6 @@ public class UserService : BaseService<User> {
       user.Username = request.Username;
     }
 
-    if (request.Displayname != user.Displayname && !string.IsNullOrEmpty(request.Displayname)) {
-      user.Displayname = request.Displayname;
-    }
-
     // If new password is provided, check if the current password is also provided and correct, encrypt and update it
     if (!string.IsNullOrEmpty(request.NewPassword) &&
         Password.EncryptPassword(request.NewPassword) != user.Password) {
