@@ -1,10 +1,8 @@
 ﻿using DAL;
-using Services.Models.Request;
 
-namespace Services;
+namespace Services.Models.Request;
 
 public class ExpertRequestModel : IRequestModel<ExpertRequest> {
-
   public Guid UserId { get; set; }
   public string Description { get; set; }
 

@@ -13,7 +13,7 @@ public class RegisterRequest : IRequestModel<User> {
     return new User {
       Email = Email,
       Password = Password,
-      Username = Username,
+      Username = Username
     };
   }
 }

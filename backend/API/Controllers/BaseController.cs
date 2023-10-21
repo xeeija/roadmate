@@ -66,10 +66,11 @@ public abstract class BaseController<TEntity, TRequest> : ControllerBase
 
     if (email?.Value != null) {
       Email = email.Value;
+      Log.Debug(Email);
       var loadUser = Service.LoadUser(Email);
       loadUser.Wait();
 
-      CurrentUser = service.CurrentUser;
+      CurrentUser = Service.CurrentUser;
     }
     else {
       Log.Debug("Load user not possible. Email is null");
