@@ -1,24 +1,19 @@
 import React from 'react';
-import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon } from '@ionic/react';
+import {IonHeader, IonToolbar, IonButtons, IonBackButton} from '@ionic/react';
 import './ToolBar.css';
-import {arrowBack, caretBack, caretBackSharp, home} from "ionicons/icons";
+import {caretBack} from "ionicons/icons";
 
 interface ToolbarProps {
   title: string;
-  backButton?: boolean;
-  backAction?: () => void;
 }
 
-const ToolBar: React.FC<ToolbarProps> = ({ title, backButton, backAction }) => {
+const ToolBar: React.FC<ToolbarProps> = ({ title }) => {
   return (
     <IonHeader>
       <IonToolbar>
-        <IonButtons slot="start">
-          <IonButton onClick={backAction}>
-            <IonIcon slot="icon-only" icon={caretBack} />
-          </IonButton>
-        </IonButtons>
-        <IonTitle>{title}</IonTitle>
+          <IonButtons slot="start" >
+           <IonBackButton defaultHref="/" icon={caretBack} text="RoadMate" > </IonBackButton>
+          </IonButtons>
       </IonToolbar>
     </IonHeader>
   );

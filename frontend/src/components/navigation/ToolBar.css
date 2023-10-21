@@ -4,7 +4,9 @@ ion-toolbar{
 
 }
 
-ion-title{
-  padding-inline: 0px;
-  color: white;
+ion-back-button{
+  padding: 9px;
+  --icon-padding-end: 6px;
+  color: var(--ion-color-light);
+  font-size: 22px;
 }

@@ -24,11 +24,11 @@ ion-tab-bar, ion-tab-button {
   border-radius: 20px 20px 0 0;
   --background: var(--ion-color-primary);
   --color: var(--ion-color-light-shade);
-  --ion-tab-bar-color-selected: var(--ion-color-primary-contrast)
+  --ion-tab-bar-color-selected: var(--ion-color-light);
 }
 
 /* icon size*/
-ion-icon{
+.menu-icon{
   font-size: 36px;
 }
 /* background image */
