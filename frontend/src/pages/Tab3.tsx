@@ -1,8 +1,9 @@
 import { IonButton, IonContent, IonHeader, IonList, IonModal, IonPage, IonTitle, IonToolbar, IonAvatar, IonImg, IonItem, IonLabel, IonInput, IonToggle } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
 import './Tab3.css';
 import { useRef } from 'react';
 import { IonIcon } from '@ionic/react';
+import { exitOutline, notifications } from 'ionicons/icons';
+
 
 const Tab3: React.FC = () => {
   const modal = useRef<HTMLIonModalElement>(null);
@@ -17,7 +18,7 @@ const Tab3: React.FC = () => {
         <IonButton id="open-modal" expand="block">
           Klick Tab
         </IonButton>
-        <IonModal className='rounded-modal' ref={modal} trigger="open-modal" initialBreakpoint={0.90} breakpoints={[0.5, 0.90]}>
+        <IonModal className='rounded-modal' ref={modal} trigger="open-modal" initialBreakpoint={0.92} breakpoints={[0.92]}>
           <IonContent className="ion-padding">
             <IonList >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -27,7 +28,7 @@ const Tab3: React.FC = () => {
               </div>
               <p  className='distance'>Benachrichtigungen</p>
               <IonItem>
-                <IonLabel> <IonIcon className='iconColor' name="notifications"></IonIcon> Meine Benachrichtigungen <IonIcon name="chevron-forward"></IonIcon> </IonLabel>
+                <IonLabel> <IonIcon icon={notifications} size='small' color='primary'></IonIcon> Meine Benachrichtigungen <IonIcon name="chevron-forward"></IonIcon> </IonLabel>
               </IonItem>
               <p  className='distance'>Profileinstellungen</p>
               <IonItem>
@@ -40,7 +41,6 @@ const Tab3: React.FC = () => {
               <br />
               <IonItem>
                 <IonInput type='password' label="Passwort" labelPlacement="floating" fill="solid" placeholder="test1234" value="test1234" disabled></IonInput>
-
               </IonItem>
               <br />
               <IonItem>
@@ -51,8 +51,9 @@ const Tab3: React.FC = () => {
                </IonItem>
               <br />
               <IonButton expand="block">Profil speichern</IonButton>
-           
-              <IonButton style={{ marginTop: '15px' }} fill='outline' expand="block">Logout <IonIcon name="log-out-outline" /></IonButton>
+              <IonButton style={{ marginTop: '15px' }} fill='outline' expand="block">Logout
+              <IonIcon icon={exitOutline} size="default" color="primary" style={{ marginLeft: '5px' }}></IonIcon>
+              </IonButton>
             </IonList>
           </IonContent>
         </IonModal>
