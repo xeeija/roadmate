@@ -9,7 +9,7 @@
 }
 
 .customButton{
-  padding-bottom: 40px;
+  padding-bottom: 50px;
   --background: var(--ion-color-tertiary);
   align-items: center;
   display: flex;
@@ -20,8 +20,17 @@
 
 .customIcon{
   color: #92949C;
-  font-size: 36px;
-  padding: 7px;
+  font-size: 42px;
+  padding-right: 10px;
+  padding-left: 0;
+}
+
+.customDescriptionIcon{
+  color: #92949C;
+  font-size: 42px;
+  padding-right: 10px;
+  padding-left: 0;
+  padding-bottom: 110px;
 }
 
 .customItem{
@@ -38,4 +47,12 @@
   height: 3px;
   position: absolute;
   right: 40pt;
+}
+
+.customSelectOption{
+  background-color: white;
+}
+
+.customTextArea{
+  height: 170px;
 }

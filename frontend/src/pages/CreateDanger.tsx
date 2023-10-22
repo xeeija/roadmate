@@ -6,7 +6,7 @@ import {
   IonHeader, IonIcon,
   IonInput,
   IonItem,
-  IonPage, IonSelect, IonTextarea, IonToggle,
+  IonPage, IonSelect, IonSelectOption, IonTextarea, IonToggle,
 } from '@ionic/react';
 import ToolBar from "../components/navigation/ToolBar";
 import './CreateDanger.css'
@@ -18,9 +18,15 @@ import {
   locationSharp,
   warningSharp
 } from "ionicons/icons";
+import {useState} from "react";
 
 
 const CreateDanger: React.FC = () => {
+  const [isChecked, setIsChecked] = useState(false);
+  const handleToggleChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -37,6 +43,8 @@ const CreateDanger: React.FC = () => {
                 toggleIcon={caretDown}
                 interface="popover"
               >
+                <IonSelectOption className="customSelectOption" value="unfall">Unfall</IonSelectOption>
+                <IonSelectOption className="customSelectOption" value="block">Klimakleber</IonSelectOption>
               </IonSelect>
             </IonItem>
             <IonItem  className="customItem">
@@ -47,6 +55,8 @@ const CreateDanger: React.FC = () => {
                 toggleIcon={caretDown}
                 interface="popover"
               >
+                <IonSelectOption className="customSelectOption" value="meinStandort">Mein Standort</IonSelectOption>
+                <IonSelectOption className="customSelectOption" value="mapStandort">Auf der Karte wählen</IonSelectOption>
               </IonSelect>
             </IonItem>
             <IonItem className="customItem">
@@ -54,10 +64,13 @@ const CreateDanger: React.FC = () => {
               <IonInput
                 label="Permanente Gefahrenstelle?"
                 labelPlacement={"floating"}
+                value={isChecked ? 'Ja' : 'Nein'} readonly={true}
               >
               </IonInput>
-              <IonToggle className="customToggle custom-toggle-input" />
+              <IonToggle className="customToggle custom-toggle-input" checked={isChecked} onIonChange={handleToggleChange}/>
+
             </IonItem>
+            {!isChecked && (
             <IonItem className="customItem">
               <IonIcon icon={alarm} className="customIcon"/>
               <IonSelect
@@ -66,20 +79,23 @@ const CreateDanger: React.FC = () => {
                 toggleIcon={caretDown}
                 interface="popover"
               >
+                <IonSelectOption className="customSelectOption" value="timeNow">In diesem Augenblick</IonSelectOption>
+                <IonSelectOption className="customSelectOption" value="exactTime">Uhrzeit wählen</IonSelectOption>
               </IonSelect>
             </IonItem>
+            )}
             <IonItem className="customItem">
-              <IonIcon icon={informationCircleOutline} className="customIcon"/>
+              <IonIcon icon={informationCircleOutline} className="customDescriptionIcon"/>
               <IonTextarea
+                className="customTextArea"
                 label="Beschreibung?"
                 labelPlacement={"floating"}
-
+                placeholder="Beschreibe die Gefahrenstelle etwas näher"
               >
               </IonTextarea>
             </IonItem>
             <IonButton className="customButton">Gefahrenstelle melden</IonButton>
           </IonCardContent>
-
         </IonCard>
       </IonContent>
     </IonPage>
