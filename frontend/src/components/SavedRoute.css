@@ -1,0 +1,16 @@
+.content-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+  margin-left: 10px;
+}
+
+.route-title {
+  flex: 1;
+  color: #222428;
+}
+
+.route-action {
+  margin-left: 20px; 
+}
