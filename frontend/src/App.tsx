@@ -44,7 +44,7 @@ const App: React.FC = () => (
         <PasswordReset />
       </Route>
 
-      {/* 
+      { 
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/tab1">
@@ -71,7 +71,7 @@ const App: React.FC = () => (
             <IonIcon aria-hidden="true" icon={personCircle} />
           </IonTabButton>
         </IonTabBar>
-      </IonTabs> */}
+      </IonTabs> }
     </IonReactRouter>
   </IonApp>
 );
