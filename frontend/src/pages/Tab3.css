@@ -1,6 +1,11 @@
 .rounded-modal {
-    --border-radius: 35px; /* Passen Sie die Rundung nach Bedarf an */
-    border-radius: var(--border-radius);
+    --border-radius: 35px;
+    background-color: #F0F8F9;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-top: 50px;
   }
   
 .distance {
@@ -8,3 +13,11 @@
     margin-top: 15px;
 }
 
+.backgroundColor {
+  background-color: #FFFFFF;
+}
+
+.buttonSize {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
