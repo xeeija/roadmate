@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import PasswordReset from "./pages/PasswordReset";
 import CreateDanger from "./pages/CreateDanger";
 import SavedRoutes from "./pages/SavedRoutes";
+import Notifications from "./pages/Notifications";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -52,6 +53,9 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/saved-routes">
             <SavedRoutes />
+          </Route>
+          <Route exact path="/notifications">
+            <Notifications />
           </Route>
 
           <Route exact path="/tab1">
