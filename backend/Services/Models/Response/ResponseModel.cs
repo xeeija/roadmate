@@ -1,6 +1,6 @@
 ﻿namespace Services.Models.Response;
 
-public class ResponseModel {
+public class ResponseModel : IResponseModel {
   public bool HasError => ErrorMessages.Count > 0;
 
   public bool IsAuthorized { get; set; } = true;

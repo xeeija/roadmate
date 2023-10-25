@@ -31,7 +31,7 @@ public class Authentication {
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Secret))
   };
 
-  public async Task<AuthenticationInformation> Authenticate(User user) {
+  public async Task<AuthenticationInformation?> Authenticate(User user) {
     if (user != null) {
       var info = new AuthenticationInformation();
 
@@ -59,7 +59,7 @@ public class Authentication {
       return await Task.FromResult(info);
     }
 
-    return null!;
+    return null;
   }
 
 

@@ -8,7 +8,7 @@
 public class RequestModel<T> : IRequestModel<T> {
   public T Entity { get; set; }
 
-  public T ToEntity() {
+  public virtual T ToEntity() {
     return Entity;
   }
 }

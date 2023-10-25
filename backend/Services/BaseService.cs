@@ -288,8 +288,9 @@ public class BaseService<TEntity> where TEntity : Entity {
   ///   Sets the current user by email.
   /// </summary>
   /// <param name="email">Defines the email.</param>
-  public async Task LoadUser(string email) {
+  public Task LoadUser(string email) {
     CurrentUser = Context.User.First(x => x.Email.ToLower() == email.ToLower());
+    return Task.CompletedTask;
   }
 
   #endregion
@@ -347,8 +348,8 @@ public class BaseService<TEntity> where TEntity : Entity {
     return await Task.FromResult(response);
   }
 
-  public virtual async Task<bool> Authorize(TEntity entity) {
-    return true;
+  public virtual Task<bool> Authorize(TEntity entity) {
+    return Task.FromResult(true);
   }
 
   // TODO: Not needed currently, needed for GetAll filter async

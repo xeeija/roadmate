@@ -1,5 +1,4 @@
 using DAL.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.Models.Request;
@@ -8,79 +7,16 @@ using Services.Models.Response;
 namespace API.Controllers;
 
 public class UserController : BaseController<User, RegisterRequest> {
-  private readonly GlobalService globalService;
   private readonly UserService userService;
-  private readonly ExpertRequestService expertRequestService;
 
   public UserController(GlobalService service, IHttpContextAccessor accessor) : base(service.UserService, accessor) {
-    globalService = service;
     userService = service.UserService;
-    expertRequestService = service.ExpertRequestService;
   }
 
-  #region Login/Register
-
-  /// <summary>
-  ///   Endpoint to login an user.
-  /// </summary>
-  /// <param name="request">Represents the login request for an user.</param>
-  /// <returns>Returns the response information with user.</returns>
-  [HttpPost("Login")]
-  [AllowAnonymous]
-  public async Task<ActionResult<ItemResponseModel<UserResponse>>> Login([FromBody] LoginRequest request) {
-    var result = await userService.Login(request);
-
-    if (result.HasError) {
-      return BadRequest(result);
-    }
-
-    return Ok(result);
+  [NonAction]
+  public override Task<ActionResult<ItemResponseModel<User>>> Create([FromBody] RegisterRequest request) {
+    return base.Create(request);
   }
-
-  /// <summary>
-  ///   Endpoint to register a new basic user in database.
-  /// </summary>
-  /// <param name="request">Represents request for an new basic user.</param>
-  /// <returns>Returns the response information with user.</returns>
-  [HttpPost("Register")]
-  [AllowAnonymous]
-  [ProducesResponseType(StatusCodes.Status201Created)]
-  public async Task<ActionResult<ItemResponseModel<UserResponse>>> Register([FromBody] RegisterRequest request) {
-    var registerResult = await userService.Register(request);
-
-    if (registerResult.HasError) {
-      return BadRequest(registerResult);
-    }
-
-    var expertRequestErrors = new List<string>();
-
-    if (request.RequestExpert) {
-      var expertRequest = new ExpertRequestModel {
-        Description = request.ExpertDescription ?? "",
-        UserId = registerResult.Data?.ID ?? Guid.Empty
-      };
-
-      var response = await expertRequestService.Create(expertRequest.ToEntity());
-
-      if (response.HasError || !response.IsAuthorized) {
-        Log.Warning($"Failed to create ExpertRequest: ${string.Join("\n", response.ErrorMessages)}");
-        expertRequestErrors = response.ErrorMessages;
-      }
-    }
-
-    var loginRequest = new LoginRequest(request.Email, request.Password);
-
-    var loginResult = await userService.Login(loginRequest);
-    if (loginResult.HasError) {
-      return BadRequest(loginResult);
-    }
-
-    loginResult.ErrorMessages.AddRange(expertRequestErrors);
-
-    return Created(loginResult?.Data?.User?.ID.ToString() ?? "", loginResult);
-  }
-
-  #endregion
 
   #region Update
 
@@ -89,20 +25,24 @@ public class UserController : BaseController<User, RegisterRequest> {
   /// </summary>
   /// <param name="entity">User entity which should be updated</param>
   /// <returns></returns>
-  [Authorize(Roles = "Admin")]
+  [NonAction]
   public override async Task<ActionResult<ItemResponseModel<User>>> Update(User entity) {
     return await base.Update(entity);
   }
 
   /// <summary>
-  ///   Endpoint to update a basic user.
+  ///   Endpoint to update a user.
   /// </summary>
   /// <param name="id">Id of the User</param>
   /// <param name="request">UpdateBasicUserRequest that contains the properties to be updated</param>
   /// <returns>Updated User</returns>
-  [HttpPut("{id}/Update")]
+  [HttpPut("{id}")]
   public async Task<ActionResult<ItemResponseModel<User>>> UpdateUser(string id, [FromBody] UpdateUserRequest request) {
     var result = await userService.UpdateUser(id, request);
+
+    if (!result.IsAuthorized) {
+      return Forbid();
+    }
 
     if (result.HasError) {
       return BadRequest(result);

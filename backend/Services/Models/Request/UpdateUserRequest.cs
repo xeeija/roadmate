@@ -13,7 +13,7 @@ public class UpdateUserRequest : IRequestModel<User> {
     return new User {
       Username = Username ?? string.Empty,
       Email = Email ?? string.Empty,
-      Password = NewPassword ?? string.Empty,
+      Password = NewPassword ?? string.Empty
     };
   }
 }

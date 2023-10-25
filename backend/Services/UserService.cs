@@ -46,12 +46,14 @@ public class UserService : BaseService<User> {
 
     // Check if current user is authenticated (was obtained successfully from the authentication information)
     if (CurrentUser == null) {
-      response.ErrorMessages.Add("You are not authenticated!");
+      response.IsAuthorized = false;
+      // response.ErrorMessages.Add("You are not authenticated!");
       return response;
     }
 
     // Check if user is updating themselves
     if (CurrentUser.ID != Guid.Parse(id)) {
+      response.IsAuthorized = false;
       response.ErrorMessages.Add("You can only update your own user!");
       return response;
     }
@@ -89,7 +91,6 @@ public class UserService : BaseService<User> {
     var validation = await ValidateUpdate(user);
 
     if (validation.HasError) {
-      response.ErrorMessages.Add("Validation Error");
       response.ErrorMessages.AddRange(validation.ErrorMessages);
       return response;
     }
@@ -155,7 +156,7 @@ public class UserService : BaseService<User> {
     }
 
     // Success response
-    response.Data.AuthenticationInformation = info;
+    response.Data.Authentication = info;
     response.Data.User = user;
     return await Task.FromResult(response);
   }
@@ -213,7 +214,7 @@ public class UserService : BaseService<User> {
   ///   For users the Register method is provided.
   /// </summary>
   /// <param name="user">Not used.</param>
-  public override async Task<ItemResponseModel<User>> Create(User user) {
+  public override Task<ItemResponseModel<User>> Create(User user) {
     throw new NotSupportedException("Use Register method to create an user!");
   }
 
@@ -256,10 +257,10 @@ public class UserService : BaseService<User> {
     }
 
     // Check role
-    if (entity.Role == null) {
-      response.ErrorMessages.Add("No role provided!");
-      return response;
-    }
+    // if (entity.Role == null) {
+    //   response.ErrorMessages.Add("No role provided!");
+    //   return response;
+    // }
 
     if (entity.Username.IsNullOrEmpty()) {
       response.ErrorMessages.Add("No name provided!");
