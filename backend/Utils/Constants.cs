@@ -5,7 +5,7 @@ namespace Utils;
 public class Constants {
   public static string CurrentFolder {
     get {
-      var codeBase = Assembly.GetExecutingAssembly().Location; //.CodeBase;
+      var codeBase = Assembly.GetExecutingAssembly().CodeBase;
       var uri = new UriBuilder(codeBase);
       var path = Uri.UnescapeDataString(uri.Path);
       return Path.GetDirectoryName(path);
