@@ -5,13 +5,13 @@ using Services.Models.Response;
 namespace Tests.ControllerTests;
 
 /// <summary>
-///     Unit tests for UserService
+///   Unit tests for UserService
 /// </summary>
 public class UserControllerTest : ControllerTestTemplate {
   #region TestCases
 
   /// <summary>
-  ///     Tests the registration of the API
+  ///   Tests the registration of the API
   /// </summary>
   /// <returns></returns>
   [Test]
@@ -39,11 +39,11 @@ public class UserControllerTest : ControllerTestTemplate {
 
     // Restore authentication to header
     Client.DefaultRequestHeaders.Authorization =
-        new AuthenticationHeaderValue("Bearer", UserResponse.Authentication.Token);
+      new AuthenticationHeaderValue("Bearer", UserResponse.Authentication.Token);
   }
 
   /// <summary>
-  ///     Tests the login of the API
+  ///   Tests the login of the API
   /// </summary>
   /// <returns></returns>
   [Test]
@@ -68,7 +68,7 @@ public class UserControllerTest : ControllerTestTemplate {
 
     // Restore authentication to header
     Client.DefaultRequestHeaders.Authorization =
-        new AuthenticationHeaderValue("Bearer", UserResponse.Authentication.Token);
+      new AuthenticationHeaderValue("Bearer", UserResponse.Authentication.Token);
   }
 
   #endregion

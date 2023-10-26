@@ -1,15 +1,11 @@
-using DAL;
 using Services;
 
 namespace Tests.ServiceTests;
 
-public class ServiceTestTemplate : BaseUnitTests
-{
-    protected GlobalService Service;
+public class ServiceTestTemplate : BaseUnitTests {
+  protected GlobalService Service;
 
-    public ServiceTestTemplate()
-    {
-        Service = new GlobalService();
-    }
-
+  public ServiceTestTemplate() {
+    Service = new GlobalService();
+  }
 }

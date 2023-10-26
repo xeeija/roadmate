@@ -1,17 +1,18 @@
-﻿using DAL;
+using DAL;
 using DAL.Entities;
+using Serilog;
 using Services.Models.Request;
+using Utils;
 
 namespace Tests;
 
 /// <summary>
-///     Helper for unit tests
-///     Here we implement methods which create default entities so that it is not necessary to copy paste code in the unit
-///     tests
+///   Helper for unit tests
+///   Here we implement methods which create default entities so that it is not necessary to copy paste code in the unit
+///   tests
 /// </summary>
 public class DefaultValues {
-  #region GeneralFunctions
-  protected static Serilog.ILogger log = Utils.Logger.ContextLog<DefaultValues>();
+  protected static ILogger log = Logger.ContextLog<DefaultValues>();
 
   protected static int RandomTestId;
   protected static List<int> RandomTestIdList = new();
@@ -47,10 +48,7 @@ public class DefaultValues {
     }
   }
 
-  #endregion
-
   #region GeneralEntities
-
 
   // Danger
 
@@ -77,7 +75,7 @@ public class DefaultValues {
   // }
 
   /// <summary>
-  ///     Creates default Category for testing
+  ///   Creates default Category for testing
   /// </summary>
   /// <returns></returns>
   public static DangerCategory CreateDangerCategory() {
@@ -91,7 +89,7 @@ public class DefaultValues {
   #region UserHandling
 
   /// <summary>
-  ///     Creates default BasicUser for testing
+  ///   Creates default BasicUser for testing
   /// </summary>
   /// <returns></returns>
   public static User CreateUser() {
@@ -104,7 +102,7 @@ public class DefaultValues {
   }
 
   /// <summary>
-  ///     Creates default BasicUser request for testing
+  ///   Creates default BasicUser request for testing
   /// </summary>
   /// <returns></returns>
   public static RegisterRequest CreateUserRegisterRequest() {
@@ -116,14 +114,14 @@ public class DefaultValues {
       Email = email,
       Password = password,
       Username = name,
-      RequestExpert = false,
+      RequestExpert = false
     };
 
     return request;
   }
 
   /// <summary>
-  ///     Creates default Admin user request for testing
+  ///   Creates default Admin user request for testing
   /// </summary>
   /// <returns></returns>
   public static RegisterRequest CreateAdminUserRegisterRequest() {
@@ -134,14 +132,14 @@ public class DefaultValues {
     var request = new RegisterRequest {
       Email = email,
       Password = password,
-      Username = name,
+      Username = name
     };
 
     return request;
   }
 
   /// <summary>
-  ///     Creates default BasicUser request for testing
+  ///   Creates default BasicUser request for testing
   /// </summary>
   /// <returns></returns>
   public static RegisterRequest CreateExpertUserRegisterRequest() {

@@ -8,21 +8,21 @@ using Services.Models.Response;
 namespace Tests.ControllerTests;
 
 /// <summary>
-///     Basic test template for all controller tests.
-///     Http client and users are initialized.
+///   Basic test template for all controller tests.
+///   Http client and users are initialized.
 /// </summary>
 public class ControllerTestTemplate : BaseUnitTests {
-  protected WebApplicationFactory<Program> Application;
-  protected UserResponse UserResponse;
-  protected string UserPassword;
-  protected UserResponse AdminResponse;
   protected string AdminPassword;
+  protected UserResponse AdminResponse;
+  protected WebApplicationFactory<Program> Application;
   protected HttpClient Client;
   protected HttpClient ClientAdmin;
+  protected string UserPassword;
+  protected UserResponse UserResponse;
 
 
   /// <summary>
-  ///     Initialize the Http client
+  ///   Initialize the Http client
   /// </summary>
   [OneTimeSetUp]
   public async Task SetupTestServer() {
@@ -32,7 +32,7 @@ public class ControllerTestTemplate : BaseUnitTests {
   }
 
   /// <summary>
-  ///     Initialize the basic user and authentication
+  ///   Initialize the basic user and authentication
   /// </summary>
   [OneTimeSetUp]
   public async Task SetupBasicTestUser() {
@@ -52,11 +52,11 @@ public class ControllerTestTemplate : BaseUnitTests {
     UserResponse = loginResult.Data ?? throw new InvalidOperationException();
 
     Client.DefaultRequestHeaders.Authorization =
-        new AuthenticationHeaderValue("Bearer", UserResponse.Authentication.Token);
+      new AuthenticationHeaderValue("Bearer", UserResponse.Authentication.Token);
   }
 
   /// <summary>
-  ///     Initialize the admin user and authentication
+  ///   Initialize the admin user and authentication
   /// </summary>
   [OneTimeSetUp]
   public async Task SetupAdminTestUser() {
@@ -75,6 +75,7 @@ public class ControllerTestTemplate : BaseUnitTests {
     if (register?.Data != null) {
       register.Data.Role = Role.Admin;
     }
+
     var updateUser = await userService.Update(register.Data);
     Assert.That(updateUser, Is.Not.Null);
     Assert.Multiple(() => {
@@ -90,11 +91,11 @@ public class ControllerTestTemplate : BaseUnitTests {
     log.Debug("Auth admin " + AdminResponse.Authentication.Token);
 
     ClientAdmin.DefaultRequestHeaders.Authorization =
-        new AuthenticationHeaderValue("Bearer", AdminResponse.Authentication.Token);
+      new AuthenticationHeaderValue("Bearer", AdminResponse.Authentication.Token);
   }
 
   /// <summary>
-  ///     Dispose Http Client
+  ///   Dispose Http Client
   /// </summary>
   [OneTimeTearDown]
   public new async Task ClearDatabase() {

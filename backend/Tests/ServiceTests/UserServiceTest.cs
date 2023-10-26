@@ -1,17 +1,16 @@
-﻿using DAL.Entities;
-using Services;
+﻿using Services;
 using Services.Models.Request;
 
 namespace Tests.ServiceTests;
 
 /// <summary>
-///     Unit tests for UserService
+///   Unit tests for UserService
 /// </summary>
 public class UserServiceTest : BaseUnitTests {
   #region TestCases
 
   /// <summary>
-  ///     Tests Create() of the UserService
+  ///   Tests Create() of the UserService
   /// </summary>
   /// <returns></returns>
   [Test]
@@ -38,7 +37,7 @@ public class UserServiceTest : BaseUnitTests {
   }
 
   /// <summary>
-  ///     Tests Login() of the UserService
+  ///   Tests Login() of the UserService
   /// </summary>
   /// <returns></returns>
   [Test]
@@ -80,5 +79,4 @@ public class UserServiceTest : BaseUnitTests {
   }
 
   #endregion
-
 }
