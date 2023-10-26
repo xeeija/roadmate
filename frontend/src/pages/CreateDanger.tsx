@@ -32,7 +32,7 @@ const CreateDanger: React.FC = () => {
       <IonHeader>
         <ToolBar title="Melden" />
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent scroll-y="false">
         <IonCard color="light" className="customCard" >
           <IonCardContent>
             <IonItem className="customItem">

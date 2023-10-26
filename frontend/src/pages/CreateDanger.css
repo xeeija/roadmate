@@ -1,15 +1,13 @@
 .customCard{
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: 0;
-  z-index: -1;
-  background-color: var(--ion-color-light);
+  background-color: #F0F8F9;
+  border-radius: 35px 35px 0 0;
+  margin-top: 130px;
+  bottom: 10px;
+  height: 620px;
 }
 
 .customButton{
-  padding-bottom: 50px;
+  padding-bottom: 10px;
   --background: var(--ion-color-tertiary);
   align-items: center;
   display: flex;
