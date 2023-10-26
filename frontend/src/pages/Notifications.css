@@ -1,4 +1,34 @@
-.notifications-title{
+.rounded-modal {
+    --border-radius: 35px;
+    background-color: #F0F8F9;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-top: 50px;
+
+    /* Added */
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+  }
+
+.rounded-modal .scrollable {
+    overflow: hidden;   /* Hide any overflow content outside the card */
+    flex: 1;            /* Allow the card content to expand vertically */
+  }
+  
+.notifications-list {
+    overflow-y: auto;                   /* Allow vertical scrolling for the notifications list */
+    max-height: calc(100% - 70px);      /* Adjust the value as needed */
+  } 
+  
+.notifications-title {
     color: #222428;
     font-size: 18px;
-}
+    margin-top: 20px;
+    margin-left: 30px;
+  }
+  
