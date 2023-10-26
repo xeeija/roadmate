@@ -1,10 +1,11 @@
-ion-toolbar{
+.customToolbar{
   --background: var(--ion-color-primary);
   --color: var(--ion-color-light);
-
 }
 
-ion-title{
-  padding-inline: 0px;
-  color: white;
+.customBackButton{
+  padding: 9px;
+  --icon-padding-end: 6px;
+  color: var(--ion-color-light);
+  font-size: 22px;
 }

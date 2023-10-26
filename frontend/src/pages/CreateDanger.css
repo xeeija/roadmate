@@ -1,9 +1,10 @@
 .customCard{
   background-color: #F0F8F9;
   border-radius: 35px 35px 0 0;
-  margin-top: 130px;
+  margin-top: 110px;
   bottom: 10px;
   height: 620px;
+  position: relative;
 }
 
 .customButton{
@@ -36,6 +37,8 @@
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 25px;
+  --keyboard-offset: none;
+  font-size: 15px;
 }
 
 .customToggle{
@@ -53,4 +56,6 @@
 
 .customTextArea{
   height: 170px;
+  position: relative;
 }
+

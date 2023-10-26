@@ -1,0 +1,10 @@
+.createDangerIcon{
+  font-size: 36px;
+  color: white;
+}
+
+.createDangerButton{
+  position: absolute;
+  bottom: 60px;
+  right: 10px;
+}

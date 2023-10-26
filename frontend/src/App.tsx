@@ -66,13 +66,13 @@ const App: React.FC = () => (
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon aria-hidden="true" icon={home} />
+            <IonIcon className="menu-icon" aria-hidden="true" icon={home} />
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon aria-hidden="true" icon={map} />
+          <IonTabButton  tab="tab2" href="/tab2">
+            <IonIcon className="menu-icon" aria-hidden="true" icon={map} />
           </IonTabButton>
           <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon aria-hidden="true" icon={personCircle} />
+            <IonIcon className="menu-icon" aria-hidden="true" icon={personCircle} />
           </IonTabButton>
         </IonTabBar>
       </IonTabs>

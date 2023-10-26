@@ -27,10 +27,11 @@ const CreateDanger: React.FC = () => {
     setIsChecked(!isChecked);
   };
 
+
   return (
     <IonPage>
       <IonHeader>
-        <ToolBar title="Melden" />
+        <ToolBar title="Melden"/>
       </IonHeader>
       <IonContent scroll-y="false">
         <IonCard color="light" className="customCard" >
@@ -70,7 +71,7 @@ const CreateDanger: React.FC = () => {
               <IonToggle className="customToggle custom-toggle-input" checked={isChecked} onIonChange={handleToggleChange}/>
 
             </IonItem>
-            {!isChecked && (
+
             <IonItem className="customItem">
               <IonIcon icon={alarm} className="customIcon"/>
               <IonSelect
@@ -78,12 +79,13 @@ const CreateDanger: React.FC = () => {
                 labelPlacement={"floating"}
                 toggleIcon={caretDown}
                 interface="popover"
+                disabled={isChecked}
               >
                 <IonSelectOption className="customSelectOption" value="timeNow">In diesem Augenblick</IonSelectOption>
                 <IonSelectOption className="customSelectOption" value="exactTime">Uhrzeit wählen</IonSelectOption>
               </IonSelect>
             </IonItem>
-            )}
+
             <IonItem className="customItem">
               <IonIcon icon={informationCircleOutline} className="customDescriptionIcon"/>
               <IonTextarea
