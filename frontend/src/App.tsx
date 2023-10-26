@@ -1,6 +1,6 @@
 import { IonApp, IonIcon, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { home, map, personCircle, ellipse, square, triangle } from "ionicons/icons";
+import { home, map, personCircle } from "ionicons/icons";
 import { Redirect, Route } from "react-router-dom";
 import Tab1 from "./pages/Tab1";
 import Tab2 from "./pages/Tab2";
@@ -8,6 +8,7 @@ import Tab3 from "./pages/Tab3";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PasswordReset from "./pages/PasswordReset";
+import CreateDanger from "./pages/CreateDanger";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -34,7 +35,9 @@ setupIonicReact();
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
-      <Route exact path="/login">
+      <IonTabs>
+        <IonRouterOutlet>
+        <Route exact path="/login">
         <Login />
       </Route>
       <Route exact path="/register">
@@ -43,10 +46,11 @@ const App: React.FC = () => (
       <Route exact path="/reset-password">
         <PasswordReset />
       </Route>
+      <Route exact path="/createDanger">
+        <CreateDanger />
+      </Route>
 
-      { 
-      <IonTabs>
-        <IonRouterOutlet>
+
           <Route exact path="/tab1">
             <Tab1 />
           </Route>
@@ -71,7 +75,7 @@ const App: React.FC = () => (
             <IonIcon aria-hidden="true" icon={personCircle} />
           </IonTabButton>
         </IonTabBar>
-      </IonTabs> }
+      </IonTabs>
     </IonReactRouter>
   </IonApp>
 );

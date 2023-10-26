@@ -1,0 +1,41 @@
+.customCard{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  z-index: -1;
+  background-color: var(--ion-color-light);
+}
+
+.customButton{
+  padding-bottom: 40px;
+  --background: var(--ion-color-tertiary);
+  align-items: center;
+  display: flex;
+  --border-radius: 6px;
+  --ion-button-text-transform: none;
+  letter-spacing: 0.8px;
+}
+
+.customIcon{
+  color: #92949C;
+  font-size: 36px;
+  padding: 7px;
+}
+
+.customItem{
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+}
+
+.customToggle{
+  --handle-background-checked: white;
+  --track-background-checked: var(--ion-color-tertiary-tint);
+  width: 5px;
+  height: 3px;
+  position: absolute;
+  right: 40pt;
+}
