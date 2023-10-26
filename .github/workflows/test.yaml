@@ -58,13 +58,22 @@ jobs:
             ${{ runner.os }}-nuget
 
       - name: Install dependencies
-        run: dotnet restore
+        run: |
+          dotnet restore
+          dotnet tool restore
+
+      # - name: Install dotnet tools
+      #   run: dotnet tool restore
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Install dotnet tools
-        run: dotnet tool restore
+      - name: Inspect code
+        uses: muno92/resharper_inspectcode@v1
+        with:
+          workingDirectory: ./backend
+          solutionPath: ./roadmate.sln
+          minimumReportSeverity: WARNING
 
       - name: Apply database migrations
         run: dotnet ef database update --no-build --configuration Release -p DAL -s API

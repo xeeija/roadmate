@@ -31,7 +31,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 );
 
 builder.Services.AddCors(options =>
-  options.AddPolicy("Cors", builder => builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader())
+  options.AddPolicy("Cors", policy => policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader())
 );
 // options.AddPolicy("Cors", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
