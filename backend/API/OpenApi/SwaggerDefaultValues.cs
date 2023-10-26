@@ -21,8 +21,8 @@ public class SwaggerDefaultValues : IOperationFilter {
     foreach (var parameter in operation.Parameters) {
       var description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
 
-      if (parameter.Description is null) {
-        parameter.Description = description.ModelMetadata?.Description;
+      if (parameter.Description == null) {
+        parameter.Description = description.ModelMetadata.Description;
       }
 
       if (parameter.Schema.Default is null && description.DefaultValue is not null) {

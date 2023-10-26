@@ -47,6 +47,9 @@ resharper_redundant_base_qualifier_highlighting = warning
 resharper_suggest_var_or_type_built_in_types_highlighting = hint
 resharper_suggest_var_or_type_elsewhere_highlighting = hint
 resharper_suggest_var_or_type_simple_types_highlighting = hint
+resharper_inconsistent_naming_highlighting = hint
+resharper_unused_auto_property_accessor_global_highlighting = hint
+resharper_collection_never_updated_global_highlighting = hint
 
 # ReSharper properties
 resharper_keep_existing_embedded_arrangement = false

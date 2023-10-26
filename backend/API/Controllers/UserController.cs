@@ -61,11 +61,11 @@ public class UserController : BaseController<User, RegisterRequest> {
   public async Task<ActionResult<ItemResponseModel<User>>> BanUser(string id, [FromBody] bool banned = true) {
     var user = await userService.Get(id);
 
-    if (user == null || user.Data == null) {
-      return NotFound(new NotFoundObjectResult(null));
+    if (user.Data == null) {
+      return NotFound();
     }
 
-    user.IsAuthorized = CurrentUser.Role == Role.Admin;
+    user.IsAuthorized = CurrentUser?.Role == Role.Admin;
 
     if (!user.IsAuthorized) {
       return Forbid();
@@ -90,7 +90,7 @@ public class UserController : BaseController<User, RegisterRequest> {
   public async Task<ActionResult<ItemResponseModel<List<User>>>> GetBannedUser() {
     var result = await userService.Filter(x => x.IsBanned);
 
-    result.IsAuthorized = CurrentUser.Role == Role.Admin;
+    result.IsAuthorized = CurrentUser?.Role == Role.Admin;
 
     if (!result.IsAuthorized) {
       return Forbid();

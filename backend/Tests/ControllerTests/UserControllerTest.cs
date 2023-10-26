@@ -31,15 +31,14 @@ public class UserControllerTest : ControllerTestTemplate {
 
     // Check response data
     Assert.That(httpResponse.StatusCode, Is.EqualTo(HttpStatusCode.Created));
-    Assert.IsNotNull(response);
-    Assert.IsNotNull(response.Data);
-    Assert.IsNotNull(response.Data.User);
-    Assert.IsNotNull(response.Data.Authentication);
-    Assert.IsFalse(response.HasError);
+    Assert.That(response, Is.Not.Null);
+    Assert.That(response.Data?.User, Is.Not.Null);
+    Assert.That(response.Data?.Authentication?.Token, Is.Not.Null);
+    Assert.That(response.HasError, Is.False);
 
     // Restore authentication to header
     Client.DefaultRequestHeaders.Authorization =
-      new AuthenticationHeaderValue("Bearer", UserResponse?.Authentication?.Token);
+      new AuthenticationHeaderValue("Bearer", UserResponse.Authentication?.Token);
   }
 
   /// <summary>
@@ -52,7 +51,7 @@ public class UserControllerTest : ControllerTestTemplate {
     Client.DefaultRequestHeaders.Authorization = null;
 
     // Get Http request
-    var content = HttpHelper.GetContent(new { email = UserResponse?.User?.Email, password = UserPassword });
+    var content = HttpHelper.GetContent(new { email = UserResponse.User?.Email, password = UserPassword });
     var httpResponse = await Client.PostAsync("/api/Auth/Login", content);
 
     // Read Http response
@@ -60,15 +59,14 @@ public class UserControllerTest : ControllerTestTemplate {
 
     // Check response data
     Assert.That(httpResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-    Assert.IsNotNull(response);
-    Assert.IsNotNull(response.Data);
-    Assert.IsNotNull(response.Data.User);
-    Assert.IsNotNull(response.Data.Authentication);
-    Assert.IsFalse(response.HasError);
+    Assert.That(response, Is.Not.Null);
+    Assert.That(response.Data?.User, Is.Not.Null);
+    Assert.That(response.Data?.Authentication?.Token, Is.Not.Null);
+    Assert.That(response.HasError, Is.False);
 
     // Restore authentication to header
     Client.DefaultRequestHeaders.Authorization =
-      new AuthenticationHeaderValue("Bearer", UserResponse?.Authentication?.Token);
+      new AuthenticationHeaderValue("Bearer", UserResponse.Authentication?.Token);
   }
 
   #endregion

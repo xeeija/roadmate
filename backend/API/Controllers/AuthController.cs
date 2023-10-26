@@ -1,12 +1,11 @@
-﻿using API.Controllers;
-using DAL.Entities;
+﻿using DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.Models.Request;
 using Services.Models.Response;
 
-namespace API;
+namespace API.Controllers;
 
 public class AuthController : BaseController<User, RegisterRequest> {
   private readonly ExpertRequestService expertRequestService;
@@ -76,7 +75,7 @@ public class AuthController : BaseController<User, RegisterRequest> {
 
     loginResult.ErrorMessages.AddRange(expertRequestErrors);
 
-    return Created(loginResult?.Data?.User?.ID.ToString() ?? "", loginResult);
+    return Created(loginResult.Data?.User?.ID.ToString() ?? "", loginResult);
   }
 
   #endregion

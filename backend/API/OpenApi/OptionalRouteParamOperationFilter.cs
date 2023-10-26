@@ -15,12 +15,12 @@ public class OptionalRouteParamOperationFilter : IOperationFilter {
       .GetCustomAttributes(true)
       .OfType<HttpMethodAttribute>();
 
-    var optionalAttribute = methodAttributes?.FirstOrDefault(m => m.Template?.Contains('?') ?? false);
+    var optionalAttribute = methodAttributes.FirstOrDefault(m => m.Template?.Contains('?') ?? false);
     if (optionalAttribute == null) {
       return;
     }
 
-    var matches = Regex.Matches(optionalAttribute?.Template ?? "", pattern);
+    var matches = Regex.Matches(optionalAttribute.Template ?? "", pattern);
 
     foreach (var match in matches.ToList()) {
       var name = match.Groups[captureName].Value;

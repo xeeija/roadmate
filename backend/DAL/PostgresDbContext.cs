@@ -20,7 +20,7 @@ public class PostgresDbContext : DbContext {
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
     var settings = SettingsReader.GetSettings<DBSettings>("Postgres");
     var port = settings?.Port ?? 5432;
-    var schema = settings?.Schema != null ? $"SearchPath={settings?.Schema};" : "";
+    var schema = settings?.Schema != null ? $"SearchPath={settings.Schema};" : "";
 
     // For debugging only
     var includeErrorDetail = (Environment.GetEnvironmentVariable("INCLUDE_ERROR_DETAIL") ?? "") == "1";

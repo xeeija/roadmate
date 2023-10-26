@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using DAL;
 using DAL.Entities;
-using DAL.Internal;
+using DAL.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Services.Models.Request;
@@ -23,9 +23,9 @@ public class UserService : BaseService<User> {
     var includes = new List<string>();
     var response = await base.Get(id, includes);
 
-    if (response == null) {
-      return new ItemResponseModel<User>();
-    }
+    // if (response == null) {
+    //   return new ItemResponseModel<User>();
+    // }
 
     return response;
   }
@@ -39,7 +39,6 @@ public class UserService : BaseService<User> {
   /// </summary>
   /// <param name="id">Id of the user</param>
   /// <param name="request">Update User request containing the properties to be updated</param>
-  /// <typeparam name="T">BasicUser or BusinessUser</typeparam>
   /// <returns>Updated User</returns>
   public async Task<ItemResponseModel<User>> UpdateUser(string id, UpdateUserRequest request) {
     var response = new ItemResponseModel<User>();

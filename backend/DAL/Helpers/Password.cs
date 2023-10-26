@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace DAL.Internal;
+namespace DAL.Helpers;
 
 public static class Password {
   #region Properties

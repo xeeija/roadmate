@@ -1,5 +1,6 @@
 ﻿using DAL;
 using DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Services.Models.Request;
 using Utils;
@@ -33,12 +34,9 @@ public class DefaultValues {
   public static void ClearDataDefaultTemplates(PostgresDbContext context) {
     log.Debug("test ids: " + RandomTestIdList.Count);
     foreach (var id in RandomTestIdList) {
-      // context.User.Where(user => user.Email == TestNames.BaseUser + id + TestNames.UserEmailDomain)
-      //     .ExecuteDelete();
-      // context.User.Where(user => user.Email == TestNames.BusinessUser + id + TestNames.UserEmailDomain)
-      //     .ExecuteDelete();
-      // context.User.Where(user => user.Email == TestNames.AdminUser + id + TestNames.UserEmailDomain)
-      //     .ExecuteDelete();
+      context.User.Where(user => user.Email == TestBaseUser + id + TestUserEmailDomain).ExecuteDelete();
+      context.User.Where(user => user.Email == TestExpertUser + id + TestUserEmailDomain).ExecuteDelete();
+      context.User.Where(user => user.Email == TestAdminUser + id + TestUserEmailDomain).ExecuteDelete();
       // context.Activity.Where(x => x.Title == TestNames.ActivityTitle + id).ExecuteDelete();
       // context.Category.Where(c => c.Title == TestNames.CategoryTitle + id).ExecuteDelete();
 
@@ -61,10 +59,10 @@ public class DefaultValues {
   // DangerMessage
 
 
-  /// <summary>
-  ///     Creates default Activity for testing
-  /// </summary>
-  /// <returns></returns>
+  // /// <summary>
+  // ///     Creates default Activity for testing
+  // /// </summary>
+  // /// <returns></returns>
   // public static Activity CreateActivity() {
   //   return new Activity {
   //     Title = TestNames.ActivityTitle + RandomTestId,

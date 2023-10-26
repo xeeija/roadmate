@@ -1,6 +1,6 @@
 ﻿using Services;
 using Services.Models.Request;
-using Route = DAL.Route;
+using Route = DAL.Entities.Route;
 
 namespace API.Controllers;
 

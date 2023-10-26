@@ -1,4 +1,4 @@
-﻿using DAL;
+﻿using DAL.Entities;
 using Services;
 using Services.Models.Request;
 

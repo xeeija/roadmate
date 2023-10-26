@@ -1,4 +1,4 @@
-﻿using DAL;
+﻿using DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.Models.Request;

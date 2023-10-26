@@ -1,6 +1,4 @@
-﻿using DAL.Entities;
-
-namespace DAL;
+﻿namespace DAL.Entities;
 
 public class DangerCategory : Entity {
   public string Name { get; set; }

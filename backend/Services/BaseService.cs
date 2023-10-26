@@ -22,7 +22,7 @@ public class BaseService<TEntity> where TEntity : Entity {
   }
 
   /// <value>Represents the current user.</value>
-  public User CurrentUser { get; private set; }
+  public User? CurrentUser { get; private set; }
 
   #region base methods
 
@@ -127,8 +127,7 @@ public class BaseService<TEntity> where TEntity : Entity {
     var response = new ItemResponseModel<TEntity>();
 
     // Check GUID
-    var guid = Guid.Empty;
-    var guidValid = Guid.TryParse(id, out guid);
+    var guidValid = Guid.TryParse(id, out var guid);
 
     if (!guidValid) {
       response.ErrorMessages.Add("Invalid UUID format");
@@ -136,7 +135,7 @@ public class BaseService<TEntity> where TEntity : Entity {
     }
 
     var existingModel = await Get(id);
-    if (existingModel?.Data != null && !await Authorize(existingModel.Data)) {
+    if (existingModel.Data != null && !await Authorize(existingModel.Data)) {
       existingModel.IsAuthorized = false;
       return existingModel;
     }
@@ -184,13 +183,13 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// <summary>
   ///   Gets an entry by the id.
   /// </summary>
-  /// <param name="id">Unique DB id.</param>
+  /// <param name="id">unique ID of the entity</param>
+  /// <param name="includes">Related entities to include</param>
   /// <returns>Returns the operating entity and error information.</returns>
   public virtual async Task<ItemResponseModel<TEntity>> Get(string id, List<string>? includes) {
     var response = new ItemResponseModel<TEntity>();
 
-    var guid = Guid.Empty;
-    var guidValid = Guid.TryParse(id, out guid);
+    var guidValid = Guid.TryParse(id, out var guid);
 
     if (!guidValid) {
       response.ErrorMessages.Add("Invalid UUID format");

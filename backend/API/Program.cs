@@ -43,7 +43,7 @@ builder.Services.AddEndpointsApiExplorer();
 // builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(options => {
   options.OperationFilter<SwaggerDefaultValues>();
-  options.IncludeXmlComments(Path.Combine(Constants.CurrentFolder, "API.xml"));
+  options.IncludeXmlComments(Path.Combine(Constants.CurrentFolder ?? "", "API.xml"));
 });
 
 // authentication

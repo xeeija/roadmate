@@ -1,6 +1,4 @@
-﻿using DAL.Entities;
-
-namespace DAL;
+﻿namespace DAL.Entities;
 
 public class Danger : Entity {
   public DangerType Type { get; set; }

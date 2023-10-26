@@ -45,14 +45,14 @@ public class ControllerTestTemplate : BaseUnitTests {
     Assert.That(register.HasError, Is.False);
 
     var loginResult = await userService.Login(new LoginRequest(user.Email, user.Password));
-    Assert.IsNotNull(loginResult);
-    Assert.IsFalse(loginResult.HasError);
+    Assert.That(loginResult, Is.Not.Null);
+    Assert.That(loginResult.HasError, Is.False);
 
     UserPassword = user.Password;
     UserResponse = loginResult.Data ?? throw new InvalidOperationException();
 
     Client.DefaultRequestHeaders.Authorization =
-      new AuthenticationHeaderValue("Bearer", UserResponse?.Authentication?.Token);
+      new AuthenticationHeaderValue("Bearer", UserResponse.Authentication?.Token);
   }
 
   /// <summary>
@@ -65,35 +65,28 @@ public class ControllerTestTemplate : BaseUnitTests {
     // Get Authentication of basic user
     var adminUser = CreateAdminUserRegisterRequest();
     var register = await userService.Register(adminUser);
-    register?.ErrorMessages.ForEach(e => log.Debug("register admin " + e));
+    register.ErrorMessages.ForEach(e => log.Debug("register admin " + e));
 
     Assert.That(register, Is.Not.Null);
-    Assert.Multiple(() => {
-      Assert.That(register?.HasError, Is.False);
-      Assert.That(register?.Data, Is.Not.Null);
-    });
-    if (register?.Data != null) {
+    Assert.That(register.HasError, Is.False);
+    Assert.That(register.Data, Is.Not.Null);
+    if (register.Data != null) {
       register.Data.Role = Role.Admin;
     }
 
-    Assert.That(register.Data, Is.Not.Null);
-
-    var updateUser = await userService.Update(register.Data);
-    Assert.That(updateUser, Is.Not.Null);
-    Assert.Multiple(() => {
-      Assert.That(updateUser.HasError, Is.False);
-      Assert.That(updateUser?.Data?.Role, Is.EqualTo(Role.Admin));
-    });
+    var updateUser = await userService.Update(register.Data!);
+    Assert.That(updateUser.HasError, Is.False);
+    Assert.That(updateUser.Data?.Role, Is.EqualTo(Role.Admin));
     var loginResult = await userService.Login(new LoginRequest(adminUser.Email, adminUser.Password));
     Assert.That(loginResult, Is.Not.Null);
     Assert.That(loginResult.HasError, Is.False);
 
     AdminPassword = adminUser.Password;
     AdminResponse = loginResult.Data ?? throw new InvalidOperationException();
-    log.Debug("Auth admin " + AdminResponse?.Authentication?.Token);
+    log.Debug("Auth admin " + AdminResponse.Authentication?.Token);
 
     ClientAdmin.DefaultRequestHeaders.Authorization =
-      new AuthenticationHeaderValue("Bearer", AdminResponse?.Authentication?.Token);
+      new AuthenticationHeaderValue("Bearer", AdminResponse.Authentication?.Token);
   }
 
   /// <summary>
