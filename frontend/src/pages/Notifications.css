@@ -6,29 +6,17 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     margin-top: 50px;
-
-    /* Added */
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    display: flex;
-    flex-direction: column;
   }
 
-.rounded-modal .scrollable {
-    overflow: hidden;   /* Hide any overflow content outside the card */
-    flex: 1;            /* Allow the card content to expand vertically */
-  }
-  
-.notifications-list {
-    overflow-y: auto;                   /* Allow vertical scrolling for the notifications list */
-    max-height: calc(100% - 70px);      /* Adjust the value as needed */
-  } 
-  
 .notifications-title {
     color: #222428;
     font-size: 18px;
-    margin-top: 20px;
-    margin-left: 30px;
+    margin-left: 4px;
   }
-  
+
+.notifications-list{
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color:white;
+}
