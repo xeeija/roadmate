@@ -1,0 +1,56 @@
+.customCard{
+  background-color: #F0F8F9;
+  border-radius: 35px 35px 0 0;
+  margin-top: 130px;
+  bottom: 10px;
+  height: 620px;
+}
+
+.customButton{
+  padding-bottom: 10px;
+  --background: var(--ion-color-tertiary);
+  align-items: center;
+  display: flex;
+  --border-radius: 6px;
+  --ion-button-text-transform: none;
+  letter-spacing: 0.8px;
+}
+
+.customIcon{
+  color: #92949C;
+  font-size: 42px;
+  padding-right: 10px;
+  padding-left: 0;
+}
+
+.customDescriptionIcon{
+  color: #92949C;
+  font-size: 42px;
+  padding-right: 10px;
+  padding-left: 0;
+  padding-bottom: 110px;
+}
+
+.customItem{
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+}
+
+.customToggle{
+  --handle-background-checked: white;
+  --track-background-checked: var(--ion-color-tertiary-tint);
+  width: 5px;
+  height: 3px;
+  position: absolute;
+  right: 40pt;
+}
+
+.customSelectOption{
+  background-color: white;
+}
+
+.customTextArea{
+  height: 170px;
+}

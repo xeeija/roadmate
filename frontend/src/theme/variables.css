@@ -87,7 +87,7 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-light-tint: #f2f9fa;
 
     /** background **/
-    --ion-background-color: #transparent;
+    --ion-background-color: #f0f8f9;
     --ion-background-color-rgb: 240, 248, 249;
 
     /** font color **/
