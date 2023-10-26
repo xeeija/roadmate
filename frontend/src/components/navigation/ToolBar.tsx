@@ -10,9 +10,9 @@ interface ToolbarProps {
 const ToolBar: React.FC<ToolbarProps> = ({ title }) => {
   return (
     <IonHeader>
-      <IonToolbar>
+      <IonToolbar className="customToolbar">
           <IonButtons slot="start" >
-           <IonBackButton defaultHref="/" icon={caretBack} text="RoadMate" > </IonBackButton>
+           <IonBackButton className="customBackButton" defaultHref="/" icon={caretBack} text={title}></IonBackButton>
           </IonButtons>
       </IonToolbar>
     </IonHeader>

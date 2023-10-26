@@ -1,10 +1,9 @@
-ion-toolbar{
+.customToolbar{
   --background: var(--ion-color-primary);
   --color: var(--ion-color-light);
-
 }
 
-ion-back-button{
+.customBackButton{
   padding: 9px;
   --icon-padding-end: 6px;
   color: var(--ion-color-light);
