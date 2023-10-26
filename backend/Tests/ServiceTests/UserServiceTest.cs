@@ -19,13 +19,13 @@ public class UserServiceTest : BaseUnitTests {
     var user = CreateUserRegisterRequest();
 
     var response = await userService.Register(user);
-    Assert.IsNotNull(response);
+    Assert.That(response, Is.Not.Null);
     Assert.IsFalse(response.HasError);
 
     var expertUser = CreateExpertUserRegisterRequest();
 
     var responseExpert = await userService.Register(expertUser);
-    Assert.IsNotNull(responseExpert);
+    Assert.That(responseExpert, Is.Not.Null);
     Assert.IsFalse(responseExpert.HasError);
 
     var responseError = await userService.Register(user);
@@ -51,31 +51,35 @@ public class UserServiceTest : BaseUnitTests {
 
     var response = await userService.Login(request);
 
-    Assert.IsNotNull(response);
-    Assert.IsNotNull(response.Data);
-    Assert.IsNotNull(response.Data.User);
-    Assert.IsNotNull(response.Data.Authentication);
-    Assert.IsFalse(response.HasError);
-
+    Assert.That(response, Is.Not.Null);
+    Assert.That(response.Data, Is.Not.Null);
+    Assert.That(response.Data.User, Is.Not.Null);
+    Assert.Multiple(() => {
+      Assert.That(response.Data.Authentication, Is.Not.Null);
+      Assert.That(response.HasError, Is.False);
+    });
     var requestError = new LoginRequest(user.Email, "falsePassword");
 
     var responseError = await userService.Login(requestError);
 
-    Assert.IsNotNull(responseError);
-    Assert.IsNull(responseError.Data.User);
-    Assert.IsNull(responseError.Data.Authentication);
-    Assert.IsTrue(responseError.HasError);
-    Assert.That(responseError.ErrorMessages?.Count > 0);
-
+    Assert.That(responseError, Is.Not.Null);
+    Assert.Multiple(() => {
+      Assert.That(responseError?.Data?.User, Is.Null);
+      Assert.That(responseError?.Data?.Authentication, Is.Null);
+      Assert.That(responseError.HasError, Is.True);
+      Assert.That(responseError.ErrorMessages?.Count, Is.GreaterThan(0));
+    });
     var requestErrorEmail = new LoginRequest("wrongmail@roadmate.com", "correctPassword");
 
     var responseErrorEmail = await userService.Login(requestErrorEmail);
 
-    Assert.IsNotNull(responseErrorEmail);
-    Assert.IsNull(responseErrorEmail?.Data?.User);
-    Assert.IsNull(responseErrorEmail?.Data?.Authentication);
-    Assert.IsTrue(responseErrorEmail?.HasError);
-    Assert.That(responseErrorEmail?.ErrorMessages?.Count > 0);
+    Assert.That(responseErrorEmail, Is.Not.Null);
+    Assert.That(responseErrorEmail?.Data?.User, Is.Null);
+    Assert.That(responseErrorEmail?.Data?.Authentication, Is.Null);
+    Assert.Multiple(() => {
+      Assert.That(responseErrorEmail?.HasError, Is.True);
+      Assert.That(responseErrorEmail?.ErrorMessages?.Count, Is.GreaterThan(0));
+    });
   }
 
   #endregion

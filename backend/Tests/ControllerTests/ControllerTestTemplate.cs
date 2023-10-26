@@ -25,7 +25,7 @@ public class ControllerTestTemplate : BaseUnitTests {
   ///   Initialize the Http client
   /// </summary>
   [OneTimeSetUp]
-  public async Task SetupTestServer() {
+  public void SetupTestServer() {
     Application = new WebApplicationFactory<Program>();
     Client = Application.CreateClient();
     ClientAdmin = Application.CreateClient();
@@ -52,7 +52,7 @@ public class ControllerTestTemplate : BaseUnitTests {
     UserResponse = loginResult.Data ?? throw new InvalidOperationException();
 
     Client.DefaultRequestHeaders.Authorization =
-      new AuthenticationHeaderValue("Bearer", UserResponse.Authentication.Token);
+      new AuthenticationHeaderValue("Bearer", UserResponse?.Authentication?.Token);
   }
 
   /// <summary>
@@ -76,6 +76,8 @@ public class ControllerTestTemplate : BaseUnitTests {
       register.Data.Role = Role.Admin;
     }
 
+    Assert.That(register.Data, Is.Not.Null);
+
     var updateUser = await userService.Update(register.Data);
     Assert.That(updateUser, Is.Not.Null);
     Assert.Multiple(() => {
@@ -88,10 +90,10 @@ public class ControllerTestTemplate : BaseUnitTests {
 
     AdminPassword = adminUser.Password;
     AdminResponse = loginResult.Data ?? throw new InvalidOperationException();
-    log.Debug("Auth admin " + AdminResponse.Authentication.Token);
+    log.Debug("Auth admin " + AdminResponse?.Authentication?.Token);
 
     ClientAdmin.DefaultRequestHeaders.Authorization =
-      new AuthenticationHeaderValue("Bearer", AdminResponse.Authentication.Token);
+      new AuthenticationHeaderValue("Bearer", AdminResponse?.Authentication?.Token);
   }
 
   /// <summary>

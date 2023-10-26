@@ -8,7 +8,7 @@ public class BaseUnitTests : DefaultValues {
   protected PostgresDbContext Context;
 
   [OneTimeSetUp]
-  public async Task Initialization() {
+  public void Initialization() {
     Logger.InitLogger();
     Context = new PostgresDbContext();
     GenerateNewTestId();
@@ -16,7 +16,7 @@ public class BaseUnitTests : DefaultValues {
 
 
   [OneTimeTearDown]
-  public async Task ClearDatabase() {
+  public void ClearDatabase() {
     ClearDataDefaultTemplates(Context);
   }
 }

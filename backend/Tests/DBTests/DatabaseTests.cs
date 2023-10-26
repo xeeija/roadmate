@@ -6,7 +6,7 @@ namespace Tests.DBTests;
 public class CreateDatabase : BaseDBTests {
   // Used as script to create the database (and apply migrations)
   [Test]
-  public async Task ApplyPendingMigrations() {
+  public void ApplyPendingMigrations() {
     // Uncomment the lines below and the EntityFrameworkCore using, and then execute this test
 
     // Log.Logger.Debug(Context.Database.GetDbConnection().ConnectionString.Split("Password")[0]);

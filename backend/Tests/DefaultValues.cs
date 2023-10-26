@@ -1,4 +1,4 @@
-using DAL;
+﻿using DAL;
 using DAL.Entities;
 using Serilog;
 using Services.Models.Request;
@@ -17,14 +17,12 @@ public class DefaultValues {
   protected static int RandomTestId;
   protected static List<int> RandomTestIdList = new();
 
-  public static class TestNames {
-    public const string BaseUser = "testuser";
-    public const string AdminUser = "testadmin";
-    public const string ExpertUser = "testexpert";
-    public const string UserEmailDomain = "@roadmate.com";
-    public const string DangerTitle = "Test Danger";
-    public const string DangerCategoryTitle = "Test Category";
-  }
+  public static string TestBaseUser = "testuser";
+  public static string TestAdminUser = "testadmin";
+  public static string TestExpertUser = "testexpert";
+  public static string TestUserEmailDomain = "@roadmate.com";
+  public static string TestDangerTitle = "Test Danger";
+  public static string TestDangerCategoryTitle = "Test Category";
 
   public static int GenerateNewTestId() {
     RandomTestId = new Random().Next(999);
@@ -33,7 +31,7 @@ public class DefaultValues {
   }
 
   public static void ClearDataDefaultTemplates(PostgresDbContext context) {
-    log.Debug("test ids: " + RandomTestIdList.Count.ToString());
+    log.Debug("test ids: " + RandomTestIdList.Count);
     foreach (var id in RandomTestIdList) {
       // context.User.Where(user => user.Email == TestNames.BaseUser + id + TestNames.UserEmailDomain)
       //     .ExecuteDelete();
@@ -80,7 +78,7 @@ public class DefaultValues {
   /// <returns></returns>
   public static DangerCategory CreateDangerCategory() {
     return new DangerCategory {
-      Name = TestNames.DangerCategoryTitle + RandomTestId,
+      Name = TestDangerCategoryTitle + RandomTestId
     };
   }
 
@@ -95,7 +93,7 @@ public class DefaultValues {
   public static User CreateUser() {
     return new User {
       Username = "Testuser 1",
-      Email = TestNames.BaseUser + RandomTestId + TestNames.UserEmailDomain,
+      Email = TestBaseUser + RandomTestId + TestUserEmailDomain,
       Role = Role.User,
       Password = "correctPassword"
     };
@@ -106,7 +104,7 @@ public class DefaultValues {
   /// </summary>
   /// <returns></returns>
   public static RegisterRequest CreateUserRegisterRequest() {
-    var email = TestNames.BaseUser + RandomTestId + TestNames.UserEmailDomain;
+    var email = TestBaseUser + RandomTestId + TestUserEmailDomain;
     var password = "correctPassword";
     var name = "Testuser 1";
 
@@ -125,7 +123,7 @@ public class DefaultValues {
   /// </summary>
   /// <returns></returns>
   public static RegisterRequest CreateAdminUserRegisterRequest() {
-    var email = TestNames.AdminUser + RandomTestId + TestNames.UserEmailDomain;
+    var email = TestAdminUser + RandomTestId + TestUserEmailDomain;
     var password = "correctPassword";
     var name = "Testuser 2";
 
@@ -143,7 +141,7 @@ public class DefaultValues {
   /// </summary>
   /// <returns></returns>
   public static RegisterRequest CreateExpertUserRegisterRequest() {
-    var email = TestNames.ExpertUser + RandomTestId + TestNames.UserEmailDomain;
+    var email = TestExpertUser + RandomTestId + TestUserEmailDomain;
     var password = "correctPassword";
     var name = "Testuser 3";
     var description = "I wanna be the very best, like no one ever was";

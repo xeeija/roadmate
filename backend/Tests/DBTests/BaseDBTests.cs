@@ -2,6 +2,6 @@ namespace Tests.DBTests;
 
 public class BaseDBTests : BaseUnitTests {
   [OneTimeSetUp]
-  public async Task DbSetup() {
+  public void DbSetup() {
   }
 }
