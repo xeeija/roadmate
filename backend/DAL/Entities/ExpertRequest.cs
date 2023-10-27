@@ -1,6 +1,4 @@
-﻿using DAL.Entities;
-
-namespace DAL;
+﻿namespace DAL.Entities;
 
 public class ExpertRequest : Entity {
   public Guid UserId { get; set; }

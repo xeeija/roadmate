@@ -5,7 +5,7 @@ namespace Utils;
 public static class SettingsReader {
   public static T? GetSettings<T>(string section) where T : class {
     var builder = new ConfigurationBuilder()
-      .SetBasePath(Constants.CurrentFolder)
+      .SetBasePath(Constants.CurrentFolder ?? "")
       .AddJsonFile("appsettings.json");
 
     // If we are in development, we want to use the local db,

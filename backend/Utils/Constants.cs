@@ -3,14 +3,16 @@
 namespace Utils;
 
 public class Constants {
-  public static string CurrentFolder {
+#pragma warning disable SYSLIB0012
+  public static string? CurrentFolder {
     get {
-      var codeBase = Assembly.GetExecutingAssembly().Location; //.CodeBase;
-      var uri = new UriBuilder(codeBase);
+      var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+      var uri = new UriBuilder(codeBase ?? "");
       var path = Uri.UnescapeDataString(uri.Path);
       return Path.GetDirectoryName(path);
     }
   }
+#pragma warning restore SYSLIB0012
 
   public static bool IsDevelopment =>
     Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";

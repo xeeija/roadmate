@@ -1,6 +1,4 @@
-﻿using DAL.Entities;
-
-namespace DAL;
+﻿namespace DAL.Entities;
 
 public class DangerRequest : Entity {
   public RequestType Type { get; set; }

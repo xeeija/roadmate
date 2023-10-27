@@ -11,7 +11,7 @@ public static class Logger {
   public static ILogger ILogger { get; private set; }
 
   public static ILogger ContextLog<T>() where T : class {
-    if (ILogger == null) {
+    if (!IsInitialized) {
       InitLogger();
     }
 
@@ -26,7 +26,7 @@ public static class Logger {
       SelfLog.Enable(Console.WriteLine);
 
       var configuration = new ConfigurationBuilder()
-        .SetBasePath(folder)
+        .SetBasePath(folder ?? "")
         // .AddJsonFile("loggerconfig.json")
         // If differentiation between dev and prod is needed, uncomment and add loggerconfig.Development.json
         // .AddJsonFile("loggerconfig.Development.json")

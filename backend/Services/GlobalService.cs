@@ -4,11 +4,11 @@ using DAL.Entities;
 namespace Services;
 
 public class GlobalService {
-  private readonly PostgresDbContext context;
+  private readonly PostgresDbContext dbContext;
 
   public GlobalService() {
     var context = new PostgresDbContext();
-    this.context = context;
+    dbContext = context;
 
     DangerService = new DangerService(context);
     DangerCategoryService = new DangerCategoryService(context);
@@ -30,6 +30,6 @@ public class GlobalService {
   public UserService UserService { get; set; }
 
   public BaseService<T> GetService<T>() where T : Entity {
-    return new BaseService<T>(context);
+    return new BaseService<T>(dbContext);
   }
 }

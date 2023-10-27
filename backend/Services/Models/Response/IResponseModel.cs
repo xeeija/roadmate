@@ -1,4 +1,4 @@
-﻿namespace Services;
+﻿namespace Services.Models.Response;
 
 public interface IResponseModel {
   public bool HasError { get; }

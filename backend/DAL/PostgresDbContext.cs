@@ -20,7 +20,7 @@ public class PostgresDbContext : DbContext {
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
     var settings = SettingsReader.GetSettings<DBSettings>("Postgres");
     var port = settings?.Port ?? 5432;
-    var schema = settings?.Schema != null ? $"SearchPath={settings?.Schema};" : "";
+    var schema = settings?.Schema != null ? $"SearchPath={settings.Schema};" : "";
 
     // For debugging only
     var includeErrorDetail = (Environment.GetEnvironmentVariable("INCLUDE_ERROR_DETAIL") ?? "") == "1";
@@ -33,7 +33,9 @@ public class PostgresDbContext : DbContext {
       var database = Environment.GetEnvironmentVariable("POSTGRES_DATABASE");
       var username = Environment.GetEnvironmentVariable("POSTGRES_USER");
       var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
-      var prodSchema = Environment.GetEnvironmentVariable("POSTGRES_SCHEMA") ?? schema;
+      var prodSchemaEnv = Environment.GetEnvironmentVariable("POSTGRES_SCHEMA");
+      var prodSchema = prodSchemaEnv != null ? $"SearchPath={prodSchemaEnv};" : schema;
+
       connectionString =
         $"Host={host}:{prodPort};Database={database};Username={username};Password={password};{prodSchema}{(includeErrorDetail ? ";Include Error Detail=true" : "")}";
     }
