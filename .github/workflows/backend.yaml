@@ -1,4 +1,4 @@
-name: test
+name: backend
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET Core ${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v3
