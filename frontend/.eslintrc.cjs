@@ -3,17 +3,18 @@ module.exports = {
   env: {
     node: true,
     browser: true,
-
   },
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
+    // "plugin:prettier/recommended",
   ],
   plugins: [
     "react",
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "prettier"
   ],
   parserOptions: {
     ecmaVersion: 2020,
@@ -30,10 +31,9 @@ module.exports = {
     "react/prop-types": "off",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
-    "quotes": ["warn", "double", { "allowTemplateLiterals": true }],
+    quotes: ["warn", "double", { allowTemplateLiterals: true }],
     "jsx-quotes": ["warn", "prefer-double"],
+    // "prettier/prettier": "warn",
   },
-  ignorePatterns: [
-    "src/services/*",
-  ],
-}
+  ignorePatterns: ["src/services/*"],
+};
