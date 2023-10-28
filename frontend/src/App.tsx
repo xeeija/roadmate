@@ -59,9 +59,24 @@ const App: React.FC = () => (
           <Route exact path="/notifications">
             <Notifications />
           </Route>
+      <IonTabs>
+        <IonRouterOutlet>
+        <Route exact path="/login">
+        <Login />
+      </Route>
+      <Route exact path="/register">
+        <Register />
+      </Route>
+      <Route exact path="/reset-password">
+        <PasswordReset />
+      </Route>
+      <Route exact path="/gefahrenstellen">
+        <Gefahrenstellen />
+      </Route>
 
-          <Route exact path="/homescreen">
-            <Homescreen />
+
+          <Route exact path="/tab1">
+            <Tab1 />
           </Route>
           <Route exact path="/tab2">
             <Tab2 />
@@ -87,6 +102,7 @@ const App: React.FC = () => (
         </IonTabBar>
       </IonTabs>
     </IonReactRouter>
+
   </IonApp>
 );
 

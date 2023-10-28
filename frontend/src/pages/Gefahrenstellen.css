@@ -8,17 +8,39 @@
     margin-top: 50px;
   }
 
-  .colors {
+  .fontColors {
     color: #156064;
+    margin-top: 8px
+   
+  }
+
+  .questionBackground {
+    background-color: white;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 8px;
+  }
+
+  .backgroundCard {
+    background-color: white;
+    border-radius: 13px;
   }
 
   .icons {
     color: #156064;
     display: flex;
     align-items: center;
+    margin-right: 10px;
+   
   }
 
-  .date {
+  .date-icons {
     display: flex;
     align-items: center;
+    margin-top: 8px
+}
+
+  .date{
+    margin-right: 10px;
+    margin-top: 3px;
 }
