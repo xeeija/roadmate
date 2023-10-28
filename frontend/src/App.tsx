@@ -2,7 +2,7 @@ import { IonApp, IonIcon, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, set
 import { IonReactRouter } from "@ionic/react-router";
 import { home, map, personCircle } from "ionicons/icons";
 import { Redirect, Route } from "react-router-dom";
-import Tab1 from "./pages/Tab1";
+import Homescreen from "./pages/Homescreen";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import Login from "./pages/Login";
@@ -37,22 +37,21 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-        <Route exact path="/login">
-        <Login />
-      </Route>
-      <Route exact path="/register">
-        <Register />
-      </Route>
-      <Route exact path="/reset-password">
-        <PasswordReset />
-      </Route>
-      <Route exact path="/createDanger">
-        <CreateDanger />
-      </Route>
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/register">
+            <Register />
+          </Route>
+          <Route exact path="/reset-password">
+            <PasswordReset />
+          </Route>
+          <Route exact path="/createDanger">
+            <CreateDanger />
+          </Route>
 
-
-          <Route exact path="/tab1">
-            <Tab1 />
+          <Route exact path="/homescreen">
+            <Homescreen />
           </Route>
           <Route exact path="/tab2">
             <Tab2 />
@@ -61,14 +60,14 @@ const App: React.FC = () => (
             <Tab3 />
           </Route>
           <Route exact path="/">
-            <Redirect to="/tab1" />
+            <Redirect to="/homescreen" />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
+          <IonTabButton tab="tab1" href="/homescreen">
             <IonIcon className="menu-icon" aria-hidden="true" icon={home} />
           </IonTabButton>
-          <IonTabButton  tab="tab2" href="/tab2">
+          <IonTabButton tab="tab2" href="/tab2">
             <IonIcon className="menu-icon" aria-hidden="true" icon={map} />
           </IonTabButton>
           <IonTabButton tab="tab3" href="/tab3">
