@@ -1,5 +1,5 @@
 import { IonContent, IonHeader, IonPage } from "@ionic/react";
-import "./Tab1.css";
+import "./Homescreen.css";
 import ToolBar from "../components/navigation/ToolBar";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
@@ -27,7 +27,7 @@ const iconPermanent = L.icon({
   iconSize: [31, 38],
 });
 
-const Tab1: React.FC = () => {
+const Homescreen: React.FC = () => {
   const [renderMap, setRenderMap] = useState(false);
 
   useEffect(() => {
@@ -67,4 +67,4 @@ const Tab1: React.FC = () => {
   );
 };
 
-export default Tab1;
+export default Homescreen;
