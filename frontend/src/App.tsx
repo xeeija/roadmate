@@ -38,7 +38,8 @@ const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonTabs>
-        <IonRouterOutlet>
+        {/* animated={false} --> fixes sliding animation bug */}
+        <IonRouterOutlet animated={false}>
           <Route exact path="/login">
             <Login />
           </Route>
@@ -76,7 +77,7 @@ const App: React.FC = () => (
           <IonTabButton tab="tab1" href="/tab1">
             <IonIcon className="menu-icon" aria-hidden="true" icon={home} />
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
+          <IonTabButton tab="tab2" href="/saved-routes">
             <IonIcon className="menu-icon" aria-hidden="true" icon={map} />
           </IonTabButton>
           <IonTabButton tab="tab3" href="/tab3">

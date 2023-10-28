@@ -34,12 +34,6 @@ const ResetPassword: React.FC = () => {
                 <b>Passwort zurücksetzen</b>
               </IonText>
             </IonItem>
-            <IonItem color="white" lines="none">
-              <IonText>
-                Geben Sie die mit Ihrem Konto verknüpfte E-Mail-Adresse ein und wir senden Ihnen umgehend einen Link zum
-                Zurücksetzen Ihres Passworts zu:
-              </IonText>
-            </IonItem>
 
             <IonItem color="white" lines="none">
               <IonInput

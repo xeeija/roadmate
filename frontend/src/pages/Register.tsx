@@ -119,9 +119,9 @@ const Register: React.FC = () => {
                 <IonInput
                   className="expert-description"
                   type="text"
-                  label="Beschreibung"
+                  label="Warum bist du ein Experte?"
                   labelPlacement="floating"
-                  placeholder="Describe yourself"
+                  placeholder="Describe your expertise"
                   name="description"
                   value={description}
                   onIonChange={(e) => setDescription(e.detail.value!)}
