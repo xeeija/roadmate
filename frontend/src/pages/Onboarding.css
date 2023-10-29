@@ -8,16 +8,17 @@
     --color: #4D4C4C;
 }
 
+/*
 .background{
     background-image: url("../theme/App_Hintergrund.svg");
     background-size: cover;
     background-repeat: no-repeat; 
     height: 100vh;
-}
+} */
 
 .onboarding-menu{
     background-color: #F0F8F9;
-    width: 70%;
+    width: 80%;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 16px;
 }
 
