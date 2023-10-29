@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test.unit": "vitest",
     "lint": "eslint",
-    "format": "prettier"
+    "format": "prettier --write",
+    "format:check": "prettier --check"
   },
   "dependencies": {
     "@capacitor/app": "5.0.6",

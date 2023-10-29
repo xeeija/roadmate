@@ -1,5 +1,6 @@
 {
   "dotnet.defaultSolution": "backend/roadmate.sln",
+  "editor.formatOnSave": true,
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
