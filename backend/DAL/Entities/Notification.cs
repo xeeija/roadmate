@@ -1,6 +1,4 @@
-﻿using DAL.Entities;
-
-namespace DAL;
+﻿namespace DAL.Entities;
 
 public class Notification : Entity {
   public string Description { get; set; }

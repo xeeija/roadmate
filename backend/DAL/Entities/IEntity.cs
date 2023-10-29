@@ -3,12 +3,13 @@
 /// <summary>
 ///   Base interface for all other classes which represent an entity
 /// </summary>
-/// <param name="ID">Unique Identifier</param>
-/// <param name="CreatedAt">Shows when it was created</param>
-/// <param name="UpdatedAt">Shows when it was last updated</param>
 public interface IEntity {
-  // string ID { get; set; }
+  /// <summary>Unique Identifier</summary>
   Guid ID { get; set; }
+
+  /// <summary>Timestamp of creation</summary>
   DateTime CreatedAt { get; set; }
+
+  /// <summary>Timestamp of last update</summary>
   DateTime? UpdatedAt { get; set; }
 }

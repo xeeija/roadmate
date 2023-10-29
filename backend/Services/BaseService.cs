@@ -2,6 +2,7 @@
 using DAL;
 using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Serilog;
 using Services.Models.Response;
 using Utils;
@@ -22,7 +23,7 @@ public class BaseService<TEntity> where TEntity : Entity {
   }
 
   /// <value>Represents the current user.</value>
-  public User CurrentUser { get; private set; }
+  public User? CurrentUser { get; private set; }
 
   #region base methods
 
@@ -42,18 +43,36 @@ public class BaseService<TEntity> where TEntity : Entity {
     }
 
     // DB operation
-    var dbResponse = await Context.Set<TEntity>().AddAsync(entity);
-    await Context.SaveChangesAsync();
+    try {
+      var dbResponse = await Context.Set<TEntity>().AddAsync(entity);
+      await Context.SaveChangesAsync();
 
-    // DB operation check
-    if (dbResponse.State != EntityState.Unchanged) {
-      response.ErrorMessages.Add("Wrong database response state. (State: " + dbResponse.State + ")");
+      // DB operation check
+      if (dbResponse.State != EntityState.Unchanged) {
+        response.ErrorMessages.Add("Wrong database response state. (State: " + dbResponse.State + ")");
+        return response;
+      }
+
+      // Success response
+      response.Data = dbResponse.Entity;
       return response;
     }
+    catch (Exception ex) {
+      if (ex.InnerException is PostgresException dbex) {
+        // if (dbex.SqlState == "23503") {
+        //   var column = dbex.ConstraintName?.Split("_").Last();
+        //   response.ErrorMessages.Add($"{column} is invalid (Code {dbex.SqlState})");
+        // }
+        // else {
+        response.ErrorMessages.Add($"{dbex.MessageText} (Code {dbex.SqlState})");
+        // }
 
-    // Success response
-    response.Data = dbResponse.Entity;
-    return response;
+        return response;
+      }
+
+      throw;
+    }
+
   }
 
   /// <summary>
@@ -75,18 +94,28 @@ public class BaseService<TEntity> where TEntity : Entity {
     entity.UpdatedAt = DateTime.UtcNow;
 
     // DB operation
-    var dbResponse = Context.Set<TEntity>().Update(entity);
-    await Context.SaveChangesAsync();
+    try {
+      var dbResponse = Context.Set<TEntity>().Update(entity);
+      await Context.SaveChangesAsync();
 
-    // DB operation check
-    if (dbResponse.State != EntityState.Unchanged) {
-      response.ErrorMessages.Add("Wrong database response state. (State: " + dbResponse.State + ")");
+      // DB operation check
+      if (dbResponse.State != EntityState.Unchanged) {
+        response.ErrorMessages.Add("Wrong database response state. (State: " + dbResponse.State + ")");
+        return response;
+      }
+
+      // Success response
+      response.Data = dbResponse.Entity;
       return response;
     }
+    catch (Exception ex) {
+      if (ex.InnerException is PostgresException dbex) {
+        response.ErrorMessages.Add($"{dbex.MessageText} (Code {dbex.SqlState})");
+        return response;
+      }
 
-    // Success response
-    response.Data = dbResponse.Entity;
-    return await Task.FromResult(response);
+      throw;
+    }
   }
 
   /// <summary>
@@ -104,18 +133,28 @@ public class BaseService<TEntity> where TEntity : Entity {
     }
 
     // DB operation
-    var dbResponse = Context.Set<TEntity>().Remove(entity);
-    await Context.SaveChangesAsync();
+    try {
+      var dbResponse = Context.Set<TEntity>().Remove(entity);
+      await Context.SaveChangesAsync();
 
-    // DB operation check
-    if (dbResponse.State != EntityState.Detached) {
-      response.ErrorMessages.Add("Wrong database response state. (State: " + dbResponse.State + ")");
+      // DB operation check
+      if (dbResponse.State != EntityState.Detached) {
+        response.ErrorMessages.Add("Wrong database response state. (State: " + dbResponse.State + ")");
+        return response;
+      }
+
+      // Success response
+      response.Data = dbResponse.Entity;
       return response;
     }
+    catch (Exception ex) {
+      if (ex.InnerException is PostgresException dbex) {
+        response.ErrorMessages.Add($"{dbex.MessageText} (Code {dbex.SqlState})");
+        return response;
+      }
 
-    // Success response
-    response.Data = dbResponse.Entity;
-    return await Task.FromResult(response);
+      throw;
+    }
   }
 
   /// <summary>
@@ -127,8 +166,7 @@ public class BaseService<TEntity> where TEntity : Entity {
     var response = new ItemResponseModel<TEntity>();
 
     // Check GUID
-    var guid = Guid.Empty;
-    var guidValid = Guid.TryParse(id, out guid);
+    var guidValid = Guid.TryParse(id, out var guid);
 
     if (!guidValid) {
       response.ErrorMessages.Add("Invalid UUID format");
@@ -136,7 +174,7 @@ public class BaseService<TEntity> where TEntity : Entity {
     }
 
     var existingModel = await Get(id);
-    if (existingModel?.Data != null && !await Authorize(existingModel.Data)) {
+    if (existingModel.Data != null && !await Authorize(existingModel.Data)) {
       existingModel.IsAuthorized = false;
       return existingModel;
     }
@@ -184,13 +222,13 @@ public class BaseService<TEntity> where TEntity : Entity {
   /// <summary>
   ///   Gets an entry by the id.
   /// </summary>
-  /// <param name="id">Unique DB id.</param>
+  /// <param name="id">unique ID of the entity</param>
+  /// <param name="includes">Related entities to include</param>
   /// <returns>Returns the operating entity and error information.</returns>
   public virtual async Task<ItemResponseModel<TEntity>> Get(string id, List<string>? includes) {
     var response = new ItemResponseModel<TEntity>();
 
-    var guid = Guid.Empty;
-    var guidValid = Guid.TryParse(id, out guid);
+    var guidValid = Guid.TryParse(id, out var guid);
 
     if (!guidValid) {
       response.ErrorMessages.Add("Invalid UUID format");

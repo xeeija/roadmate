@@ -1,4 +1,5 @@
 ﻿using DAL;
+using DAL.Entities;
 
 namespace Services;
 

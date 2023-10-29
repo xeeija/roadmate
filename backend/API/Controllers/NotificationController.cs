@@ -1,9 +1,8 @@
-﻿using API.Controllers;
-using DAL;
+﻿using DAL.Entities;
 using Services;
 using Services.Models.Request;
 
-namespace API;
+namespace API.Controllers;
 
 public class NotificationController : BaseController<Notification, NotificationRequest> {
   public NotificationController(GlobalService service, IHttpContextAccessor accessor) :

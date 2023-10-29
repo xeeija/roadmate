@@ -39,20 +39,20 @@ public abstract class BaseController<TEntity, TRequest> : ControllerBase
   public BaseController(BaseService<TEntity> service, IHttpContextAccessor accessor) {
     Service = service;
 
-    if (accessor == null) {
-      Log.Debug("Accessor is null");
-      return;
-    }
+    // if (accessor == null) {
+    //   Log.Debug("Accessor is null");
+    //   return;
+    // }
 
     if (accessor.HttpContext == null) {
       Log.Debug("HttpContext is null");
       return;
     }
 
-    if (accessor.HttpContext.User == null) {
-      Log.Debug("HttpContext.User is null");
-      return;
-    }
+    // if (accessor.HttpContext.User == null) {
+    //   Log.Debug("HttpContext.User is null");
+    //   return;
+    // }
 
     ClaimsPrincipal = accessor.HttpContext.User;
 
@@ -77,7 +77,7 @@ public abstract class BaseController<TEntity, TRequest> : ControllerBase
     }
   }
 
-  public User CurrentUser { get; private set; }
+  public User? CurrentUser { get; private set; }
 
   /// <summary>
   ///   Gets the entity with the specified ID.
