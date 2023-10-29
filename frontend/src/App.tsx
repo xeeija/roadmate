@@ -59,24 +59,12 @@ const App: React.FC = () => (
           <Route exact path="/notifications">
             <Notifications />
           </Route>
-      <IonTabs>
-        <IonRouterOutlet>
-        <Route exact path="/login">
-        <Login />
-      </Route>
-      <Route exact path="/register">
-        <Register />
-      </Route>
-      <Route exact path="/reset-password">
-        <PasswordReset />
-      </Route>
-      <Route exact path="/dangerzones">
+          <Route exact path="/dangerzones">
         <Gefahrenstellen />
       </Route>
 
-
-          <Route exact path="/tab1">
-            <Tab1 />
+          <Route exact path="/homescreen">
+            <Homescreen />
           </Route>
           <Route exact path="/tab2">
             <Tab2 />
