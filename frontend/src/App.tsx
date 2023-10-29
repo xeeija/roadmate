@@ -31,7 +31,7 @@ import "@ionic/react/css/text-transformation.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/global.css";
-import Gefahrenstellen from "./pages/Gefahrenstellen";
+import Gefahrenstellen from "./pages/DangerZones";
 
 setupIonicReact();
 
@@ -70,7 +70,7 @@ const App: React.FC = () => (
       <Route exact path="/reset-password">
         <PasswordReset />
       </Route>
-      <Route exact path="/gefahrenstellen">
+      <Route exact path="/dangerzones">
         <Gefahrenstellen />
       </Route>
 

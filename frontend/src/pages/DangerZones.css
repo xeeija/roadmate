@@ -17,13 +17,16 @@
   .questionBackground {
     background-color: white;
     border-radius: 10px;
+    
     margin-top: 10px;
     margin-bottom: 8px;
   }
 
   .backgroundCard {
     background-color: white;
-    border-radius: 13px;
+    border-radius: 8px;
+  
+    margin-top: 10px;
   }
 
   .icons {
@@ -44,3 +47,10 @@
     margin-right: 10px;
     margin-top: 3px;
 }
+
+  .answer{
+    color: #156064;
+    justify-content: flex-start;
+    text-align: left;
+    margin-right: 60%;
+  }
