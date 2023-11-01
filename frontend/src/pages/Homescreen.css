@@ -1,12 +1,12 @@
 #map {
-    height: 100%;
+  height: 100%;
 }
-.createDangerIcon{
+.createDangerIcon {
   font-size: 36px;
   color: white;
 }
 
-.createDangerButton{
+.createDangerButton {
   position: absolute;
   bottom: 60px;
   right: 10px;

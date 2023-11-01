@@ -1,18 +1,22 @@
-import React from "react";
-import { IonAlert, IonButton, IonCard, IonCardContent, IonIcon } from "@ionic/react";
-import { ellipsisHorizontal } from "ionicons/icons";
+import React from "react"
+import { IonAlert, IonButton, IonCard, IonCardContent, IonIcon } from "@ionic/react"
+import { ellipsisHorizontal } from "ionicons/icons"
 
-import "./SavedRoute.css";
+import "./SavedRoute.css"
 
 interface RouteProps {
-  name: string;
-  id: number;
+  name: string
+  id: number
 }
 
 const SavedRoute: React.FC<RouteProps> = ({ name, id }) => {
   return (
     <IonCard className="" color="light">
-      <img alt="Picture" className="route-picture" src="https://ionicframework.com/docs/img/demos/card-media.png" />
+      <img
+        alt="Picture"
+        className="route-picture"
+        src="https://ionicframework.com/docs/img/demos/card-media.png"
+      />
 
       <IonCardContent className="content-container">
         <div className="route-title">{name}</div>
@@ -26,13 +30,13 @@ const SavedRoute: React.FC<RouteProps> = ({ name, id }) => {
                 {
                   text: "Route bearbeiten",
                   handler: () => {
-                    console.log("Route " + id + " bearbeiten");
+                    console.log("Route " + id + " bearbeiten")
                   },
                 },
                 {
                   text: "Route löschen",
                   handler: () => {
-                    console.log("Route " + id + " löschen");
+                    console.log("Route " + id + " löschen")
                   },
                 },
               ]}
@@ -42,7 +46,7 @@ const SavedRoute: React.FC<RouteProps> = ({ name, id }) => {
         </div>
       </IonCardContent>
     </IonCard>
-  );
-};
+  )
+}
 
-export default SavedRoute;
+export default SavedRoute

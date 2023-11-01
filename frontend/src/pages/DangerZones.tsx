@@ -14,24 +14,24 @@ import {
   IonImg,
   IonLabel,
   IonButton,
-} from "@ionic/react";
-import "./DangerZones.css";
-import Comment from "../components/Comment";
-import ToolBar from "../components/navigation/ToolBar";
-import { arrowRedo, caretDown, caretUp, informationCircle, link } from "ionicons/icons";
-import { useEffect, useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+} from "@ionic/react"
+import "./DangerZones.css"
+import Comment from "../components/Comment"
+import ToolBar from "../components/navigation/ToolBar"
+import { arrowRedo, caretDown, caretUp, informationCircle, link } from "ionicons/icons"
+import { useEffect, useState } from "react"
+import { MapContainer, TileLayer } from "react-leaflet"
 
 const DangerZones: React.FC = () => {
-  const [inputValue, setInputValue] = useState<string>("");
-  const [showMore, setShowMore] = useState(false);
-  const [answerValue, setAnswerValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>("")
+  const [showMore, setShowMore] = useState(false)
+  const [answerValue, setAnswerValue] = useState<string>("")
 
-  const [renderMap, setRenderMap] = useState(false);
+  const [renderMap, setRenderMap] = useState(false)
 
   useEffect(() => {
-    setRenderMap(true);
-  });
+    setRenderMap(true)
+  })
 
   const commentData = [
     {
@@ -50,22 +50,22 @@ const DangerZones: React.FC = () => {
         "Hallo, wie ist das eigenltich wenn ich von der Reitschulgasse komme, wo die Bimschienen sind, an welcher Ampel muss ich mich da orientieren und wie darf ich fahren?",
     },
     // weitere Einträge....
-  ];
+  ]
 
   const toggleShowMore = () => {
-    setShowMore(!showMore);
-  };
+    setShowMore(!showMore)
+  }
 
-  const locationCenter = [47.06658740529705, 15.446622566627681];
-  const latDelta = 0.00065655287861;
-  const lngDelta = 0.000134937615081;
+  const locationCenter = [47.06658740529705, 15.446622566627681]
+  const latDelta = 0.00065655287861
+  const lngDelta = 0.000134937615081
 
   const leafletOptions = {
     maxZoom: 20,
     attribution: 'Datenquelle: <a href="https://www.basemap.at">basemap.at</a>',
     type: "normal",
     format: "png",
-  };
+  }
 
   return (
     <IonPage>
@@ -97,9 +97,10 @@ const DangerZones: React.FC = () => {
               <h1 className="fontColors">Dietrichsteinplatz</h1>
               <h3 style={{ marginTop: "15px" }}>Problemstellung</h3>
               <p>
-                Der Dietrichsteinplatz in der Grazer Innenstadt ist ein gefährlicher Verkehrsknotenpunkt, besonders für
-                Radfahrerinnen. Die unübersichtliche Straßenführung sorgt, gemeinsam mit der hohen Frequentierung für
-                eine große Gefahrenstelle mit hohem Unfallpotential.
+                Der Dietrichsteinplatz in der Grazer Innenstadt ist ein gefährlicher
+                Verkehrsknotenpunkt, besonders für Radfahrerinnen. Die unübersichtliche
+                Straßenführung sorgt, gemeinsam mit der hohen Frequentierung für eine große
+                Gefahrenstelle mit hohem Unfallpotential.
               </p>
 
               <IonItem className="questionBackground">
@@ -142,7 +143,7 @@ const DangerZones: React.FC = () => {
         </div>
       </IonContent>
     </IonPage>
-  );
-};
+  )
+}
 
-export default DangerZones;
+export default DangerZones
