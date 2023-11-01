@@ -54,3 +54,10 @@
     text-align: left;
     margin-right: 60%;
   }
+
+  #map {
+    height: 100%;
+    position: sticky;
+    top: 0;
+    
+}

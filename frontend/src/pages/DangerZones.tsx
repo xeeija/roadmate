@@ -19,12 +19,19 @@ import "./DangerZones.css";
 import Comment from "../components/Comment";
 import ToolBar from "../components/navigation/ToolBar";
 import { arrowRedo, caretDown, caretUp, informationCircle, link } from "ionicons/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer } from "react-leaflet";
 
 const DangerZones: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [showMore, setShowMore] = useState(false);
   const [answerValue, setAnswerValue] = useState<string>("");
+
+  const [renderMap, setRenderMap] = useState(false);
+
+  useEffect(() => {
+    setRenderMap(true);
+  });
 
   const commentData = [
     {
@@ -49,59 +56,90 @@ const DangerZones: React.FC = () => {
     setShowMore(!showMore);
   };
 
+  const locationCenter = [47.06658740529705, 15.446622566627681];
+  const latDelta = 0.00065655287861;
+  const lngDelta = 0.000134937615081;
+
+  const leafletOptions = {
+    maxZoom: 20,
+    attribution: 'Datenquelle: <a href="https://www.basemap.at">basemap.at</a>',
+    type: "normal",
+    format: "png",
+  };
+
   return (
     <IonPage>
       <IonHeader>
         <ToolBar title="Forum" />
       </IonHeader>
       <IonContent>
-        <IonCard style={{ marginTop: "200px" }} className="rounded-card">
-          <IonCardContent>
-            <h1 className="fontColors">Dietrichsteinplatz</h1>
-            <h3 style={{ marginTop: "15px" }}>Problemstellung</h3>
-            <p>
-              Der Dietrichsteinplatz in der Grazer Innenstadt ist ein gefährlicher Verkehrsknotenpunkt, besonders für
-              Radfahrerinnen. Die unübersichtliche Straßenführung sorgt, gemeinsam mit der hohen Frequentierung für eine
-              große Gefahrenstelle mit hohem Unfallpotential.
-            </p>
+        {renderMap && (
+          <div id="map" style={{ zIndex: 0 }}>
+            <MapContainer
+              center={{ lat: locationCenter[0] - latDelta, lng: locationCenter[1] - lngDelta }}
+              zoom={18}
+              zoomControl={false}
+              scrollWheelZoom={false}
+              style={{ height: "100%", width: "100%" }}
+              dragging={false}
+              doubleClickZoom={false}
+            >
+              <TileLayer
+                url="https://mapsneu.wien.gv.at/basemap/geolandbasemap/{type}/google3857/{z}/{y}/{x}.{format}"
+                {...leafletOptions}
+              />
+            </MapContainer>
+          </div>
+        )}
+        <div style={{ zIndex: 1 }}>
+          <IonCard style={{ marginTop: "-100%" }} className="rounded-card">
+            <IonCardContent>
+              <h1 className="fontColors">Dietrichsteinplatz</h1>
+              <h3 style={{ marginTop: "15px" }}>Problemstellung</h3>
+              <p>
+                Der Dietrichsteinplatz in der Grazer Innenstadt ist ein gefährlicher Verkehrsknotenpunkt, besonders für
+                Radfahrerinnen. Die unübersichtliche Straßenführung sorgt, gemeinsam mit der hohen Frequentierung für
+                eine große Gefahrenstelle mit hohem Unfallpotential.
+              </p>
 
-            <IonItem className="questionBackground">
-              <IonInput
-                style={{ "min-height": "10px" }}
-                type="text"
-                labelPlacement="stacked"
-                clearInput={true}
-                placeholder="Eine Frage stellen ..."
-                value={inputValue}
-                onIonChange={(e) => setInputValue(e.detail.value!)}
-              ></IonInput>
-              <IonIcon className="icons" icon={link} size="small"></IonIcon>
-            </IonItem>
+              <IonItem className="questionBackground">
+                <IonInput
+                  style={{ minHeight: "10px" }}
+                  type="text"
+                  labelPlacement="stacked"
+                  clearInput={true}
+                  placeholder="Eine Frage stellen ..."
+                  value={inputValue}
+                  onIonChange={(e) => setInputValue(e.detail.value!)}
+                ></IonInput>
+                <IonIcon className="icons" icon={link} size="small"></IonIcon>
+              </IonItem>
 
-            <h2 className="fontColors"> Letzte Fragen </h2>
+              <h2 className="fontColors"> Letzte Fragen </h2>
 
-            <Comment data={commentData.slice(0, showMore ? commentData.length : 1)} />
+              <Comment data={commentData.slice(0, showMore ? commentData.length : 1)} />
 
-            {commentData.length > 1 && (
-              <IonButton className="answer" expand="block" fill="clear" onClick={toggleShowMore}>
-                Antworten
-                <IonIcon icon={showMore ? caretUp : caretDown} size="small" slot="start" />
-              </IonButton>
-            )}
+              {commentData.length > 1 && (
+                <IonButton className="answer" expand="block" fill="clear" onClick={toggleShowMore}>
+                  Antworten
+                  <IonIcon icon={showMore ? caretUp : caretDown} size="small" slot="start" />
+                </IonButton>
+              )}
 
-            <IonItem className="questionBackground">
-              <IonInput
-                style={{ "min-height": "10px" }}
-                type="text"
-                labelPlacement="stacked"
-                clearInput={true}
-                placeholder="Antwort..."
-                value={inputValue}
-                onIonChange={(e) => setInputValue(e.detail.value!)}
-              ></IonInput>
-            </IonItem>
-          </IonCardContent>
-        </IonCard>
+              <IonItem className="questionBackground">
+                <IonInput
+                  style={{ minHeight: "10px" }}
+                  type="text"
+                  labelPlacement="stacked"
+                  clearInput={true}
+                  placeholder="Antwort..."
+                  value={inputValue}
+                  onIonChange={(e) => setInputValue(e.detail.value!)}
+                ></IonInput>
+              </IonItem>
+            </IonCardContent>
+          </IonCard>
+        </div>
       </IonContent>
     </IonPage>
   );
