@@ -1,24 +1,26 @@
-# Roadmate
+<p align="center"><a rel="noopener"><img src="./frontend/public/logo_roadmate.svg" alt="RoadMate Logo" height="144px"></a></p>
 
-<!-- ﻿<p align="center">
-  <a href="#" rel="noopener"><img src="img/Roadmate_Logo.svg" alt="Roadmate logo" height=200></a>
-</p>
+<!-- # RoadMate -->
+<h1 align="center">RoadMate</h1>
 
-<h1 align="center">Roadmate</h1> -->
+[![frontend](https://github.com/xeeija/roadmate/actions/workflows/frontend.yaml/badge.svg)](https://github.com/xeeija/roadmate/actions/workflows/frontend.yaml)
+[![backend](https://github.com/xeeija/roadmate/actions/workflows/backend.yaml/badge.svg)](https://github.com/xeeija/roadmate/actions/workflows/backend.yaml)
+
+Gemeinsam Sicher Unterwegs.
+
+Your best mate on the road! RoadMate is a companion for all bike lovers which informs you about potential dangers on your routes. With live notifcations, a forum to ask your biking questions, saved routes and much more!
 
 ## 📋 Table of Contents
 
-<!--
-- [📋 Table of Contents](#-table-of-contents)
-- [🏁 Getting Started](#-getting-started)
+- [🏁 Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-- [🎈 Usage](#-usage)
+- [🎈 Usage](#usage)
   - [Building the project](#building-the-project)
+  - [Code Style](#code-style)
   - [Migrations](#migrations)
-- [⛏️ Built Using](#️-built-using)
-- [✍️ Authors](#️-authors)
--->
+- [⛏️ Tech Stack](#️tech-stack)
+- [✍️ Authors](#️authors)
 
 ## 🏁 Getting Started<a name="getting-started"></a>
 
@@ -55,13 +57,6 @@ Run the following commands in the `backend` directory.
     dotnet tool restore
     ```
 
-    Alternatively, the EF Core CLI tools can be installed globally.
-
-    ```bash
-    # Alternative (not needed)
-    dotnet tool install --global dotnet-ef
-    ```
-
 1. Connect to the database
 
     Connect either using Cloudbeaver, which should run on `localhost:8090` or with your preferred database editor.
@@ -80,12 +75,8 @@ Run the following commands in the `backend` directory.
 
 1. Migrations Setup
 
-    Migrations are handled with the dotnet CLI. The EF Core tools are already installed in the root folder and can be used
-    in all projects. Restore them with
-
-    ```
-    dotnet tool restore
-    ```
+    Migrations are handled with the dotnet CLI.
+    The EF Core tools are already installed in the root folder and can be used in all projects.
 
     Alternatively, the EF Core CLI tools can be installed globally.
 
@@ -98,7 +89,7 @@ Run the following commands in the `backend` directory.
 
 Run the following commands in the `frontend` directory.
 
-1. Install NPM packages
+1. Install npm packages
 
    ```
    npm install
@@ -109,6 +100,16 @@ Run the following commands in the `frontend` directory.
    ```
    npm install -g @ionic/cli
    ```
+
+**For VS Code:**
+
+3. Install the Prettier and ESLint extensions, either from workspace  recommendations or via the extensions tab in VS Code.
+
+**For WebStorm (and IntelliJ IDEs):**
+
+3. Activate ESLint: Go to Languages & Frameworks > JavaScript > Code Quality Tools > ESLint, and select the Automatic ESLint configuration option.
+
+4. Install the Prettier plugin from the marketplace.
 
 ## 🎈 Usage<a name="usage"></a>
 
@@ -121,9 +122,51 @@ cd backend/API
 dotnet watch
 ```
 
-```sh
+```bash
 cd frontend/
 ionic serve
+```
+
+### Code Style
+
+Code inspection, Linting and Tests run automatically on every push.
+Pull requests should only be merged after review and successful pipelines.
+
+#### Frontend
+
+ESLint and Prettier are used for code style, linting and formatting. Prettier is formatting files automatically when `formatOnSave` is enabled and Prettier is set as formatter.
+
+Run ESLint directly:
+```bash
+# Lint the complete project
+npm run lint .
+
+# Lint individual files or folders
+# You can also pass multiple files/folders and wildcards
+npm run lint Tab1.tsx Tab2.tsx src/pages/*
+```
+
+Run prettier directly and format specified files. Use `format:check` if you only want to check the style without formatting.
+```bash
+# Format the complete project
+npm run format .
+
+# format individual files or folders
+# You can also pass multiple files/folders and wildcards
+npm run format Tab1.tsx Tab2.tsx src/pages/*
+```
+
+#### Backend
+Resharper is used for code style and linting.
+
+Run code cleanup and format using the following command.
+```bash
+dotnet jb cleanupcode roadmate.sln --verbosity=WARN
+```
+
+Inspect code using the following command. You can change the severity with the `-e` flag.
+```bash
+dotnet jb inspectcode roadmate.sln -o=logs/inspect.xml -e=WARNING --verbosity=WARN
 ```
 
 ### Migrations
@@ -151,7 +194,7 @@ This way of upating is suitable for development, but less so for running in prod
 For additional information consult
 the [Migration docs](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations).
 
-## ⛏️ Built Using<a name="built-using"></a>
+## ⛏️ Tech Stack<a name="tech-stack"></a>
 
 The project is built with the following technologies:
 

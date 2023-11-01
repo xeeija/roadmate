@@ -1,63 +1,60 @@
 .rounded-card {
-    --border-radius: 35px;
-    background-color: #F0F8F9;
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    margin-top: 50px;
-  }
-
-  .fontColors {
-    color: #156064;
-    margin-top: 8px
-   
-  }
-
-  .questionBackground {
-    background-color: white;
-    border-radius: 10px;
-    
-    margin-top: 10px;
-    margin-bottom: 8px;
-  }
-
-  .backgroundCard {
-    background-color: white;
-    border-radius: 8px;
-  
-    margin-top: 10px;
-  }
-
-  .icons {
-    color: #156064;
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-   
-  }
-
-  .date-icons {
-    display: flex;
-    align-items: center;
-    margin-top: 8px
+  --border-radius: 35px;
+  background-color: #f0f8f9;
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-top: 50px;
 }
 
-  .date{
-    margin-right: 10px;
-    margin-top: 3px;
+.fontColors {
+  color: #156064;
+  margin-top: 8px;
 }
 
-  .answer{
-    color: #156064;
-    justify-content: flex-start;
-    text-align: left;
-    margin-right: 60%;
-  }
+.questionBackground {
+  background-color: white;
+  border-radius: 10px;
 
-  #map {
-    height: 100%;
-    position: sticky;
-    top: 0;
-    
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.backgroundCard {
+  background-color: white;
+  border-radius: 8px;
+
+  margin-top: 10px;
+}
+
+.icons {
+  color: #156064;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.date-icons {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.date {
+  margin-right: 10px;
+  margin-top: 3px;
+}
+
+.answer {
+  color: #156064;
+  justify-content: flex-start;
+  text-align: left;
+  margin-right: 60%;
+}
+
+#map {
+  height: 100%;
+  position: sticky;
+  top: 0;
 }

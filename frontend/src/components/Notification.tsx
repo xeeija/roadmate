@@ -1,20 +1,19 @@
-import React from "react";
-import { IonItem, IonLabel, IonNote, IonText } from "@ionic/react";
-import { ellipsisHorizontal } from "ionicons/icons";
+import { IonItem, IonLabel, IonNote, IonText } from "@ionic/react"
+import React from "react"
 
-import "./Notification.css";
+import "./Notification.css"
 
 interface NotificationProps {
-  date: Date;
-  name: string;
-  route: string;
-  id: number;
+  date: Date
+  name: string
+  route: string
+  id: number
 }
 
 const Notification: React.FC<NotificationProps> = ({ date, name, route, id }) => {
   const formattedDate = `${date.getHours()}:${date.getMinutes()} - ${date.getDate()}.${
     date.getMonth() + 1
-  }.${date.getFullYear()}`;
+  }.${date.getFullYear()}`
 
   return (
     <IonItem lines="full" id={"notification" + id} button onClick={() => console.log(id)}>
@@ -26,7 +25,7 @@ const Notification: React.FC<NotificationProps> = ({ date, name, route, id }) =>
         <IonNote className="ion-text-wrap">{route}</IonNote>
       </IonLabel>
     </IonItem>
-  );
-};
+  )
+}
 
-export default Notification;
+export default Notification

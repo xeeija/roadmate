@@ -1,14 +1,14 @@
-import React from "react";
-import { IonGrid, IonRow, IonCol, IonAvatar, IonImg, IonInput, IonIcon } from "@ionic/react";
-import { informationCircle, arrowRedo, link } from "ionicons/icons";
+import { IonAvatar, IonCol, IonGrid, IonIcon, IonImg, IonRow } from "@ionic/react"
+import { arrowRedo, informationCircle } from "ionicons/icons"
+import React from "react"
 
 interface CommentProps {
   data: Array<{
-    avatarSrc: string;
-    username: string;
-    date: string;
-    question: string;
-  }>;
+    avatarSrc: string
+    username: string
+    date: string
+    question: string
+  }>
 }
 
 const Comment: React.FC<CommentProps> = ({ data }) => {
@@ -16,7 +16,11 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
     <IonGrid className="backgroundCard">
       {data.map((item, index) => (
         <IonRow key={index} style={{ marginLeft: "10px" }}>
-          <IonCol size-md="6" className="fontColors" style={{ display: "flex", alignItems: "center" }}>
+          <IonCol
+            size-md="6"
+            className="fontColors"
+            style={{ display: "flex", alignItems: "center" }}
+          >
             <IonAvatar style={{ width: "25px", height: "25px", marginRight: "10px" }}>
               <IonImg src={item.avatarSrc} />
             </IonAvatar>
@@ -34,7 +38,7 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
         </IonRow>
       ))}
     </IonGrid>
-  );
-};
+  )
+}
 
-export default Comment;
+export default Comment

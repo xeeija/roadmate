@@ -1,20 +1,20 @@
 .rounded-modal {
-    --border-radius: 35px;
-    background-color: #F0F8F9;
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    margin-top: 50px;
-  }
-  
+  --border-radius: 35px;
+  background-color: #f0f8f9;
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-top: 50px;
+}
+
 .distance {
-    margin-left: 15px;
-    margin-top: 15px;
+  margin-left: 15px;
+  margin-top: 15px;
 }
 
 .backgroundInput {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 .buttonSize {

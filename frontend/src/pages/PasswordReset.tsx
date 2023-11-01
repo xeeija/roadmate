@@ -3,22 +3,20 @@ import {
   IonCard,
   IonCardContent,
   IonContent,
-  IonIcon,
   IonInput,
   IonItem,
-  IonList,
   IonPage,
   IonText,
-} from "@ionic/react";
+} from "@ionic/react"
 
-import { useState } from "react";
+import { useState } from "react"
 
-import logo from "../resources/logo/Logo1.svg";
+import logo from "../resources/logo/Logo1.svg"
 
-import "./Onboarding.css";
+import "./Onboarding.css"
 
 const ResetPassword: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>("")
 
   return (
     <IonPage>
@@ -74,7 +72,7 @@ const ResetPassword: React.FC = () => {
         </IonCard>
       </IonContent>
     </IonPage>
-  );
-};
+  )
+}
 
-export default ResetPassword;
+export default ResetPassword

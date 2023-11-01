@@ -1,0 +1,10 @@
+/node_modules
+/build
+
+/src/services
+
+.eslintrc.cjs
+capacitor.config.ts
+tsconfig.json
+tsconfig.node.json
+vite.config.ts

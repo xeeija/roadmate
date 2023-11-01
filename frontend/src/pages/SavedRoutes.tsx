@@ -1,7 +1,7 @@
-import { IonAlert, IonButton, IonContent, IonPage } from "@ionic/react";
+import { IonContent, IonPage } from "@ionic/react"
 
-import ToolBar from "../components/navigation/ToolBar";
-import SavedRoute from "../components/SavedRoute";
+import ToolBar from "../components/navigation/ToolBar"
+import SavedRoute from "../components/SavedRoute"
 
 const SavedRoutes: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ const SavedRoutes: React.FC = () => {
         </div>
       </IonContent>
     </IonPage>
-  );
-};
+  )
+}
 
-export default SavedRoutes;
+export default SavedRoutes

@@ -1,11 +1,11 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: 'com.roadmate',
-  appName: 'roadmate',
-  webDir: 'dist',
+  appId: "com.roadmate",
+  appName: "roadmate",
+  webDir: "dist",
   server: {
-    androidScheme: 'https'
+    androidScheme: "https"
   }
 };
 

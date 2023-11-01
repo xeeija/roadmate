@@ -1,5 +1,5 @@
-.customCard{
-  background-color: #F0F8F9;
+.customCard {
+  background-color: #f0f8f9;
   border-radius: 35px 35px 0 0;
   margin-top: 110px;
   bottom: 10px;
@@ -7,7 +7,7 @@
   position: relative;
 }
 
-.customButton{
+.customButton {
   padding-bottom: 10px;
   --background: var(--ion-color-tertiary);
   align-items: center;
@@ -17,22 +17,22 @@
   letter-spacing: 0.8px;
 }
 
-.customIcon{
-  color: #92949C;
+.customIcon {
+  color: #92949c;
   font-size: 42px;
   padding-right: 10px;
   padding-left: 0;
 }
 
-.customDescriptionIcon{
-  color: #92949C;
+.customDescriptionIcon {
+  color: #92949c;
   font-size: 42px;
   padding-right: 10px;
   padding-left: 0;
   padding-bottom: 110px;
 }
 
-.customItem{
+.customItem {
   background-color: white;
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -41,7 +41,7 @@
   font-size: 15px;
 }
 
-.customToggle{
+.customToggle {
   --handle-background-checked: white;
   --track-background-checked: var(--ion-color-tertiary-tint);
   width: 5px;
@@ -50,12 +50,11 @@
   right: 40pt;
 }
 
-.customSelectOption{
+.customSelectOption {
   background-color: white;
 }
 
-.customTextArea{
+.customTextArea {
   height: 170px;
   position: relative;
 }
-

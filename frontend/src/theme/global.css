@@ -15,12 +15,22 @@ h3 {
   line-height: 24px;
 }
 
-body, p, span, div, h1, h2, h3, h4, h5, h6 {
+body,
+p,
+span,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   letter-spacing: 0.5px; /* Adjust the letter spacing as needed */
 }
 
 /* tabBar*/
-ion-tab-bar, ion-tab-button {
+ion-tab-bar,
+ion-tab-button {
   border-radius: 20px 20px 0 0;
   --background: var(--ion-color-primary);
   --color: var(--ion-color-light-shade);
@@ -28,13 +38,12 @@ ion-tab-bar, ion-tab-button {
 }
 
 /* icon size*/
-.menu-icon{
+.menu-icon {
   font-size: 36px;
 }
 /* background image */
-body{
-  background-image: url('../resources/images/Background.svg');
+body {
+  background-image: url("../resources/images/Background.svg");
   background-size: cover;
   --ion-background-color: transparent;
 }
-

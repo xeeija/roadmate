@@ -1,0 +1,62 @@
+name: frontend
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "frontend/**"
+
+jobs:
+  test-frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: "./frontend"
+
+    permissions:
+      contents: read
+      checks: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup NodeJS 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: "./frontend/package-lock.json"
+
+      - name: Install packages
+        run: npm ci
+
+      # - uses: reviewdog/action-eslint@v1
+      #   with:
+      #     reporter: github-check
+      #     workdir: ./frontend
+
+      - name: Run Lint
+        # Run eslint 2x for JSON format and human-readable report as artifact
+        run: |
+          npx eslint --output-file eslint_report.json --format json . & \
+          npx eslint --output-file eslint_report.txt --no-color .
+
+      - name: Annotate Lint results
+        uses: ataylorme/eslint-annotate-action@v2
+        with:
+          report-json: ./frontend/eslint_report.json
+        # Continue to the next step even if this fails
+        continue-on-error: true
+        # Run this, even if the previous step fails
+        if: always()
+
+      - name: Upload ESLint report
+        uses: actions/upload-artifact@v3
+        with:
+          name: eslint_report.txt
+          path: ./frontend/eslint_report.txt
+        if: always()
+
+      # Run tests
