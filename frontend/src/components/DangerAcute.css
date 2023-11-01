@@ -9,6 +9,14 @@
   color: #156064 !important;
 }
 
+.description-title {
+  font-size: 16px;
+  padding-top: 0px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.description {
+  font-size: 15px;
+}
 .status {
   width: 14px;
   height: 14px;
