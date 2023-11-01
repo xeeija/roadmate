@@ -31,6 +31,7 @@ import "@ionic/react/css/text-transformation.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/global.css";
+import Gefahrenstellen from "./pages/DangerZones";
 
 setupIonicReact();
 
@@ -58,6 +59,9 @@ const App: React.FC = () => (
           <Route exact path="/notifications">
             <Notifications />
           </Route>
+          <Route exact path="/dangerzones">
+        <Gefahrenstellen />
+      </Route>
 
           <Route exact path="/homescreen">
             <Homescreen />
@@ -86,6 +90,7 @@ const App: React.FC = () => (
         </IonTabBar>
       </IonTabs>
     </IonReactRouter>
+
   </IonApp>
 );
 
