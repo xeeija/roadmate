@@ -1,6 +1,5 @@
-import React from "react"
 import { IonItem, IonLabel, IonNote, IonText } from "@ionic/react"
-import { ellipsisHorizontal } from "ionicons/icons"
+import React from "react"
 
 import "./Notification.css"
 

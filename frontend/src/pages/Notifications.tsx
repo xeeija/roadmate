@@ -1,15 +1,4 @@
-import {
-  IonAlert,
-  IonButton,
-  IonCard,
-  IonContent,
-  IonPage,
-  IonText,
-  IonCardTitle,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonList,
-} from "@ionic/react"
+import { IonCard, IonCardHeader, IonContent, IonList, IonPage, IonText } from "@ionic/react"
 
 import ToolBar from "../components/navigation/ToolBar"
 import Notification from "../components/Notification"

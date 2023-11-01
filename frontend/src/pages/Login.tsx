@@ -3,29 +3,26 @@ import {
   IonCard,
   IonCardContent,
   IonContent,
-  IonIcon,
   IonInput,
   IonItem,
-  IonList,
   IonPage,
   IonText,
 } from "@ionic/react"
 
 import { useState } from "react"
-import { closeOutline } from "ionicons/icons"
 
 import logo from "../resources/logo/Logo1.svg"
 
-import "./Onboarding.css"
 import { Link } from "react-router-dom"
+import "./Onboarding.css"
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  const loginData = {
-    email: email,
-    password: password,
-  }
+  // const loginData = {
+  //   email: email,
+  //   password: password,
+  // }
 
   return (
     <IonPage>

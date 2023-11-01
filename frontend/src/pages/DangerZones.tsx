@@ -1,31 +1,24 @@
 import {
-  IonContent,
-  IonHeader,
-  IonPage,
+  IonButton,
   IonCard,
   IonCardContent,
-  IonItem,
-  IonInput,
-  IonGrid,
-  IonRow,
-  IonCol,
+  IonContent,
+  IonHeader,
   IonIcon,
-  IonAvatar,
-  IonImg,
-  IonLabel,
-  IonButton,
+  IonInput,
+  IonItem,
+  IonPage,
 } from "@ionic/react"
-import "./DangerZones.css"
-import Comment from "../components/Comment"
-import ToolBar from "../components/navigation/ToolBar"
-import { arrowRedo, caretDown, caretUp, informationCircle, link } from "ionicons/icons"
+import { caretDown, caretUp, link } from "ionicons/icons"
 import { useEffect, useState } from "react"
 import { MapContainer, TileLayer } from "react-leaflet"
+import Comment from "../components/Comment"
+import ToolBar from "../components/navigation/ToolBar"
+import "./DangerZones.css"
 
 const DangerZones: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("")
   const [showMore, setShowMore] = useState(false)
-  const [answerValue, setAnswerValue] = useState<string>("")
 
   const [renderMap, setRenderMap] = useState(false)
 
@@ -62,7 +55,7 @@ const DangerZones: React.FC = () => {
 
   const leafletOptions = {
     maxZoom: 20,
-    attribution: 'Datenquelle: <a href="https://www.basemap.at">basemap.at</a>',
+    attribution: `Datenquelle: <a href="https://www.basemap.at">basemap.at</a>`,
     type: "normal",
     format: "png",
   }

@@ -3,10 +3,8 @@ import {
   IonCard,
   IonCardContent,
   IonContent,
-  IonIcon,
   IonInput,
   IonItem,
-  IonList,
   IonPage,
   IonText,
 } from "@ionic/react"

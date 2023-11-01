@@ -1,13 +1,12 @@
-import { IonContent, IonHeader, IonPage } from "@ionic/react"
-import "./Homescreen.css"
-import ToolBar from "../components/navigation/ToolBar"
-import "leaflet/dist/leaflet.css"
+import { IonContent, IonPage } from "@ionic/react"
 import * as L from "leaflet"
 import "leaflet-routing-machine"
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
-import DATemporary from "../resources/DATemporary.svg"
-import DAPermanent from "../resources/DAPermanent.svg"
+import "leaflet/dist/leaflet.css"
 import { useEffect, useState } from "react"
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
+import DAPermanent from "../resources/DAPermanent.svg"
+import DATemporary from "../resources/DATemporary.svg"
+import "./Homescreen.css"
 
 const dangerPoints = [
   {

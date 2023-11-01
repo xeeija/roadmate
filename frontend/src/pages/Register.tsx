@@ -4,39 +4,34 @@ import {
   IonCardContent,
   IonCheckbox,
   IonContent,
-  IonIcon,
   IonInput,
   IonItem,
-  IonLabel,
-  IonList,
   IonPage,
   IonText,
 } from "@ionic/react"
 
 import { useState } from "react"
-import { closeOutline } from "ionicons/icons"
 
 import logo from "../resources/logo/Logo1.svg"
 
 import "./Onboarding.css"
-import { Link } from "react-router-dom"
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>("")
   const [email, setEmail] = useState<string>("")
   const [password_1, setPassword_1] = useState<string>("")
   const [password_2, setPassword_2] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
+  // const [password, setPassword] = useState<string>("")
   const [description, setDescription] = useState<string>("")
 
   const [isExpert, setIsExpert] = useState<boolean>(false)
 
-  const registerData = {
-    username: username,
-    email: email,
-    password: password,
-    description: description,
-  }
+  // const registerData = {
+  //   username: username,
+  //   email: email,
+  //   password: password,
+  //   description: description,
+  // }
 
   return (
     <IonPage>

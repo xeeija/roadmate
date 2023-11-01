@@ -1,6 +1,6 @@
+import { IonAvatar, IonCol, IonGrid, IonIcon, IonImg, IonRow } from "@ionic/react"
+import { arrowRedo, informationCircle } from "ionicons/icons"
 import React from "react"
-import { IonGrid, IonRow, IonCol, IonAvatar, IonImg, IonInput, IonIcon } from "@ionic/react"
-import { informationCircle, arrowRedo, link } from "ionicons/icons"
 
 interface CommentProps {
   data: Array<{
