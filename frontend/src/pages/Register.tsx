@@ -10,6 +10,11 @@ import {
   IonText,
 } from "@ionic/react"
 
+import AppStorage from "../services/AppStorage"
+import { AuthService } from "../services/AuthService"
+
+import { useHistory } from "react-router-dom"
+
 import { useState } from "react"
 
 import logo from "../resources/logo/Logo1.svg"
@@ -17,8 +22,16 @@ import logo from "../resources/logo/Logo1.svg"
 import "./Onboarding.css"
 
 const Register: React.FC = () => {
+  const history = useHistory()
+
+  // USER SERVICE AND REGISTER
+  const authService = new AuthService()
+  const [responseError, setResponseError] = useState<string>()
+
   const [username, setUsername] = useState<string>("")
   const [email, setEmail] = useState<string>("")
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [password, setPassword] = useState<string>("")
   const [password_1, setPassword_1] = useState<string>("")
   const [password_2, setPassword_2] = useState<string>("")
   // const [password, setPassword] = useState<string>("")
@@ -26,12 +39,32 @@ const Register: React.FC = () => {
 
   const [isExpert, setIsExpert] = useState<boolean>(false)
 
-  // const registerData = {
-  //   username: username,
-  //   email: email,
-  //   password: password,
-  //   description: description,
-  // }
+  const handleRegister = async () => {
+    const registerData = {
+      username: username,
+      email: email,
+      password: password_1,
+      isExpert: isExpert,
+      description: description,
+    }
+
+    authService
+      .register(registerData)
+      .then((response: any) => {
+        const data = response?.data
+        const jwtStore = new AppStorage()
+        if (data) {
+          setResponseError("")
+          jwtStore.set("jwt_token", data.authenticationInformation)
+          jwtStore.set("user", data.user)
+          history.push(`/homescreen`)
+        }
+      })
+      .catch((error: any) => {
+        console.log(error)
+        setResponseError(error.errorMessages)
+      })
+  }
 
   return (
     <IonPage>
@@ -124,7 +157,12 @@ const Register: React.FC = () => {
               </IonItem>
             )}
 
-            <IonButton expand="block" size="small" className="login-button lowercase">
+            <IonButton
+              expand="block"
+              size="small"
+              className="login-button lowercase"
+              onClick={handleRegister}
+            >
               <IonText>Registrieren</IonText>
             </IonButton>
 
