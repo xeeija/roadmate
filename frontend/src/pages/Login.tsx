@@ -10,19 +10,54 @@ import {
 } from "@ionic/react"
 
 import { useState } from "react"
+import { Link, useHistory } from "react-router-dom"
+
+import AppStorage from "../services/AppStorage"
+import { AuthService } from "../services/AuthService"
 
 import logo from "../resources/logo/Logo1.svg"
-
-import { Link } from "react-router-dom"
 import "./Onboarding.css"
 
+/* tslint:disable */
+/* eslint-disable */
+
 const Login: React.FC = () => {
+  const history = useHistory()
+
+  // Variables for the login form
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  // const loginData = {
-  //   email: email,
-  //   password: password,
-  // }
+
+  // AUTH SERVICE UND LOGIN
+  const authService = new AuthService()
+  const [responseError, setResponseError] = useState<string>()
+
+  const handleLogin = async () => {
+    const loginData = {
+      email: email,
+      password: password,
+    }
+
+    console.log(loginData)
+
+    authService
+      .login(loginData)
+      .then((response: any) => {
+        const data = response?.data
+        const jwtStore = new AppStorage()
+        if (data) {
+          setResponseError("")
+          console.log(data)
+          jwtStore.set("jwt_token", data.authenticationInformation)
+          jwtStore.set("user", data.user)
+          history.push("/homescreen")
+        }
+      })
+      .catch((error: any) => {
+        setResponseError(error.errorMessages)
+        console.log(responseError)
+      })
+  }
 
   return (
     <IonPage>
@@ -67,7 +102,12 @@ const Login: React.FC = () => {
 
             <br />
 
-            <IonButton expand="block" size="small" className="login-button lowercase">
+            <IonButton
+              expand="block"
+              size="small"
+              className="login-button lowercase"
+              onClick={handleLogin}
+            >
               <IonText>Login</IonText>
             </IonButton>
 

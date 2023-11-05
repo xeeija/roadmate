@@ -25,6 +25,7 @@ export class AuthService {
   login(body: LoginRequest | undefined): Promise<UserResponseItemResponseModel> {
     let url_ = this.baseUrl + "/api/Auth/Login"
     url_ = url_.replace(/[?&]$/, "")
+    let url_test = "http://localhost:5211/api/Auth/Login"
 
     const content_ = JSON.stringify(body)
 
@@ -37,7 +38,7 @@ export class AuthService {
       },
     }
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
+    return this.http.fetch(url_test, options_).then((_response: Response) => {
       return this.processLogin(_response)
     })
   }

@@ -10,34 +10,35 @@ import {
   IonText,
 } from "@ionic/react"
 
+import { useHistory } from "react-router-dom"
+import { useState } from "react"
+
 import AppStorage from "../services/AppStorage"
 import { AuthService } from "../services/AuthService"
 
-import { useHistory } from "react-router-dom"
-
-import { useState } from "react"
-
 import logo from "../resources/logo/Logo1.svg"
-
 import "./Onboarding.css"
+
+/* tslint:disable */
+/* eslint-disable */
 
 const Register: React.FC = () => {
   const history = useHistory()
 
-  // USER SERVICE AND REGISTER
-  const authService = new AuthService()
-  const [responseError, setResponseError] = useState<string>()
-
+  // Variables for the register form
   const [username, setUsername] = useState<string>("")
   const [email, setEmail] = useState<string>("")
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [password, setPassword] = useState<string>("")
   const [password_1, setPassword_1] = useState<string>("")
   const [password_2, setPassword_2] = useState<string>("")
-  // const [password, setPassword] = useState<string>("")
+  const [isExpert, setIsExpert] = useState<boolean>(false)
   const [description, setDescription] = useState<string>("")
 
-  const [isExpert, setIsExpert] = useState<boolean>(false)
+  //const [password, setPassword] = useState<string>("")
+
+  // AUTH SERVICE AND REGISTER
+  const authService = new AuthService()
+  const [responseError, setResponseError] = useState<string>()
 
   const handleRegister = async () => {
     const registerData = {
@@ -61,8 +62,8 @@ const Register: React.FC = () => {
         }
       })
       .catch((error: any) => {
-        console.log(error)
         setResponseError(error.errorMessages)
+        console.log(responseError)
       })
   }
 
