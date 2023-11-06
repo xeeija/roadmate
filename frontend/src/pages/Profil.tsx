@@ -13,12 +13,50 @@ import {
   IonCard,
   IonCardContent,
 } from "@ionic/react"
-import "./Tab3.css"
+import "./Profil.css"
 import { IonIcon } from "@ionic/react"
 import { chevronForward, exitOutline, notifications } from "ionicons/icons"
 import ToolBar from "../components/navigation/ToolBar"
+import { FC, createContext, useContext, useEffect, useState } from "react"
+import { UserService } from "../services/api/UserService"
+import { useParams } from "react-router-dom"
+import { User } from "../services/entities/User"
+import { UserContext } from "../components/ProtectedRoute"
 
-const Tab3: React.FC = () => {
+const Profil: FC = () => {
+  const userService = new UserService()
+  //const imageService = new ImageService();
+
+  type URLParams = {
+    profileUserId?: string
+  }
+  let { profileUserId } = useParams<URLParams>()
+  const [profileUser, setProfileUser] = useState<any>()
+  //const [imageUri, setImageUri] = useState<string>('');
+
+  const currentUserToken = useContext(UserContext).currentUserToken
+
+  useEffect(() => {
+    const fetchData = async () => {
+      //let profileUserId = "b1c945ed-61fe-4167-b128-1177f0d0cefd"
+      //let currentUserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJiMWM5NDVlZC02MWZlLTQxNjctYjEyOC0xMTc3ZjBkMGNlZmQiLCJlbWFpbCI6ImNoZWZAY2hlZi5jaGVmIiwicm9sZSI6IlVzZXIiLCJuYmYiOjE2OTkxMTUxODUsImV4cCI6MTY5OTIwMTU4NSwiaWF0IjoxNjk5MTE1MTg1LCJpc3MiOiJodHRwOi8vcm9hZG1hdGUuY29tIiwiYXVkIjoiaHR0cDovL3JvYWRtYXRlLmNvbSJ9.txPgRnuD9zkKPwUMjWMeyG7JuIzttLJckLXXYNmMgxY"
+      //debugger
+      if (profileUserId && currentUserToken) {
+        try {
+          const userResponse = await userService.userGET(profileUserId, currentUserToken)
+          setProfileUser(userResponse?.data)
+          //console.log(userResponse?.data)
+        } catch (error) {
+          //console.log(error)
+        }
+      }
+      //console.log('Pimpi')
+    }
+
+    fetchData()
+  }, [])
+
+
   return (
     <IonPage>
       <IonHeader>
@@ -64,7 +102,7 @@ const Tab3: React.FC = () => {
                   label="Username"
                   labelPlacement="floating"
                   placeholder="Helmie69"
-                  value="Helmie 69"
+                  value={profileUser?.username}
                   disabled
                 ></IonInput>
               </IonItem>
@@ -128,4 +166,4 @@ const Tab3: React.FC = () => {
   )
 }
 
-export default Tab3
+export default Profil

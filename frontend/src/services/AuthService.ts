@@ -1,8 +1,10 @@
+import AppStorage from "./AppStorage"
 import { ProblemDetails } from "./entities/ProblemDetails"
 import { LoginRequest } from "./entities/request/LoginRequest"
 import { RegisterRequest } from "./entities/request/RegisterRequest"
 import { UserResponseItemResponseModel } from "./entities/response/UserResponseItemResponseModel"
 import { throwException } from "./error/throwException"
+import { jwtDecode } from "jwt-decode"
 
 export class AuthService {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
@@ -14,9 +16,7 @@ export class AuthService {
     http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
   ) {
     this.http = http ? http : (window as any)
-    //get the base url from the environment variable
-    this.baseUrl =
-      baseUrl !== undefined && baseUrl !== null ? baseUrl : import.meta.env.VITE_API_URL ?? "" //URL of the API
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : ""
   }
 
   /**
@@ -104,11 +104,9 @@ export class AuthService {
    * @param body (optional) Represents request for an new basic user.
    * @return Success
    */
-
   register(body: RegisterRequest | undefined): Promise<UserResponseItemResponseModel> {
     let url_ = this.baseUrl + "/api/Auth/Register"
     url_ = url_.replace(/[?&]$/, "")
-    let url_test = "http://localhost:5211/api/Auth/Register"
 
     const content_ = JSON.stringify(body)
 
@@ -121,9 +119,73 @@ export class AuthService {
       },
     }
 
-    return this.http.fetch(url_test, options_).then((_response: Response) => {
+    return this.http.fetch(url_, options_).then((_response: Response) => {
       return this.processRegister(_response)
     })
+  }
+
+  public async getRole() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult = await storage.get("jwt_token")
+      const decToken: any = this.decodeToken(promiseResult.token)
+      //console.log(decToken)
+      return decToken?.role
+    } catch (error) {
+      //console.error('Error retrieving user ID:', error);
+      return null
+    }
+  }
+
+  public decodeToken = (token: string) => jwtDecode(token)
+
+  public async getUserIdFromAuthInfoAppStorage() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult = await storage.get("jwt_token")
+      const decToken: any = this.decodeToken(promiseResult.token)
+      return decToken?.nameid || null
+    } catch (error) {
+      //console.error('Error retrieving user ID:', error);
+      return null
+    }
+  }
+
+  public async getTokenFromAuthInfoAppStorage() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult = await storage.get("jwt_token")
+      return promiseResult?.token || null
+    } catch (error) {
+      //console.error('Error retrieving token:', error);
+      return null
+    }
+  }
+
+  public async getUserIdAndTokenFromAuthInfoAppStorage() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult = await storage.get("jwt_token")
+      const decToken: any = this.decodeToken(promiseResult.token)
+      return [decToken?.nameid || null, promiseResult?.token || null, decToken?.role || null]
+    } catch (error) {
+      //console.error('Error retrieving user ID and token:', error);
+      return [null, null, null]
+    }
+  }
+
+  public async getUserIdAndTokenAndRoleFromAuthInfoAppStorage() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult = await storage.get("jwt_token")
+      //console.log(promiseResult)
+      const decToken: any = this.decodeToken(promiseResult.token)
+      //console.log(decToken)
+      return [decToken?.nameid || null, promiseResult?.token || null, decToken?.role || null]
+    } catch (error) {
+      //console.error('Error retrieving user ID and token:', error);
+      return [null, null, null]
+    }
   }
 
   protected processRegister(response: Response): Promise<UserResponseItemResponseModel> {
@@ -190,3 +252,4 @@ export class AuthService {
     return Promise.resolve<UserResponseItemResponseModel>(null as any)
   }
 }
+

@@ -10,15 +10,15 @@ import {
 import { IonReactRouter } from "@ionic/react-router"
 import { home, map, personCircle } from "ionicons/icons"
 import { Redirect, Route, Switch } from "react-router-dom"
-import Homescreen from "./pages/Homescreen"
-import Tab2 from "./pages/Tab2"
-import Tab3 from "./pages/Tab3"
-import Login from "./pages/Login"
-import Register from "./pages/Register"
-import PasswordReset from "./pages/PasswordReset"
 import CreateDanger from "./pages/CreateDanger"
-import SavedRoutes from "./pages/SavedRoutes"
+import Homescreen from "./pages/Homescreen"
+import Login from "./pages/Login"
 import Notifications from "./pages/Notifications"
+import PasswordReset from "./pages/PasswordReset"
+import Tab3 from "./pages/Profil"
+import Register from "./pages/Register"
+import SavedRoutes from "./pages/SavedRoutes"
+import Tab2 from "./pages/Tab2"
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css"
@@ -37,9 +37,10 @@ import "@ionic/react/css/text-alignment.css"
 import "@ionic/react/css/text-transformation.css"
 
 /* Theme variables */
-import "./theme/variables.css"
-import "./theme/global.css"
+import ProtectedRoute from "./components/ProtectedRoute"
 import Gefahrenstellen from "./pages/DangerZones"
+import "./theme/global.css"
+import "./theme/variables.css"
 
 setupIonicReact()
 
@@ -57,7 +58,8 @@ const App: React.FC = () => (
         </Route>
 
         {/* Part of the App, where the Taskbar gets displayed */}
-        <Route path="/">
+        <ProtectedRoute>
+          {/* <Route path="/"> */}
           <IonTabs>
             {/* animated={false} --> fixes sliding animation bug */}
             <IonRouterOutlet animated={false}>
@@ -99,7 +101,8 @@ const App: React.FC = () => (
               </IonTabButton>
             </IonTabBar>
           </IonTabs>
-        </Route>
+          {/* </Route> */}
+        </ProtectedRoute>
       </Switch>
     </IonReactRouter>
   </IonApp>
