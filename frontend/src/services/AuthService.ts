@@ -14,7 +14,9 @@ export class AuthService {
     http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
   ) {
     this.http = http ? http : (window as any)
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : ""
+    //get the base url from the environment variable
+    this.baseUrl =
+      baseUrl !== undefined && baseUrl !== null ? baseUrl : import.meta.env.VITE_API_URL ?? "" //URL of the API
   }
 
   /**
@@ -25,7 +27,6 @@ export class AuthService {
   login(body: LoginRequest | undefined): Promise<UserResponseItemResponseModel> {
     let url_ = this.baseUrl + "/api/Auth/Login"
     url_ = url_.replace(/[?&]$/, "")
-    let url_test = "http://localhost:5211/api/Auth/Login"
 
     const content_ = JSON.stringify(body)
 
@@ -38,7 +39,7 @@ export class AuthService {
       },
     }
 
-    return this.http.fetch(url_test, options_).then((_response: Response) => {
+    return this.http.fetch(url_, options_).then((_response: Response) => {
       return this.processLogin(_response)
     })
   }

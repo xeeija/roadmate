@@ -38,7 +38,7 @@ const Login: React.FC = () => {
       password: password,
     }
 
-    console.log(loginData)
+    //console.log(loginData)
 
     authService
       .login(loginData)
@@ -106,7 +106,10 @@ const Login: React.FC = () => {
               expand="block"
               size="small"
               className="login-button lowercase"
-              onClick={handleLogin}
+              onClick={() => handleLogin()}
+              // Bug --> State wird erst nach Click aktualisiert
+              // onClick={() => setTimeout(() => handleLogin(), 50)}
+              // disabled={!email || !password}
             >
               <IonText>Login</IonText>
             </IonButton>

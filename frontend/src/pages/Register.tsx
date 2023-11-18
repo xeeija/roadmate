@@ -28,13 +28,14 @@ const Register: React.FC = () => {
   // Variables for the register form
   const [username, setUsername] = useState<string>("")
   const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
   const [password_1, setPassword_1] = useState<string>("")
   const [password_2, setPassword_2] = useState<string>("")
   const [isExpert, setIsExpert] = useState<boolean>(false)
   const [description, setDescription] = useState<string>("")
 
-  //const [password, setPassword] = useState<string>("")
+  // TODO: Check if password_1 and password_2 match, change it in registerData
+  // const [passwordMatch, setPasswordMatch] = useState<boolean>(false)
+  // const [password, setPassword] = useState<string>("")
 
   // AUTH SERVICE AND REGISTER
   const authService = new AuthService()
@@ -48,6 +49,8 @@ const Register: React.FC = () => {
       isExpert: isExpert,
       description: description,
     }
+
+    //console.log(registerData)
 
     authService
       .register(registerData)
@@ -163,6 +166,7 @@ const Register: React.FC = () => {
               size="small"
               className="login-button lowercase"
               onClick={handleRegister}
+              //disabled={!passwordMatch || !email || !username}
             >
               <IonText>Registrieren</IonText>
             </IonButton>
