@@ -27,7 +27,7 @@ const DangerAcute: FC<DangerAcuteProps> = ({ closeModal }) => {
       <IonModal isOpen={isModalOpen} animated={false}>
         <IonCard className="acute-danger-card" color="white">
           <IonCardHeader>
-            <IonCardTitle className="acute-danger-title">Unfall - Reitschulgasse</IonCardTitle>
+            <IonCardTitle className="acute-danger-title">Unfall: Reitschulgasse</IonCardTitle>
           </IonCardHeader>
 
           <IonCardContent>
@@ -51,11 +51,23 @@ const DangerAcute: FC<DangerAcuteProps> = ({ closeModal }) => {
               </p>
             </IonItem>
 
+            {/*
+            <IonItem lines="full" className="ion-item-no-padding">
+              <IonIcon icon={locationOutline} slot="start"></IonIcon>
+              <p className="description-title">
+                Letzte Meldung: &nbsp;
+                <b>27.10.2023 um 15:00 Uhr</b>
+              </p>
+            </IonItem>
+
+            
+            */}
+
             <IonItem lines="none">
               <IonIcon icon={cogOutline} slot="start"></IonIcon>
               <p className="description-title">Status: &nbsp;</p>
               <p className="description">
-                <b>Aktiv</b>
+                <b style={{ paddingLeft: "35px" }}>Aktiv</b>
               </p>
               <div className="status"></div>
             </IonItem>
