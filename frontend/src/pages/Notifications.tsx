@@ -1,11 +1,31 @@
-import { IonCard, IonCardHeader, IonContent, IonList, IonPage, IonText } from "@ionic/react"
+import {
+  IonButton,
+  IonCard,
+  IonCardHeader,
+  IonContent,
+  IonList,
+  IonPage,
+  IonText,
+} from "@ionic/react"
 
 import ToolBar from "../components/navigation/ToolBar"
 import Notification from "../components/Notification"
+import DangerAcute from "../components/DangerAcute"
 
 import "./Notifications.css"
+import { useState } from "react"
 
 const Notifications: React.FC = () => {
+  //The following code is for the AcuteDanger modal
+  const [showModal, setShowModal] = useState(false)
+
+  const openModal = () => {
+    setShowModal(true)
+  }
+  const closeModal = () => {
+    setShowModal(false)
+  }
+
   return (
     <IonPage>
       <IonContent>
@@ -82,6 +102,9 @@ const Notifications: React.FC = () => {
                 route="Arbeitsweg"
                 id={10}
               />
+              {/* Test DangerAcute Component */}
+              <IonButton onClick={openModal}>Akute Gefahrenstelle öffnen</IonButton>
+              {showModal && <DangerAcute closeModal={closeModal} />}
             </IonList>
           </div>
         </IonCard>
