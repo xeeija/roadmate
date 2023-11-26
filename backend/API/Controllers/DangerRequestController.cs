@@ -8,12 +8,11 @@ namespace API.Controllers;
 
 [Route("api/Danger/Request")]
 public class DangerRequestController : BaseController<DangerRequest, DangerRequestModel> {
+  private const int createDangerThreshold = 2;
+  private const int resolveDangerThreshold = 2;
 
   private readonly DangerRequestService dangerRequestService;
   private readonly DangerService dangerService;
-
-  private const int createDangerThreshold = 2;
-  private const int resolveDangerThreshold = 2;
 
   public DangerRequestController(GlobalService service, IHttpContextAccessor accessor) :
     base(service.DangerRequestService, accessor) {
@@ -24,7 +23,6 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
   }
 
   public override async Task<ActionResult<ItemResponseModel<DangerRequest>>> Create([FromBody] DangerRequestModel request) {
-
     // var result = await base.Create(request);
     var result = await Service.Create(request.ToEntity());
 
@@ -47,7 +45,6 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
     var distinctCount = requestsInRange.DistinctBy(dr => dr.UserId).Count();
 
     if (distinctCount >= createDangerThreshold) {
-
       var createdDanger = await dangerService.Create(new DangerModel {
         Type = DangerType.Temporary,
         // TODO: Middle point of all requests? Centroid or mean of coordinates maybe
@@ -63,12 +60,12 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
         createdDanger.ErrorMessages.Add("Unauthorized to create danger");
         return BadRequest(createdDanger);
       }
+
       if (createdDanger.HasError) {
         return BadRequest(createdDanger);
       }
 
       if (result?.Data != null && createdDanger.Data != null) {
-
         // TODO: Update many / UpdateRange -> BaseService
         foreach (var dr in requestsInRange) {
           dr.DangerId = createdDanger.Data.ID;
@@ -78,13 +75,11 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
     }
 
     return Created(result?.Data.ID.ToString() ?? "", result);
-
   }
 
   [HttpPost("Resolve")]
   public async Task<ActionResult<ItemResponseModel<DangerRequest>>> Resolve([FromBody] DangerResolveRequestModel request) {
-
-    var danger = await dangerService.Get(request.DangerId.ToString() ?? "", new() { "Requests" });
+    var danger = await dangerService.Get(request.DangerId.ToString() ?? "", new List<string> { "Requests" });
 
     if (!danger.IsAuthorized) {
       danger.ErrorMessages.Add("Unauthorized to create danger");
@@ -123,7 +118,5 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
     }
 
     return Ok(result);
-
   }
-
 }

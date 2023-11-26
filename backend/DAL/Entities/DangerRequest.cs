@@ -14,7 +14,6 @@ public class DangerRequest : Entity {
   public User User { get; set; }
   public DangerCategory Category { get; set; }
   public Danger? Danger { get; set; }
-
 }
 
 public enum RequestType {

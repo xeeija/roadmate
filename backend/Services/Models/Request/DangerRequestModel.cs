@@ -9,6 +9,7 @@ public class DangerRequestModel : IRequestModel<DangerRequest> {
   public double Lon { get; set; }
   public string Description { get; set; }
   public Guid CategoryId { get; set; }
+
   public DateTime? Timestamp { get; set; }
   // public Guid? DangerId { get; set; }
 
@@ -21,7 +22,7 @@ public class DangerRequestModel : IRequestModel<DangerRequest> {
       Lon = Lon,
       // DangerId = DangerId,
       CategoryId = CategoryId,
-      Description = Description,
+      Description = Description
     };
   }
 }

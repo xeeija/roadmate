@@ -18,7 +18,7 @@ public static class MathUtils {
   }
 
   /// <summary>
-  /// Use haversine formula to calculate great-circle distance between 2 points on a sphere
+  ///   Use haversine formula to calculate great-circle distance between 2 points on a sphere
   /// </summary>
   /// <param name="lat1"></param>
   /// <param name="lon1"></param>
@@ -26,7 +26,13 @@ public static class MathUtils {
   /// <param name="lon2"></param>
   /// <param name="sphereRadius"></param>
   /// <returns></returns>
-  public static double DistanceSpherical(double lat1, double lon1, double lat2, double lon2, double sphereRadius = EarthRadiusMeters) {
+  public static double DistanceSpherical(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+    double sphereRadius = EarthRadiusMeters
+  ) {
     return Math.Acos(
       Math.Sin(ToRadians(lat1)) * Math.Sin(ToRadians(lat2)) +
       Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *

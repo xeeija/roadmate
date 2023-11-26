@@ -17,7 +17,7 @@ public class DangerResolveRequestModel : IRequestModel<DangerRequest> {
       Lat = 0,
       Lon = 0,
       Description = "",
-      CategoryId = CategoryId ?? Guid.Empty,
+      CategoryId = CategoryId ?? Guid.Empty
     };
   }
 }

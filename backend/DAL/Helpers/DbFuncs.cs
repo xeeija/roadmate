@@ -1,4 +1,3 @@
-using System.Drawing;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Helpers;
@@ -23,6 +22,4 @@ public static class DbFuncs {
   public static double ToRadians(double value) {
     throw new NotSupportedException("This method is for use in LINQ queries only.");
   }
-
-
 }

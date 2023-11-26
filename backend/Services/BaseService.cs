@@ -72,7 +72,6 @@ public class BaseService<TEntity> where TEntity : Entity {
 
       throw;
     }
-
   }
 
   /// <summary>
