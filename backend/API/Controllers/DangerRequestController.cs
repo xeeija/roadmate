@@ -22,11 +22,15 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
 
   public override async Task<ActionResult<ItemResponseModel<DangerRequest>>> Create([FromBody] DangerRequestModel request) {
 
-    var result = await base.Create(request);
+    // var result = await base.Create(request);
+    var result = await Service.Create(request.ToEntity());
 
+    if (!result.IsAuthorized) {
+      return Forbid();
+    }
 
-    if ((result.Value?.HasError ?? true) || !(result.Value?.IsAuthorized ?? false)) {
-      return result;
+    if (result == null || result.Data == null || result.HasError) {
+      return BadRequest(result);
     }
 
     // Find any nearby danger that is pending
@@ -39,22 +43,28 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       // var dangersInRadius = await dangerRequestService.FindDangersInRadius(request.Lat, request.Lon);
 
       // var danger = dangersInRadius.Where(d => !d.IsActive && !d.IsResolved).FirstOrDefault();
-      var danger = (await dangerRequestService.FindDangersInRadius(request.Lat, request.Lon, d => !d.IsActive && !d.IsResolved)).FirstOrDefault();
 
-      if (danger == null) {
-        result.Value.ErrorMessages.Add("Danger is null");
-        return BadRequest(result.Value);
-      }
+      // TODO: Filter only recent danger requests (1-2h?)
+      var requestsInRange = await dangerRequestService.FindDangersInRadius(request.Lat, request.Lon, dr => dr.DangerId == null);
+      Log.Debug($"requests in range: {requestsInRange.Count} ({request.Lat}, {request.Lon})");
 
-      request.DangerId = danger.ID;
+      // if (danger == null) {
+      //   result.Value.ErrorMessages.Add("Danger is null");
+      //   return BadRequest(result.Value);
+      // }
 
-      // Update danger to active with current date
-      if (danger.Requests.Count >= dangerThreshold - 1) {
-        danger.ActiveAt = DateTime.UtcNow;
-        await dangerService.Update(danger);
-      }
+      // request.DangerId = danger.ID;
 
-      else {
+      // Create danger if enough requests are in range
+      var distinctCount = requestsInRange.DistinctBy(dr => dr.UserId).Count();
+
+      if (distinctCount >= dangerThreshold) {
+        //   danger.ActiveAt = DateTime.UtcNow;
+        //   await dangerService.Update(danger);
+        // }
+
+        // else {
+
         // Otherwise create a new pending danger
 
         // if (request.CategoryId == null) {
@@ -64,10 +74,13 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
 
         var createdDanger = await dangerService.Create(new DangerModel {
           Type = DangerType.Temporary,
+          // TODO: Middle point of all requests? Centroid or mean of coordinates maybe
           Lat = request.Lat,
           Lon = request.Lon,
+          // TODO: Category modal (most occurences)?
           CategoryId = request.CategoryId,
           Description = request.Description,
+          ActiveAt = DateTime.UtcNow
         }.ToEntity());
 
         if (!createdDanger.IsAuthorized) {
@@ -78,13 +91,18 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
           return BadRequest(createdDanger);
         }
 
-        if (result.Value.Data != null && createdDanger.Data != null) {
-          result.Value.Data.DangerId = createdDanger.Data.ID;
-          await dangerRequestService.Update(result.Value.Data);
+        if (result?.Data != null && createdDanger.Data != null) {
+
+          // result.Value.Data.DangerId = createdDanger.Data.ID;
+          // await dangerRequestService.Update(result.Value.Data);
+
+          // TODO: Update many / UpdateRange -> BaseService
+          foreach (var dr in requestsInRange) {
+            dr.DangerId = createdDanger.Data.ID;
+            await dangerRequestService.Update(result.Data);
+          }
         }
       }
-
-      return result;
     }
     else {
       // Resolve
@@ -101,18 +119,23 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       }
 
       if (danger.Data == null) {
-        result.Value.ErrorMessages.Add("Danger is null");
-        return BadRequest(result.Value);
+        result?.ErrorMessages.Add("Danger is null");
+        return BadRequest(result);
       }
 
-      if (danger.Data.Requests.Count >= dangerThreshold - 1) {
-        // Update danger to active with current date
+      var resolveRequests = danger.Data.Requests.Where(dr => dr.Type == RequestType.Resolve);
+      var distinctCount = resolveRequests.DistinctBy(dr => dr.UserId).Count();
+
+      // Resolve danger
+      if (distinctCount >= dangerThreshold) {
         danger.Data.ResolvedAt = DateTime.UtcNow;
         await dangerService.Update(danger.Data);
       }
 
-      return result;
     }
+
+    return Created(result?.Data.ID.ToString() ?? "", result);
+
   }
 
 }
