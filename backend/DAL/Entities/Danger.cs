@@ -16,6 +16,8 @@ public class Danger : Entity {
     ActiveAt != null && ActiveAt <= DateTime.UtcNow &&
     (ResolvedAt == null || ResolvedAt > DateTime.UtcNow);
 
+  public bool IsResolved => ResolvedAt != null && ResolvedAt > DateTime.UtcNow;
+
   // Forgein Keys
   public DangerCategory Category { get; set; }
 
