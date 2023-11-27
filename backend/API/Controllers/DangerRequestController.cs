@@ -30,7 +30,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       return Forbid();
     }
 
-    if (result == null || result.Data == null || result.HasError) {
+    if (result.Data == null || result.HasError) {
       return BadRequest(result);
     }
 
@@ -65,7 +65,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
         return BadRequest(createdDanger);
       }
 
-      if (result?.Data != null && createdDanger.Data != null) {
+      if (result.Data != null && createdDanger.Data != null) {
         // TODO: Update many / UpdateRange -> BaseService
         foreach (var dr in requestsInRange) {
           dr.DangerId = createdDanger.Data.ID;
@@ -74,12 +74,12 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       }
     }
 
-    return Created(result?.Data.ID.ToString() ?? "", result);
+    return Created(result.Data?.ID.ToString() ?? "", result);
   }
 
   [HttpPost("Resolve")]
   public async Task<ActionResult<ItemResponseModel<DangerRequest>>> Resolve([FromBody] DangerResolveRequestModel request) {
-    var danger = await dangerService.Get(request.DangerId.ToString() ?? "", new List<string> { "Requests" });
+    var danger = await dangerService.Get(request.DangerId.ToString(), new List<string> { "Requests" });
 
     if (!danger.IsAuthorized) {
       danger.ErrorMessages.Add("Unauthorized to create danger");
@@ -91,7 +91,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
     }
 
     if (danger.Data == null) {
-      danger?.ErrorMessages.Add("Danger is null");
+      danger.ErrorMessages.Add("Danger is null");
       return BadRequest(danger);
     }
 
@@ -104,7 +104,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       return Forbid();
     }
 
-    if (result == null || result.Data == null || result.HasError) {
+    if (result.Data == null || result.HasError) {
       return BadRequest(result);
     }
 
