@@ -22,6 +22,7 @@ import { UserService } from "../services/api/UserService"
 import { useParams } from "react-router-dom"
 import { User } from "../services/entities/User"
 import { UserContext } from "../components/ProtectedRoute"
+import AppStorage from "../services/AppStorage"
 
 const Profil: FC = () => {
   const userService = new UserService()
@@ -33,17 +34,21 @@ const Profil: FC = () => {
   let { profileUserId } = useParams<URLParams>()
   const [profileUser, setProfileUser] = useState<any>()
   //const [imageUri, setImageUri] = useState<string>('');
-
-  const currentUserToken = useContext(UserContext).currentUserToken
+  const userContext = useContext(UserContext)
+  const currentUserToken = userContext.currentUserToken
+  const currentUserId = userContext.currentUser?.id
+  const jwtStore = new AppStorage()
 
   useEffect(() => {
     const fetchData = async () => {
       //let profileUserId = "b1c945ed-61fe-4167-b128-1177f0d0cefd"
       //let currentUserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJiMWM5NDVlZC02MWZlLTQxNjctYjEyOC0xMTc3ZjBkMGNlZmQiLCJlbWFpbCI6ImNoZWZAY2hlZi5jaGVmIiwicm9sZSI6IlVzZXIiLCJuYmYiOjE2OTkxMTUxODUsImV4cCI6MTY5OTIwMTU4NSwiaWF0IjoxNjk5MTE1MTg1LCJpc3MiOiJodHRwOi8vcm9hZG1hdGUuY29tIiwiYXVkIjoiaHR0cDovL3JvYWRtYXRlLmNvbSJ9.txPgRnuD9zkKPwUMjWMeyG7JuIzttLJckLXXYNmMgxY"
       //debugger
-      if (profileUserId && currentUserToken) {
+      console.log(userContext)
+      //console.log(await jwtStore.get("user"))
+      if (currentUserId && currentUserToken) {
         try {
-          const userResponse = await userService.userGET(profileUserId, currentUserToken)
+          const userResponse = await userService.userGET(currentUserId, currentUserToken)
           setProfileUser(userResponse?.data)
           console.log(userResponse?.data)
         } catch (error) {

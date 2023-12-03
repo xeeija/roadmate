@@ -40,7 +40,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const authService = new AuthService("http://localhost:5211");
   const userService = new UserService("http://localhost:5211");
 
-  authService.login({email: "chef@chef.chef", password: "chef"}).then(response => {
+  authService.login({email: "test@mike.at", password: "test"}).then(response => {
     const token = jwtDecode(response.data?.authentication?.token ?? "")
     //console.log(token)
 
@@ -101,8 +101,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
       </UserContext.Provider>
     );
   } else {
-    //HIER NOCH AUF LOGIN ÄNDERN!!!!
-    return <>{isLoaded !== 0 && <Profil />}</>;
+    return <>{isLoaded !== 0 && <Login />}</>;
   }
 };
 export default ProtectedRoute;

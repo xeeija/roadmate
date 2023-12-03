@@ -14,7 +14,8 @@ export class UserService {
     http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
   ) {
     this.http = http ? http : (window as any)
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : ""
+    this.baseUrl =
+      baseUrl !== undefined && baseUrl !== null ? baseUrl : import.meta.env.VITE_API_URL ?? "" //URL of the API
   }
 
   /**
@@ -119,6 +120,7 @@ export class UserService {
       method: "GET",
       headers: {
         Accept: "text/plain",
+        Authorization: 'Bearer ' + token
       },
     }
 
