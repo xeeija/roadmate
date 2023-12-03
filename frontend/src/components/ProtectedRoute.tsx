@@ -8,6 +8,8 @@ import { Simulate } from 'react-dom/test-utils';
 import load = Simulate.load;
 import Login from '../pages/Login';
 import Profil from '../pages/Profil';
+import { jwtDecode } from 'jwt-decode';
+import AppStorage from '../services/AppStorage';
 
 
 interface ProtectedRouteProps {
@@ -38,6 +40,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const authService = new AuthService("http://localhost:5211");
   const userService = new UserService("http://localhost:5211");
 
+  authService.login({email: "chef@chef.chef", password: "chef"}).then(response => {
+    const token = jwtDecode(response.data?.authentication?.token ?? "")
+    //console.log(token)
+
+    const jwtStore = new AppStorage()
+          jwtStore.set("jwt_token", response.data?.authentication)
+          jwtStore.set("user", response.data?.user)       
+  })
+
   const [currentUser, setCurrentUser] = useState<User>();
   const [currentUserToken, setCurrentUserToken] = useState<string>('');
   const [currentUserRole, setCurrentUserRole] = useState<string>('');
@@ -55,7 +66,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
         setCurrentUserToken(token);
         setCurrentUserRole(role);
-        /*userService
+        userService
           .userGET(userId, token)
           .then(response => {
             const user = response.data;
@@ -65,12 +76,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           })
           .catch((error: any) => {
             //console.log('Ein Fehler ist aufgetreten.');
-            setIsLoaded(isLoaded + 1);
+            //setIsLoaded(isLoaded + 1);
             setCurrentUser({});
             setCurrentUserToken('');
-          });*/
+          });
       } else {
-        setIsLoaded(isLoaded + 1);
+        //IsLoaded(isLoaded + 1);
       }
     });
   }, [isLoaded]);

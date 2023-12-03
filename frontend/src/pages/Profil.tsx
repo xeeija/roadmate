@@ -45,7 +45,7 @@ const Profil: FC = () => {
         try {
           const userResponse = await userService.userGET(profileUserId, currentUserToken)
           setProfileUser(userResponse?.data)
-          //console.log(userResponse?.data)
+          console.log(userResponse?.data)
         } catch (error) {
           //console.log(error)
         }
