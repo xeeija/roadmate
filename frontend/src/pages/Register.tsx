@@ -10,28 +10,65 @@ import {
   IonText,
 } from "@ionic/react"
 
+import { useHistory } from "react-router-dom"
 import { useState } from "react"
 
-import logo from "../resources/logo/Logo1.svg"
+import AppStorage from "../services/AppStorage"
+import { AuthService } from "../services/AuthService"
 
+import logo from "../resources/logo/Logo1.svg"
 import "./Onboarding.css"
 
+/* tslint:disable */
+/* eslint-disable */
+
 const Register: React.FC = () => {
+  const history = useHistory()
+
+  // Variables for the register form
   const [username, setUsername] = useState<string>("")
   const [email, setEmail] = useState<string>("")
   const [password_1, setPassword_1] = useState<string>("")
   const [password_2, setPassword_2] = useState<string>("")
-  // const [password, setPassword] = useState<string>("")
+  const [isExpert, setIsExpert] = useState<boolean>(false)
   const [description, setDescription] = useState<string>("")
 
-  const [isExpert, setIsExpert] = useState<boolean>(false)
+  // TODO: Check if password_1 and password_2 match, change it in registerData
+  // const [passwordMatch, setPasswordMatch] = useState<boolean>(false)
+  // const [password, setPassword] = useState<string>("")
 
-  // const registerData = {
-  //   username: username,
-  //   email: email,
-  //   password: password,
-  //   description: description,
-  // }
+  // AUTH SERVICE AND REGISTER
+  const authService = new AuthService()
+  const [responseError, setResponseError] = useState<string>()
+
+  const handleRegister = async () => {
+    const registerData = {
+      username: username,
+      email: email,
+      password: password_1,
+      isExpert: isExpert,
+      description: description,
+    }
+
+    //console.log(registerData)
+
+    authService
+      .register(registerData)
+      .then((response: any) => {
+        const data = response?.data
+        const jwtStore = new AppStorage()
+        if (data) {
+          setResponseError("")
+          jwtStore.set("jwt_token", data.authenticationInformation)
+          jwtStore.set("user", data.user)
+          history.push(`/homescreen`)
+        }
+      })
+      .catch((error: any) => {
+        setResponseError(error.errorMessages)
+        console.log(responseError)
+      })
+  }
 
   return (
     <IonPage>
@@ -124,7 +161,13 @@ const Register: React.FC = () => {
               </IonItem>
             )}
 
-            <IonButton expand="block" size="small" className="login-button lowercase">
+            <IonButton
+              expand="block"
+              size="small"
+              className="login-button lowercase"
+              onClick={handleRegister}
+              //disabled={!passwordMatch || !email || !username}
+            >
               <IonText>Registrieren</IonText>
             </IonButton>
 
