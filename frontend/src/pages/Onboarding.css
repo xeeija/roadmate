@@ -40,6 +40,13 @@
   width: 70%;
 }
 
+.error-message {
+  color: red;
+  font-size: 12px;
+  padding-top: 5px;
+  padding-left: 15px;
+}
+
 .divider-container {
   display: flex;
   margin-top: 5px;

@@ -1,3 +1,6 @@
+/* tslint:disable */
+/* eslint-disable */
+
 import {
   IonButton,
   IonCard,
@@ -12,33 +15,37 @@ import {
 import { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
+//Formik: https://formik.org/docs
+import { Formik } from "formik"
+import * as yup from "yup"
+
 import AppStorage from "../services/AppStorage"
 import { AuthService } from "../services/AuthService"
 
 import logo from "../resources/logo/Logo1.svg"
 import "./Onboarding.css"
 
-/* tslint:disable */
-/* eslint-disable */
-
 const Login: React.FC = () => {
   const history = useHistory()
-
-  // Variables for the login form
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
 
   // AUTH SERVICE UND LOGIN
   const authService = new AuthService()
   const [responseError, setResponseError] = useState<string>()
 
-  const handleLogin = async () => {
-    const loginData = {
-      email: email,
-      password: password,
-    }
+  // Validation Schema for the login form
+  const validationSchema = yup.object({
+    email: yup
+      .string()
+      .email("Bitte eine gültige E-Mail-Adresse eingeben")
+      .required("E-Mail-Adresse ist erforderlich"),
+    password: yup
+      .string()
+      .min(6, "Das Passwort muss mindestens 6 Zeichen lang sein")
+      .required("Passwort ist erforderlich"),
+  })
 
-    //console.log(loginData)
+  const handleLogin = async (loginData: any) => {
+    console.log(loginData)
 
     authService
       .login(loginData)
@@ -54,8 +61,8 @@ const Login: React.FC = () => {
         }
       })
       .catch((error: any) => {
-        setResponseError(error.errorMessages)
-        console.log(responseError)
+        setResponseError("Ungültige E-Mail-Adresse oder Passwort. Bitte versuche es erneut.")
+        //console.log(error.errorMessages)
       })
   }
 
@@ -68,51 +75,71 @@ const Login: React.FC = () => {
           </div>
 
           <IonCardContent>
-            <IonItem color="white" lines="inset">
-              <IonInput
-                className="color-text"
-                type="email"
-                label="E-Mail"
-                labelPlacement="floating"
-                placeholder="Enter E-Mail"
-                clearInput={true}
-                name="email"
-                value={email}
-                onIonChange={(e) => setEmail(e.detail.value!)}
-              ></IonInput>
-            </IonItem>
-
-            <IonItem color="white" lines="inset">
-              <IonInput
-                className="color-text"
-                type="password"
-                label="Passwort"
-                labelPlacement="floating"
-                placeholder="Enter Password"
-                clearInput={true}
-                name="password"
-                value={password}
-                onIonChange={(e) => setPassword(e.detail.value!)}
-              ></IonInput>
-            </IonItem>
-
-            <Link to={"/reset-password"} className="reset-password">
-              Password vergessen?
-            </Link>
-
-            <br />
-
-            <IonButton
-              expand="block"
-              size="small"
-              className="login-button lowercase"
-              onClick={() => handleLogin()}
-              // Bug --> State wird erst nach Click aktualisiert
-              // onClick={() => setTimeout(() => handleLogin(), 50)}
-              // disabled={!email || !password}
+            {responseError && <p className="error-message">{responseError}</p>}
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              validationSchema={validationSchema}
+              onSubmit={(values) => {
+                handleLogin(values)
+              }}
             >
-              <IonText>Login</IonText>
-            </IonButton>
+              {(formikProps) => (
+                <form onSubmit={formikProps.handleSubmit}>
+                  {/* email input */}
+                  <IonItem color="white" lines="inset" id="emailField">
+                    <IonInput
+                      className="color-text"
+                      type="email"
+                      id="emailInput"
+                      label="E-Mail"
+                      labelPlacement="floating"
+                      placeholder="Enter E-Mail"
+                      name="email"
+                      value={formikProps.values.email}
+                      onIonChange={formikProps.handleChange}
+                      onBlur={formikProps.handleBlur}
+                    ></IonInput>
+                  </IonItem>
+                  <p className="error-message">
+                    {formikProps.touched.email && formikProps.errors.email}
+                  </p>
+
+                  {/* password input */}
+                  <IonItem color="white" lines="inset" id="passwordField">
+                    <IonInput
+                      className="color-text"
+                      type="password"
+                      id="passwordInput"
+                      label="Passwort"
+                      labelPlacement="floating"
+                      placeholder="Enter Password"
+                      name="password"
+                      value={formikProps.values.password}
+                      onIonChange={formikProps.handleChange}
+                      onBlur={formikProps.handleBlur}
+                    ></IonInput>
+                  </IonItem>
+                  <p className="error-message">
+                    {formikProps.touched.password && formikProps.errors.password}
+                  </p>
+
+                  <Link to={"/reset-password"} className="reset-password">
+                    Password vergessen?
+                  </Link>
+
+                  <br />
+
+                  <IonButton
+                    expand="block"
+                    size="small"
+                    className="login-button lowercase"
+                    type="submit"
+                  >
+                    <IonText>Login</IonText>
+                  </IonButton>
+                </form>
+              )}
+            </Formik>
 
             <div className="divider-container">
               <div className="divider"></div>
