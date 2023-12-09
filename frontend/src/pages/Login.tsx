@@ -94,6 +94,7 @@ const Login: React.FC = () => {
                       label="E-Mail"
                       labelPlacement="floating"
                       placeholder="Enter E-Mail"
+                      clearInput={true}
                       name="email"
                       value={formikProps.values.email}
                       onIonChange={formikProps.handleChange}
@@ -113,6 +114,7 @@ const Login: React.FC = () => {
                       label="Passwort"
                       labelPlacement="floating"
                       placeholder="Enter Password"
+                      clearInput={true}
                       name="password"
                       value={formikProps.values.password}
                       onIonChange={formikProps.handleChange}
