@@ -15,7 +15,6 @@ import Homescreen from "./pages/Homescreen"
 import Login from "./pages/Login"
 import Notifications from "./pages/Notifications"
 import PasswordReset from "./pages/PasswordReset"
-import Tab3 from "./pages/Profil"
 import Register from "./pages/Register"
 import SavedRoutes from "./pages/SavedRoutes"
 import Tab2 from "./pages/Tab2"
@@ -39,6 +38,7 @@ import "@ionic/react/css/text-transformation.css"
 /* Theme variables */
 import ProtectedRoute from "./components/ProtectedRoute"
 import Gefahrenstellen from "./pages/DangerZones"
+import Profil from "./pages/Profil"
 import "./theme/global.css"
 import "./theme/variables.css"
 
@@ -81,8 +81,8 @@ const App: React.FC = () => (
               <Route exact path="/tab2">
                 <Tab2 />
               </Route>
-              <Route path="/tab3">
-                <Tab3 />
+              <Route path="/profil">
+                <Profil />
               </Route>
               <Route exact path="/">
                 <Redirect to="/homescreen" />
@@ -96,7 +96,7 @@ const App: React.FC = () => (
               <IonTabButton tab="tab2" href="/saved-routes">
                 <IonIcon className="menu-icon" aria-hidden="true" icon={map} />
               </IonTabButton>
-              <IonTabButton tab="tab3" href="/tab3">
+              <IonTabButton tab="tab3" href="/profil">
                 <IonIcon className="menu-icon" aria-hidden="true" icon={personCircle} />
               </IonTabButton>
             </IonTabBar>

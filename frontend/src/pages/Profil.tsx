@@ -118,7 +118,7 @@ const Profil: FC = () => {
                   label="eMail"
                   labelPlacement="floating"
                   placeholder="michael@kohlmeier.de"
-                  value="michael@kohlmeier.de"
+                  value={profileUser?.email}
                   disabled
                 ></IonInput>
               </IonItem>
@@ -129,21 +129,12 @@ const Profil: FC = () => {
                   label="Passwort"
                   labelPlacement="floating"
                   placeholder="test1234"
-                  value="test1234"
+                  value="********"
                   disabled
                 ></IonInput>
               </IonItem>
               <br />
-              <IonItem className="backgroundInput">
-                <IonInput
-                  type="password"
-                  label="Passwort wiederholen"
-                  labelPlacement="floating"
-                  placeholder="test1234"
-                  value="test1234"
-                  disabled
-                ></IonInput>
-              </IonItem>
+            
               <br />
               <IonItem className="backgroundInput">
                 <IonToggle style={{ marginTop: "5px", marginBottom: "5px" }} checked={true}>

@@ -108,7 +108,6 @@ export class UserService {
    */
   userGET(
     id: string,
-    x_API_Version: string | undefined,
     token?: string
   ): Promise<UserItemResponseModel> {
     let url_ = this.baseUrl + "/api/User/{id}"
