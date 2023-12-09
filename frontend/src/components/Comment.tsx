@@ -1,6 +1,6 @@
 import { IonAvatar, IonCol, IonGrid, IonIcon, IonImg, IonRow } from "@ionic/react"
 import { arrowRedo, informationCircle } from "ionicons/icons"
-import React from "react"
+import { FC } from "react"
 
 interface CommentProps {
   data: Array<{
@@ -11,7 +11,7 @@ interface CommentProps {
   }>
 }
 
-const Comment: React.FC<CommentProps> = ({ data }) => {
+const Comment: FC<CommentProps> = ({ data }) => {
   return (
     <IonGrid className="backgroundCard">
       {data.map((item, index) => (

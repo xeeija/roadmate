@@ -1,9 +1,9 @@
 import { IonContent, IonPage } from "@ionic/react"
-
-import ToolBar from "../components/navigation/ToolBar"
+import { FC } from "react"
 import SavedRoute from "../components/SavedRoute"
+import ToolBar from "../components/navigation/ToolBar"
 
-const SavedRoutes: React.FC = () => {
+const SavedRoutes: FC = () => {
   return (
     <IonPage>
       <IonContent>

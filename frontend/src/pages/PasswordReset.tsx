@@ -8,14 +8,11 @@ import {
   IonPage,
   IonText,
 } from "@ionic/react"
-
-import { useState } from "react"
-
+import { FC, useState } from "react"
 import logo from "../resources/logo/Logo1.svg"
-
 import "./Onboarding.css"
 
-const ResetPassword: React.FC = () => {
+const ResetPassword: FC = () => {
   const [email, setEmail] = useState<string>("")
 
   return (
