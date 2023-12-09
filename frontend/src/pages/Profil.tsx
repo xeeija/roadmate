@@ -16,8 +16,10 @@ import {
 } from "@ionic/react"
 import { chevronForward, exitOutline, notifications } from "ionicons/icons"
 import { FC, useContext, useEffect, useState } from "react"
+import { useHistory } from "react-router"
 import { UserContext } from "../components/ProtectedRoute"
 import ToolBar from "../components/navigation/ToolBar"
+import AppStorage from "../services/AppStorage"
 import { UserService } from "../services/api/UserService"
 import { User } from "../services/entities/User"
 import "./Profil.css"
@@ -45,6 +47,16 @@ const Profile: FC = () => {
 
     void fetchData()
   }, [])
+
+  const history = useHistory()
+
+  const handleLogout = async () => {
+    const jwtStore = new AppStorage()
+    await jwtStore.remove("jwt_token")
+    await jwtStore.remove("user")
+
+    history.push("/login")
+  }
 
   return (
     <IonPage>
@@ -131,7 +143,12 @@ const Profile: FC = () => {
               <IonButton style={{ marginBottom: "20px" }} className="buttonSize" expand="block">
                 Profil speichern
               </IonButton>
-              <IonButton className="buttonSize" fill="outline" expand="block">
+              <IonButton
+                className="buttonSize"
+                fill="outline"
+                expand="block"
+                onClick={() => void handleLogout()}
+              >
                 Logout
                 <IonIcon
                   icon={exitOutline}
