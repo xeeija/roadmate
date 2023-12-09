@@ -9,12 +9,16 @@ import {
 } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
 import { home, map, personCircle } from "ionicons/icons"
+import { FC } from "react"
 import { Redirect, Route, Switch } from "react-router-dom"
+import ProtectedRoute from "./components/ProtectedRoute"
 import CreateDanger from "./pages/CreateDanger"
+import Gefahrenstellen from "./pages/DangerZones"
 import Homescreen from "./pages/Homescreen"
 import Login from "./pages/Login"
 import Notifications from "./pages/Notifications"
 import PasswordReset from "./pages/PasswordReset"
+import Profil from "./pages/Profil"
 import Register from "./pages/Register"
 import SavedRoutes from "./pages/SavedRoutes"
 import Tab2 from "./pages/Tab2"
@@ -36,15 +40,12 @@ import "@ionic/react/css/text-alignment.css"
 import "@ionic/react/css/text-transformation.css"
 
 /* Theme variables */
-import ProtectedRoute from "./components/ProtectedRoute"
-import Gefahrenstellen from "./pages/DangerZones"
-import Profil from "./pages/Profil"
 import "./theme/global.css"
 import "./theme/variables.css"
 
 setupIonicReact()
 
-const App: React.FC = () => (
+const App: FC = () => (
   <IonApp>
     <IonReactRouter>
       {/* Switch helps not to display the Taskbar (IonTabBar) in Login, Register and PasswordReset */}

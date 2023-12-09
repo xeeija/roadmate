@@ -1,10 +1,12 @@
+import { jwtDecode } from "jwt-decode"
+import { JwtToken } from "../types"
 import AppStorage from "./AppStorage"
+import { AuthenticationInformation } from "./entities/AuthenticationInformation"
 import { ProblemDetails } from "./entities/ProblemDetails"
 import { LoginRequest } from "./entities/request/LoginRequest"
 import { RegisterRequest } from "./entities/request/RegisterRequest"
 import { UserResponseItemResponseModel } from "./entities/response/UserResponseItemResponseModel"
 import { throwException } from "./error/throwException"
-import { jwtDecode } from "jwt-decode"
 
 export class AuthService {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
@@ -131,7 +133,7 @@ export class AuthService {
     try {
       const storage = new AppStorage()
       const promiseResult = await storage.get("jwt_token")
-      const decToken: any = this.decodeToken(promiseResult.token)
+      const decToken = this.decodeToken(promiseResult.token)
       //console.log(decToken)
       return decToken?.role
     } catch (error) {
@@ -140,13 +142,13 @@ export class AuthService {
     }
   }
 
-  public decodeToken = (token: string) => jwtDecode(token)
+  public decodeToken = <T = JwtToken>(token: string) => jwtDecode<T>(token)
 
   public async getUserIdFromAuthInfoAppStorage() {
     try {
       const storage = new AppStorage()
       const promiseResult = await storage.get("jwt_token")
-      const decToken: any = this.decodeToken(promiseResult.token)
+      const decToken = this.decodeToken(promiseResult.token)
       return decToken?.nameid || null
     } catch (error) {
       //console.error('Error retrieving user ID:', error);
@@ -158,7 +160,7 @@ export class AuthService {
     try {
       const storage = new AppStorage()
       const promiseResult = await storage.get("jwt_token")
-      return promiseResult?.token || null
+      return <string>promiseResult?.token || null
     } catch (error) {
       //console.error('Error retrieving token:', error);
       return null
@@ -169,25 +171,38 @@ export class AuthService {
     try {
       const storage = new AppStorage()
       const promiseResult = await storage.get("jwt_token")
-      const decToken: any = this.decodeToken(promiseResult.token)
-      return [decToken?.nameid || null, promiseResult?.token || null, decToken?.role || null]
+      const decToken = this.decodeToken(promiseResult.token)
+      return [
+        decToken?.nameid || null,
+        promiseResult?.token || null,
+        decToken?.role || null,
+      ] as const
     } catch (error) {
       //console.error('Error retrieving user ID and token:', error);
-      return [null, null, null]
+      return [null, null, null] as const
     }
   }
 
+  /**
+   * Get current user from local storage.
+   * @return A tuple with [userId, token, role]
+   */
   public async getUserIdAndTokenAndRoleFromAuthInfoAppStorage() {
     try {
       const storage = new AppStorage()
-      const promiseResult = await storage.get("jwt_token")
+      const promiseResult: AuthenticationInformation = await storage.get("jwt_token")
       //console.log(promiseResult)
-      const decToken: any = this.decodeToken(promiseResult.token)
-      //console.log(decToken)
-      return [decToken?.nameid || null, promiseResult?.token || null, decToken?.role || null]
+      const decToken = this.decodeToken(promiseResult?.token ?? "")
+
+      // console.log("decToken", decToken)
+      return [
+        decToken?.nameid || null,
+        promiseResult?.token || null,
+        decToken?.role || null,
+      ] as const
     } catch (error) {
-      //console.error('Error retrieving user ID and token:', error);
-      return [null, null, null]
+      console.error("Error retrieving user ID and token:", error)
+      return [null, null, null] as const
     }
   }
 
@@ -255,4 +270,3 @@ export class AuthService {
     return Promise.resolve<UserResponseItemResponseModel>(null as any)
   }
 }
-
