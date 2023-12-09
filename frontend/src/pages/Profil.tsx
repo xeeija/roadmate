@@ -73,7 +73,7 @@ const Profil: FC = () => {
             <IonList>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <IonAvatar style={{ width: "120px", height: "120px", marginBottom: "9px" }}>
-                  <IonImg src="https://i.pravatar.cc/300?u=b" />
+                <IonImg src={`https://api.dicebear.com/7.x/personas/svg?seed=${profileUser?.username}`} />
                 </IonAvatar>
               </div>
               <IonItem className="backgroundInput" style={{ marginTop: "15px" }}>
