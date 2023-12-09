@@ -13,14 +13,12 @@ const createRoutineMachineLayer = () => {
     show: false,
     autoRoute: true,
     addWaypoints: false,
-    routeWhileDragging: true,
+    routeWhileDragging: false,
     fitSelectedRoutes: true,
     showAlternatives: true,
     extendToWaypoints: true,
     missingRouteTolerance: true,
   });
-
-
 
   return instance;
 };

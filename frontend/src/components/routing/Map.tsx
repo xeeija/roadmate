@@ -2,10 +2,11 @@ import React, {useEffect, useState} from "react";
 import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
 import RoutineMachine from "./RoutingMachine";
 import "../../pages/Homescreen.css";
-import {IonContent, IonPage} from "@ionic/react";
+import {IonButton, IonContent, IonIcon, IonPage} from "@ionic/react";
 import * as L from "leaflet";
 import DATemporary from "../../resources/DATemporary.svg";
 import DAPermanent from "../../resources/DAPermanent.svg";
+import {warningSharp} from "ionicons/icons";
 
 const Map = () => {
   const [renderMap, setRenderMap] = useState(false)
@@ -89,6 +90,7 @@ const Map = () => {
           </div>
         )}
       </IonContent>
+      <IonButton className="createDangerButton" ><a href="/createDanger" style={{ color:"white", textDecoration: "none"}}><IonIcon icon={warningSharp} className="createDangerIcon" /></a></IonButton>
     </IonPage>
   );
 };

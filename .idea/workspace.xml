@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="afe9d172-343b-4618-bfa5-a3d13ea58cf8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.tsx" afterDir="false" />
+    <list default="true" id="afe9d172-343b-4618-bfa5-a3d13ea58cf8" name="Changes" comment="114: refactor map">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/Homescreen.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Homescreen.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Homescreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Homescreen.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +23,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="65-menuComponent" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -58,9 +62,21 @@
       <updated>1696961485016</updated>
       <workItem from="1696961488014" duration="45000" />
     </task>
+    <task id="LOCAL-00001" summary="114: refactor map">
+      <created>1702140442186</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1702140442186</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="114: refactor map" />
+    <option name="LAST_COMMIT_MESSAGE" value="114: refactor map" />
   </component>
 </project>
