@@ -72,7 +72,7 @@ const Register: React.FC = () => {
         const jwtStore = new AppStorage()
         if (data) {
           setResponseError("")
-          jwtStore.set("jwt_token", data.authenticationInformation)
+          jwtStore.set("jwt_token", data.authentication)
           jwtStore.set("user", data.user)
           history.push(`/homescreen`)
         }

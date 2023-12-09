@@ -55,7 +55,7 @@ const Login: React.FC = () => {
         if (data) {
           setResponseError("")
           console.log(data)
-          jwtStore.set("jwt_token", data.authenticationInformation)
+          jwtStore.set("jwt_token", data.authentication)
           jwtStore.set("user", data.user)
           history.push("/homescreen")
         }
