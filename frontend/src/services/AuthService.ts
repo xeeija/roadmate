@@ -191,7 +191,12 @@ export class AuthService {
     try {
       const storage = new AppStorage()
       const promiseResult: AuthenticationInformation = await storage.get("jwt_token")
-      //console.log(promiseResult)
+      // console.log("auth", promiseResult)
+
+      if (!promiseResult?.token) {
+        return [null, null, null] as const
+      }
+
       const decToken = this.decodeToken(promiseResult?.token ?? "")
 
       // console.log("decToken", decToken)

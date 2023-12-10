@@ -1,4 +1,5 @@
 import { createContext, FC, ReactNode, useEffect, useState } from "react"
+import { useHistory } from "react-router"
 import Login from "../pages/Login"
 import { UserService } from "../services/api/UserService"
 import { AuthService } from "../services/AuthService"
@@ -33,7 +34,9 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User>()
   const [currentUserToken, setCurrentUserToken] = useState<string | null>(null)
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null)
-  const [isLoaded, setIsLoaded] = useState<number>(0)
+  const [isLoaded] = useState<number>(0)
+
+  const history = useHistory()
 
   useEffect(() => {
     void authService.getUserIdAndTokenAndRoleFromAuthInfoAppStorage().then((values) => {
@@ -41,11 +44,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
       const [userId, token, role] = values
 
       if (userId && token && role) {
-        // const userId = values[0]
-        // //console.log(userId)
-        // const token: any = values[1]
-        // const role: any = values[2]
-        console.log(token)
+        // console.log(token)
 
         setCurrentUserToken(token)
         setCurrentUserRole(role)
@@ -56,16 +55,21 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
             const user = response.data
             if (user) {
               setCurrentUser(user)
+            } else {
+              // console.log("redirect login")
+              history.push("/login")
             }
           })
-          .catch(() => {
-            //console.log('Ein Fehler ist aufgetreten.');
+          .catch((err) => {
+            console.error("error fetching user", err)
             //setIsLoaded(isLoaded + 1);
             setCurrentUser(undefined)
             setCurrentUserToken(null)
+            history.push("/login")
           })
       } else {
-        setIsLoaded(1)
+        // setIsLoaded(1)
+        history.push("/login")
       }
     })
   }, [isLoaded])
@@ -87,6 +91,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
     )
   } else {
     return <>{isLoaded !== 0 && <Login />}</>
+    // return <>{isLoaded !== 0 && null}</>
   }
 }
 
