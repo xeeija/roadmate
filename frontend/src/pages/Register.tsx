@@ -4,70 +4,92 @@ import {
   IonCardContent,
   IonCheckbox,
   IonContent,
-  IonInput,
   IonItem,
   IonPage,
   IonText,
 } from "@ionic/react"
-
-import { useHistory } from "react-router-dom"
+import { Form, Formik } from "formik" //Formik: https://formik.org/docs
 import { useState } from "react"
-
+import { useHistory } from "react-router-dom"
+import * as yup from "yup"
+import { Input } from "../components/Input"
+import logo from "../resources/logo/Logo1.svg"
 import AppStorage from "../services/AppStorage"
 import { AuthService } from "../services/AuthService"
-
-import logo from "../resources/logo/Logo1.svg"
 import "./Onboarding.css"
 
-/* tslint:disable */
-/* eslint-disable */
+interface RegisterData {
+  username: string
+  email: string
+  password: string
+  passwordConfirm: string
+  isExpert: boolean
+  description?: string
+}
 
 const Register: React.FC = () => {
   const history = useHistory()
-
-  // Variables for the register form
-  const [username, setUsername] = useState<string>("")
-  const [email, setEmail] = useState<string>("")
-  const [password_1, setPassword_1] = useState<string>("")
-  const [password_2, setPassword_2] = useState<string>("")
-  const [isExpert, setIsExpert] = useState<boolean>(false)
-  const [description, setDescription] = useState<string>("")
-
-  // TODO: Check if password_1 and password_2 match, change it in registerData
-  // const [passwordMatch, setPasswordMatch] = useState<boolean>(false)
-  // const [password, setPassword] = useState<string>("")
 
   // AUTH SERVICE AND REGISTER
   const authService = new AuthService()
   const [responseError, setResponseError] = useState<string>()
 
-  const handleRegister = async () => {
-    const registerData = {
-      username: username,
-      email: email,
-      password: password_1,
-      isExpert: isExpert,
-      description: description,
-    }
+  // Validation Schema for the register form
+  const validationSchema = yup.object({
+    username: yup
+      .string()
+      .min(3, "Der Benutzername muss mindestens 3 Zeichen lang sein")
+      .required("Benutzername ist erforderlich"),
+    email: yup
+      .string()
+      .email("Bitte eine gültige E-Mail-Adresse eingeben")
+      .required("E-Mail-Adresse ist erforderlich"),
+    password: yup
+      .string()
+      .min(6, "Das Passwort muss mindestens 6 Zeichen lang sein")
+      .required("Passwort ist erforderlich"),
+    passwordConfirm: yup
+      .string()
+      .oneOf([yup.ref("password")], "Passwörter müssen übereinstimmen")
+      .required("Passwortwiederholung ist erforderlich"),
+  })
 
+  const initialValues: RegisterData = {
+    username: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+    isExpert: false,
+    description: "",
+  }
+
+  const handleRegister = async (registerData: RegisterData) => {
+    // const { username, email, password, isExpert, description } = registerData
+
+    // const registerData = {
+    //   username,
+    //   email,
+    //   password: password,
+    //   requestExpert: isExpert,
+    //   expertDescription: isExpert ? description : "",
+    // }
     //console.log(registerData)
 
-    authService
-      .register(registerData)
-      .then((response: any) => {
-        const data = response?.data
-        const jwtStore = new AppStorage()
-        if (data) {
-          setResponseError("")
-          jwtStore.set("jwt_token", data.authenticationInformation)
-          jwtStore.set("user", data.user)
-          history.push(`/homescreen`)
-        }
-      })
-      .catch((error: any) => {
-        setResponseError(error.errorMessages)
-        console.log(responseError)
-      })
+    try {
+      const response = await authService.register(registerData)
+
+      const data = response?.data
+      const jwtStore = new AppStorage()
+      if (data) {
+        setResponseError("")
+        await jwtStore.set("jwt_token", data.authentication)
+        await jwtStore.set("user", data.user)
+        history.push(`/homescreen`)
+      }
+    } catch (error) {
+      setResponseError("Ungültige Daten. Bitte überprüfen Sie Ihre Eingaben.")
+      console.error("Register error", error)
+    }
   }
 
   return (
@@ -79,97 +101,71 @@ const Register: React.FC = () => {
           </div>
 
           <IonCardContent>
-            <IonItem color="white" lines="inset">
-              <IonInput
-                className="color-text"
-                type="text"
-                label="Username"
-                labelPlacement="floating"
-                placeholder="Enter Username"
-                clearInput={true}
-                name="username"
-                value={username}
-                onIonChange={(e) => setUsername(e.detail.value!)}
-              ></IonInput>
-            </IonItem>
-
-            <IonItem color="white" lines="inset">
-              <IonInput
-                className="color-text"
-                type="email"
-                label="E-Mail"
-                labelPlacement="floating"
-                placeholder="Enter E-Mail"
-                clearInput={true}
-                name="email"
-                value={email}
-                onIonChange={(e) => setEmail(e.detail.value!)}
-              ></IonInput>
-            </IonItem>
-
-            <IonItem color="white" lines="inset">
-              <IonInput
-                className="color-text"
-                type="password"
-                label="Passwort"
-                labelPlacement="floating"
-                placeholder="Enter Password"
-                clearInput={true}
-                name="password"
-                value={password_1}
-                onIonChange={(e) => setPassword_1(e.detail.value!)}
-              ></IonInput>
-            </IonItem>
-
-            <IonItem color="white" lines="inset">
-              <IonInput
-                className="color-text"
-                type="password"
-                label="Passwort wiederholen"
-                labelPlacement="floating"
-                placeholder="Enter Password again"
-                clearInput={true}
-                name="password"
-                value={password_2}
-                onIonChange={(e) => setPassword_2(e.detail.value!)}
-              ></IonInput>
-            </IonItem>
-
-            <IonItem color="white" lines="none">
-              <IonCheckbox
-                justify="space-between"
-                className="checkbox"
-                value={isExpert}
-                onIonChange={(e) => setIsExpert(e.detail.checked)}
-              >
-                Als Experte registrieren
-              </IonCheckbox>
-            </IonItem>
-
-            {isExpert && (
-              <IonItem color="white" lines="none">
-                <IonInput
-                  className="expert-description"
-                  type="text"
-                  label="Warum bist du ein Experte?"
-                  labelPlacement="floating"
-                  placeholder="Describe your expertise"
-                  name="description"
-                  value={description}
-                  onIonChange={(e) => setDescription(e.detail.value!)}
-                ></IonInput>
-              </IonItem>
-            )}
-
-            <IonButton
-              expand="block"
-              size="small"
-              className="login-button lowercase"
-              onClick={handleRegister}
-              //disabled={!passwordMatch || !email || !username}
+            {responseError && <p className="error-message">{responseError}</p>}
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={(values) => {
+                //console.log(values)
+                void handleRegister(values)
+              }}
             >
-              <IonText>Registrieren</IonText>
-            </IonButton>
+              {({ values, isValid, dirty, getFieldProps, setFieldValue }) => (
+                <Form>
+                  {/* username input */}
+                  <Input name="username" label="Username" />
+
+                  {/* email input */}
+                  <Input name="email" type="email" label="Email" placeholder="your@email.com" />
+
+                  {/* password input */}
+                  <Input name="password" type="password" label="Passwort" />
+
+                  {/* passwordConfirm input */}
+                  <Input name="passwordConfirm" type="password" label="Passwort wiederholen" />
+
+                  {/* isExpert checkbox */}
+                  <IonItem
+                    color="white"
+                    lines="none"
+                    id="isExpert_Field"
+                    style={{ marginTop: "1rem" }}
+                  >
+                    <IonCheckbox
+                      justify="space-between"
+                      className="checkbox"
+                      {...getFieldProps("isExpert")}
+                      onIonChange={(e) => {
+                        // Manually update Formik's state for description field
+                        void setFieldValue("isExpert", e.detail.checked)
+                      }}
+                    >
+                      Als Experte registrieren
+                    </IonCheckbox>
+                  </IonItem>
+
+                  {values.isExpert && (
+                    <Input
+                      multiline
+                      name="description"
+                      label="Warum bist du ein Experte?"
+                      placeholder="Erzähl uns etwas über dich."
+                      className="expert-description"
+                    />
+                  )}
+
+                  <IonButton
+                    expand="block"
+                    size="small"
+                    className="login-button lowercase"
+                    type="submit"
+                    disabled={!isValid || !dirty}
+                  >
+                    <IonText>Registrieren</IonText>
+                  </IonButton>
+                </Form>
+              )}
+            </Formik>
 
             <div className="divider-container">
               <div className="divider"></div>
