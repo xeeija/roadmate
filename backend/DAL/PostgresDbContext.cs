@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using DAL.Entities;
+using DAL.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Utils;
@@ -47,8 +48,16 @@ public class PostgresDbContext : DbContext {
   protected override void OnModelCreating(ModelBuilder modelBuilder) {
     base.OnModelCreating(modelBuilder);
     modelBuilder.HasPostgresExtension("uuid-ossp");
+    // modelBuilder.HasPostgresExtension("postgis");
 
-    // UUID Defaul values
+    // add geometry db functions
+
+    modelBuilder.HasDbFunction(() => DbFuncs.Sin(0));
+    modelBuilder.HasDbFunction(() => DbFuncs.Cos(0));
+    modelBuilder.HasDbFunction(() => DbFuncs.Acos(0));
+    modelBuilder.HasDbFunction(() => DbFuncs.ToRadians(0));
+
+    // UUID Default values
     // modelBuilder.Entity<User>().Property(p => p.ID).HasDefaultValueSql("uuid_generate_v4()");
     generateUuid<Danger>(modelBuilder, p => p.ID);
     generateUuid<DangerCategory>(modelBuilder, p => p.ID);

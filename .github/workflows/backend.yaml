@@ -65,6 +65,11 @@ jobs:
       # - name: Install dotnet tools
       #   run: dotnet tool restore
 
+        # Fix for Resharper hanging error above
+        # https://youtrack.jetbrains.com/issue/RSRP-494775/InspectCode-CleanupCode-hangs-on-.NET-8-RTM
+      # - name: Install Resharper
+      #   run: dotnet tool install --global JetBrains.ReSharper.GlobalTools --version 2023.3.0-eap08
+
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
@@ -74,6 +79,8 @@ jobs:
           workingDirectory: ./backend
           solutionPath: ./roadmate.sln
           minimumReportSeverity: WARNING
+          version: 2023.3.0-eap08
+        timeout-minutes: 3
 
       - name: Apply database migrations
         run: dotnet ef database update --no-build --configuration Release -p DAL -s API
