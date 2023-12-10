@@ -1,6 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
-
 import {
   IonButton,
   IonCard,
@@ -11,21 +8,21 @@ import {
   IonPage,
   IonText,
 } from "@ionic/react"
-
-import { useState } from "react"
+import { Form, Formik } from "formik" //Formik: https://formik.org/docs
+import { FC, useState } from "react"
 import { Link, useHistory } from "react-router-dom"
-
-//Formik: https://formik.org/docs
-import { Formik } from "formik"
 import * as yup from "yup"
-
+import logo from "../resources/logo/Logo1.svg"
 import AppStorage from "../services/AppStorage"
 import { AuthService } from "../services/AuthService"
-
-import logo from "../resources/logo/Logo1.svg"
 import "./Onboarding.css"
 
-const Login: React.FC = () => {
+interface LoginData {
+  email: string
+  password: string
+}
+
+const Login: FC = () => {
   const history = useHistory()
 
   // AUTH SERVICE UND LOGIN
@@ -44,26 +41,32 @@ const Login: React.FC = () => {
       .required("Passwort ist erforderlich"),
   })
 
-  const handleLogin = async (loginData: any) => {
-    console.log(loginData)
+  const initialValues: LoginData = {
+    email: "",
+    password: "",
+  }
 
-    authService
-      .login(loginData)
-      .then((response: any) => {
-        const data = response?.data
-        const jwtStore = new AppStorage()
-        if (data) {
-          setResponseError("")
-          console.log(data)
-          jwtStore.set("jwt_token", data.authentication)
-          jwtStore.set("user", data.user)
-          history.push("/homescreen")
-        }
-      })
-      .catch((error: any) => {
-        setResponseError("Ungültige E-Mail-Adresse oder Passwort. Bitte versuche es erneut.")
-        //console.log(error.errorMessages)
-      })
+  const handleLogin = async (loginData: LoginData) => {
+    // console.log(loginData)
+
+    try {
+      const response = await authService.login(loginData)
+
+      const data = response?.data
+      const jwtStore = new AppStorage()
+      if (data) {
+        setResponseError(undefined)
+        // console.log(data)
+
+        await jwtStore.set("jwt_token", data.authentication)
+        await jwtStore.set("user", data.user)
+
+        history.push("/homescreen")
+      }
+    } catch (error) {
+      setResponseError("Ungültige E-Mail-Adresse oder Passwort. Bitte versuche es erneut.")
+      console.error("Login error", error)
+    }
   }
 
   return (
@@ -77,33 +80,32 @@ const Login: React.FC = () => {
           <IonCardContent>
             {responseError && <p className="error-message">{responseError}</p>}
             <Formik
-              initialValues={{ email: "", password: "" }}
+              initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={(values) => {
-                handleLogin(values)
+                void handleLogin(values)
               }}
             >
-              {(formikProps) => (
-                <form onSubmit={formikProps.handleSubmit}>
+              {({ touched, errors, getFieldProps }) => (
+                <Form>
                   {/* email input */}
                   <IonItem color="white" lines="inset" id="emailField">
                     <IonInput
                       className="color-text"
                       type="email"
                       id="emailInput"
-                      label="E-Mail"
+                      label="Email"
                       labelPlacement="floating"
-                      placeholder="Enter E-Mail"
+                      placeholder="your@email.com"
                       clearInput={true}
-                      name="email"
-                      value={formikProps.values.email}
-                      onIonChange={formikProps.handleChange}
-                      onBlur={formikProps.handleBlur}
+                      {...getFieldProps("email")}
+                      onIonChange={getFieldProps("email").onChange}
+                      // name="email"
+                      // value={values.email}
+                      // onBlur={handleBlur}
                     ></IonInput>
                   </IonItem>
-                  <p className="error-message">
-                    {formikProps.touched.email && formikProps.errors.email}
-                  </p>
+                  <p className="error-message">{touched.email && errors.email}</p>
 
                   {/* password input */}
                   <IonItem color="white" lines="inset" id="passwordField">
@@ -113,17 +115,12 @@ const Login: React.FC = () => {
                       id="passwordInput"
                       label="Passwort"
                       labelPlacement="floating"
-                      placeholder="Enter Password"
                       clearInput={true}
-                      name="password"
-                      value={formikProps.values.password}
-                      onIonChange={formikProps.handleChange}
-                      onBlur={formikProps.handleBlur}
+                      {...getFieldProps("password")}
+                      onIonChange={getFieldProps("password").onChange}
                     ></IonInput>
                   </IonItem>
-                  <p className="error-message">
-                    {formikProps.touched.password && formikProps.errors.password}
-                  </p>
+                  <p className="error-message">{touched.password && errors.password}</p>
 
                   <Link to={"/reset-password"} className="reset-password">
                     Password vergessen?
@@ -139,7 +136,7 @@ const Login: React.FC = () => {
                   >
                     <IonText>Login</IonText>
                   </IonButton>
-                </form>
+                </Form>
               )}
             </Formik>
 

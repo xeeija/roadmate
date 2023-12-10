@@ -1,6 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
-
 import {
   IonButton,
   IonCard,
@@ -11,20 +8,25 @@ import {
   IonItem,
   IonPage,
   IonText,
+  IonTextarea,
 } from "@ionic/react"
-
-import { useHistory } from "react-router-dom"
+import { Form, Formik } from "formik" //Formik: https://formik.org/docs
 import { useState } from "react"
-
-//Formik: https://formik.org/docs
-import { Formik } from "formik"
+import { useHistory } from "react-router-dom"
 import * as yup from "yup"
-
+import logo from "../resources/logo/Logo1.svg"
 import AppStorage from "../services/AppStorage"
 import { AuthService } from "../services/AuthService"
-
-import logo from "../resources/logo/Logo1.svg"
 import "./Onboarding.css"
+
+interface RegisterData {
+  username: string
+  email: string
+  password: string
+  passwordConfirm: string
+  isExpert: boolean
+  description?: string
+}
 
 const Register: React.FC = () => {
   const history = useHistory()
@@ -43,44 +45,52 @@ const Register: React.FC = () => {
       .string()
       .email("Bitte eine gültige E-Mail-Adresse eingeben")
       .required("E-Mail-Adresse ist erforderlich"),
-    password_1: yup
+    password: yup
       .string()
       .min(6, "Das Passwort muss mindestens 6 Zeichen lang sein")
       .required("Passwort ist erforderlich"),
-    password_2: yup
+    passwordConfirm: yup
       .string()
-      .oneOf([yup.ref("password_1")], "Passwörter müssen übereinstimmen")
+      .oneOf([yup.ref("password")], "Passwörter müssen übereinstimmen")
       .required("Passwortwiederholung ist erforderlich"),
   })
 
-  const handleRegister = async (values: any) => {
-    const { username, email, password_1, isExpert, description } = values
+  const initialValues: RegisterData = {
+    username: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+    isExpert: false,
+    description: "",
+  }
 
-    const registerData = {
-      username,
-      email,
-      password: password_1,
-      requestExpert: isExpert,
-      expertDescription: isExpert ? description : "",
-    }
+  const handleRegister = async (registerData: RegisterData) => {
+    // const { username, email, password, isExpert, description } = registerData
+
+    // const registerData = {
+    //   username,
+    //   email,
+    //   password: password,
+    //   requestExpert: isExpert,
+    //   expertDescription: isExpert ? description : "",
+    // }
     //console.log(registerData)
 
-    authService
-      .register(registerData)
-      .then((response: any) => {
-        const data = response?.data
-        const jwtStore = new AppStorage()
-        if (data) {
-          setResponseError("")
-          jwtStore.set("jwt_token", data.authentication)
-          jwtStore.set("user", data.user)
-          history.push(`/homescreen`)
-        }
-      })
-      .catch((error: any) => {
-        setResponseError("Ungültige Daten. Bitte überprüfen Sie Ihre Eingaben.")
-        console.log(error.errorMessages)
-      })
+    try {
+      const response = await authService.register(registerData)
+
+      const data = response?.data
+      const jwtStore = new AppStorage()
+      if (data) {
+        setResponseError("")
+        await jwtStore.set("jwt_token", data.authentication)
+        await jwtStore.set("user", data.user)
+        history.push(`/homescreen`)
+      }
+    } catch (error) {
+      setResponseError("Ungültige Daten. Bitte überprüfen Sie Ihre Eingaben.")
+      console.error("Register error", error)
+    }
   }
 
   return (
@@ -94,22 +104,15 @@ const Register: React.FC = () => {
           <IonCardContent>
             {responseError && <p className="error-message">{responseError}</p>}
             <Formik
-              initialValues={{
-                username: "",
-                email: "",
-                password_1: "",
-                password_2: "",
-                isExpert: false,
-                description: "",
-              }}
+              initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={(values) => {
                 //console.log(values)
-                handleRegister(values)
+                void handleRegister(values)
               }}
             >
-              {(formikProps) => (
-                <form onSubmit={formikProps.handleSubmit}>
+              {({ values, touched, errors, isValid, dirty, getFieldProps, setFieldValue }) => (
+                <Form>
                   {/* username input */}
                   <IonItem color="white" lines="inset" id="usernameField">
                     <IonInput
@@ -118,17 +121,12 @@ const Register: React.FC = () => {
                       id="usernameInput"
                       label="Username"
                       labelPlacement="floating"
-                      placeholder="Enter Username"
                       clearInput={true}
-                      name="username"
-                      value={formikProps.values.username}
-                      onIonChange={formikProps.handleChange}
-                      onBlur={formikProps.handleBlur}
+                      {...getFieldProps("username")}
+                      onIonChange={getFieldProps("username").onChange}
                     ></IonInput>
                   </IonItem>
-                  <p className="error-message">
-                    {formikProps.touched.username && formikProps.errors.username}
-                  </p>
+                  <p className="error-message">{touched.username && errors.username}</p>
 
                   {/* email input */}
                   <IonItem color="white" lines="inset" id="emailField">
@@ -136,58 +134,47 @@ const Register: React.FC = () => {
                       className="color-text"
                       type="email"
                       id="emailInput"
-                      label="E-Mail"
+                      label="Email"
                       labelPlacement="floating"
-                      placeholder="Enter E-Mail"
+                      placeholder="your@email.com"
                       clearInput={true}
-                      name="email"
-                      value={formikProps.values.email}
-                      onIonChange={formikProps.handleChange}
-                      onBlur={formikProps.handleBlur}
+                      {...getFieldProps("email")}
+                      onIonChange={getFieldProps("email").onChange}
                     ></IonInput>
                   </IonItem>
-                  <p className="error-message">
-                    {formikProps.touched.email && formikProps.errors.email}
-                  </p>
+                  <p className="error-message">{touched.email && errors.email}</p>
 
-                  {/* password_1 input */}
-                  <IonItem color="white" lines="inset" id="password1_Field">
+                  {/* password input */}
+                  <IonItem color="white" lines="inset" id="password_Field">
                     <IonInput
                       className="color-text"
                       type="password"
-                      id="password1_Input"
+                      id="password_Input"
                       label="Passwort"
                       labelPlacement="floating"
-                      placeholder="Enter Password"
                       clearInput={true}
-                      name="password_1"
-                      value={formikProps.values.password_1}
-                      onIonChange={formikProps.handleChange}
-                      onBlur={formikProps.handleBlur}
+                      {...getFieldProps("password")}
+                      onIonChange={getFieldProps("password").onChange}
                     ></IonInput>
                   </IonItem>
-                  <p className="error-message">
-                    {formikProps.touched.password_1 && formikProps.errors.password_1}
-                  </p>
+                  <p className="error-message">{touched.password && errors.password}</p>
 
-                  {/* password_2 input */}
-                  <IonItem color="white" lines="inset" id="password2_Field">
+                  {/* passwordConfirm input */}
+                  <IonItem color="white" lines="inset" id="passwordConfirm_Field">
                     <IonInput
                       className="color-text"
                       type="password"
-                      id="password2_Input"
+                      id="passwordConfirm_Input"
                       label="Passwort wiederholen"
                       labelPlacement="floating"
                       placeholder="Enter Password"
                       clearInput={true}
-                      name="password_2"
-                      value={formikProps.values.password_2}
-                      onIonChange={formikProps.handleChange}
-                      onBlur={formikProps.handleBlur}
+                      {...getFieldProps("passwordConfirm")}
+                      onIonChange={getFieldProps("passwordConfirm").onChange}
                     ></IonInput>
                   </IonItem>
                   <p className="error-message">
-                    {formikProps.touched.password_2 && formikProps.errors.password_2}
+                    {touched.passwordConfirm && errors.passwordConfirm}
                   </p>
 
                   {/* isExpert checkbox */}
@@ -195,28 +182,29 @@ const Register: React.FC = () => {
                     <IonCheckbox
                       justify="space-between"
                       className="checkbox"
-                      checked={formikProps.values.isExpert}
+                      aria-labelledby="isExpertLabel"
+                      // checked={values.isExpert}
+                      {...getFieldProps("isExpert")}
                       onIonChange={(e) => {
-                        formikProps.setFieldValue("isExpert", e.detail.checked) // Manually update Formik's state for description field
+                        // Manually update Formik's state for description field
+                        void setFieldValue("isExpert", e.detail.checked)
                       }}
                     >
                       Als Experte registrieren
                     </IonCheckbox>
                   </IonItem>
 
-                  {formikProps.values.isExpert && (
+                  {values.isExpert && (
                     <IonItem color="white" lines="none">
-                      <IonInput
+                      <IonTextarea
                         className="expert-description"
-                        type="text"
                         label="Warum bist du ein Experte?"
                         labelPlacement="floating"
-                        placeholder="Describe your expertise"
-                        name="description"
-                        value={formikProps.values.description}
-                        onIonChange={formikProps.handleChange}
-                        onBlur={formikProps.handleBlur}
-                      ></IonInput>
+                        placeholder="Erzähl uns über dich."
+                        // autoGrow
+                        {...getFieldProps("description")}
+                        onIonChange={getFieldProps("description").onChange}
+                      ></IonTextarea>
                     </IonItem>
                   )}
 
@@ -225,10 +213,11 @@ const Register: React.FC = () => {
                     size="small"
                     className="login-button lowercase"
                     type="submit"
+                    disabled={!isValid || !dirty}
                   >
                     <IonText>Registrieren</IonText>
                   </IonButton>
-                </form>
+                </Form>
               )}
             </Formik>
 
