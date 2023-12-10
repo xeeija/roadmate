@@ -1,17 +1,9 @@
-import {
-  IonButton,
-  IonCard,
-  IonCardContent,
-  IonContent,
-  IonInput,
-  IonItem,
-  IonPage,
-  IonText,
-} from "@ionic/react"
+import { IonButton, IonCard, IonCardContent, IonContent, IonPage, IonText } from "@ionic/react"
 import { Form, Formik } from "formik" //Formik: https://formik.org/docs
 import { FC, useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 import * as yup from "yup"
+import { Input } from "../components/Input"
 import logo from "../resources/logo/Logo1.svg"
 import AppStorage from "../services/AppStorage"
 import { AuthService } from "../services/AuthService"
@@ -86,41 +78,13 @@ const Login: FC = () => {
                 void handleLogin(values)
               }}
             >
-              {({ touched, errors, getFieldProps }) => (
+              {() => (
                 <Form>
                   {/* email input */}
-                  <IonItem color="white" lines="inset" id="emailField">
-                    <IonInput
-                      className="color-text"
-                      type="email"
-                      id="emailInput"
-                      label="Email"
-                      labelPlacement="floating"
-                      placeholder="your@email.com"
-                      clearInput={true}
-                      {...getFieldProps("email")}
-                      onIonChange={getFieldProps("email").onChange}
-                      // name="email"
-                      // value={values.email}
-                      // onBlur={handleBlur}
-                    ></IonInput>
-                  </IonItem>
-                  <p className="error-message">{touched.email && errors.email}</p>
+                  <Input name="email" type="email" label="Email" placeholder="your@email.com" />
 
                   {/* password input */}
-                  <IonItem color="white" lines="inset" id="passwordField">
-                    <IonInput
-                      className="color-text"
-                      type="password"
-                      id="passwordInput"
-                      label="Passwort"
-                      labelPlacement="floating"
-                      clearInput={true}
-                      {...getFieldProps("password")}
-                      onIonChange={getFieldProps("password").onChange}
-                    ></IonInput>
-                  </IonItem>
-                  <p className="error-message">{touched.password && errors.password}</p>
+                  <Input name="password" type="password" label="Password" />
 
                   <Link to={"/reset-password"} className="reset-password">
                     Password vergessen?

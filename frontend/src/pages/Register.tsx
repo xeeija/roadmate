@@ -4,16 +4,15 @@ import {
   IonCardContent,
   IonCheckbox,
   IonContent,
-  IonInput,
   IonItem,
   IonPage,
   IonText,
-  IonTextarea,
 } from "@ionic/react"
 import { Form, Formik } from "formik" //Formik: https://formik.org/docs
 import { useState } from "react"
 import { useHistory } from "react-router-dom"
 import * as yup from "yup"
+import { Input } from "../components/Input"
 import logo from "../resources/logo/Logo1.svg"
 import AppStorage from "../services/AppStorage"
 import { AuthService } from "../services/AuthService"
@@ -111,79 +110,30 @@ const Register: React.FC = () => {
                 void handleRegister(values)
               }}
             >
-              {({ values, touched, errors, isValid, dirty, getFieldProps, setFieldValue }) => (
+              {({ values, isValid, dirty, getFieldProps, setFieldValue }) => (
                 <Form>
                   {/* username input */}
-                  <IonItem color="white" lines="inset" id="usernameField">
-                    <IonInput
-                      className="color-text"
-                      type="text"
-                      id="usernameInput"
-                      label="Username"
-                      labelPlacement="floating"
-                      clearInput={true}
-                      {...getFieldProps("username")}
-                      onIonChange={getFieldProps("username").onChange}
-                    ></IonInput>
-                  </IonItem>
-                  <p className="error-message">{touched.username && errors.username}</p>
+                  <Input name="username" label="Username" />
 
                   {/* email input */}
-                  <IonItem color="white" lines="inset" id="emailField">
-                    <IonInput
-                      className="color-text"
-                      type="email"
-                      id="emailInput"
-                      label="Email"
-                      labelPlacement="floating"
-                      placeholder="your@email.com"
-                      clearInput={true}
-                      {...getFieldProps("email")}
-                      onIonChange={getFieldProps("email").onChange}
-                    ></IonInput>
-                  </IonItem>
-                  <p className="error-message">{touched.email && errors.email}</p>
+                  <Input name="email" type="email" label="Email" placeholder="your@email.com" />
 
                   {/* password input */}
-                  <IonItem color="white" lines="inset" id="password_Field">
-                    <IonInput
-                      className="color-text"
-                      type="password"
-                      id="password_Input"
-                      label="Passwort"
-                      labelPlacement="floating"
-                      clearInput={true}
-                      {...getFieldProps("password")}
-                      onIonChange={getFieldProps("password").onChange}
-                    ></IonInput>
-                  </IonItem>
-                  <p className="error-message">{touched.password && errors.password}</p>
+                  <Input name="password" type="password" label="Passwort" />
 
                   {/* passwordConfirm input */}
-                  <IonItem color="white" lines="inset" id="passwordConfirm_Field">
-                    <IonInput
-                      className="color-text"
-                      type="password"
-                      id="passwordConfirm_Input"
-                      label="Passwort wiederholen"
-                      labelPlacement="floating"
-                      placeholder="Enter Password"
-                      clearInput={true}
-                      {...getFieldProps("passwordConfirm")}
-                      onIonChange={getFieldProps("passwordConfirm").onChange}
-                    ></IonInput>
-                  </IonItem>
-                  <p className="error-message">
-                    {touched.passwordConfirm && errors.passwordConfirm}
-                  </p>
+                  <Input name="passwordConfirm" type="password" label="Passwort wiederholen" />
 
                   {/* isExpert checkbox */}
-                  <IonItem color="white" lines="none" id="isExpert_Field">
+                  <IonItem
+                    color="white"
+                    lines="none"
+                    id="isExpert_Field"
+                    style={{ marginTop: "1rem" }}
+                  >
                     <IonCheckbox
                       justify="space-between"
                       className="checkbox"
-                      aria-labelledby="isExpertLabel"
-                      // checked={values.isExpert}
                       {...getFieldProps("isExpert")}
                       onIonChange={(e) => {
                         // Manually update Formik's state for description field
@@ -195,17 +145,13 @@ const Register: React.FC = () => {
                   </IonItem>
 
                   {values.isExpert && (
-                    <IonItem color="white" lines="none">
-                      <IonTextarea
-                        className="expert-description"
-                        label="Warum bist du ein Experte?"
-                        labelPlacement="floating"
-                        placeholder="Erzähl uns über dich."
-                        // autoGrow
-                        {...getFieldProps("description")}
-                        onIonChange={getFieldProps("description").onChange}
-                      ></IonTextarea>
-                    </IonItem>
+                    <Input
+                      multiline
+                      name="description"
+                      label="Warum bist du ein Experte?"
+                      placeholder="Erzähl uns etwas über dich."
+                      className="expert-description"
+                    />
                   )}
 
                   <IonButton
