@@ -23,6 +23,7 @@ import AppStorage from "../services/AppStorage"
 import { UserService } from "../services/api/UserService"
 import { User } from "../services/entities/User"
 import "./Profil.css"
+import { Link } from "react-router-dom"
 
 const Profile: FC = () => {
   const userService = new UserService()
@@ -58,6 +59,24 @@ const Profile: FC = () => {
     history.push("/login")
   }
 
+  const saveProfile = async () => {
+    if (!currentUserToken) {
+      alert('You are not logged in');
+      return;
+    }
+  
+    try {
+      // Call the API to update the user profile
+      await userService.userPUT(profileUser?.id ?? '', profileUser, currentUserToken);
+      // Show a success message
+      alert('Profile updated successfully');
+    } catch (error) {
+      // Show an error message
+      console.error(error);
+      alert('An error occurred while updating the profile');
+    }
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -70,7 +89,7 @@ const Profile: FC = () => {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <IonAvatar style={{ width: "120px", height: "120px", marginBottom: "9px" }}>
                   <IonImg
-                    src={`https://api.dicebear.com/7.x/personas/svg?seed=${profileUser?.username}`}
+                    src={`https://api.dicebear.com/7.x/personas/svg?seed=${profileUser?.id}`}
                   />
                 </IonAvatar>
               </div>
@@ -82,7 +101,7 @@ const Profile: FC = () => {
                     marginTop: "10px",
                     marginBottom: "10px",
                   }}
-                >
+                >              
                   <IonIcon
                     icon={notifications}
                     size="default"
@@ -90,12 +109,15 @@ const Profile: FC = () => {
                     style={{ marginRight: "10px", verticalAlign: "middle" }}
                   />{" "}
                   Meine Benachrichtigungen{" "}
+
+                  <Link to="/notifications">
                   <IonIcon
                     icon={chevronForward}
                     size="default"
                     color="primary"
                     style={{ marginLeft: "20px", verticalAlign: "middle" }}
                   />
+                  </Link>
                 </IonLabel>
               </IonItem>
               <p style={{ marginLeft: "12px", marginTop: "20px" }}>Profileinstellungen</p>
@@ -106,7 +128,10 @@ const Profile: FC = () => {
                   labelPlacement="floating"
                   placeholder="Helmi69"
                   value={profileUser?.username}
-                  disabled
+                  onIonChange={e => {
+                    const updatedUser = { ...profileUser, username: e.detail.value! };
+                    setProfileUser(updatedUser);
+                  }}
                 />
               </IonItem>
               <br />
@@ -117,7 +142,10 @@ const Profile: FC = () => {
                   labelPlacement="floating"
                   placeholder="helmi@roadmate.at"
                   value={profileUser?.email}
-                  disabled
+                  onIonChange={e => {
+                    const updatedUser = { ...profileUser, email: e.detail.value! };
+                    setProfileUser(updatedUser);
+                  }}
                 />
               </IonItem>
               <br />
@@ -140,7 +168,7 @@ const Profile: FC = () => {
                 </IonToggle>
               </IonItem>
               <br />
-              <IonButton style={{ marginBottom: "20px" }} className="buttonSize" expand="block">
+              <IonButton  onClick={saveProfile} style={{ marginBottom: "20px" }} className="buttonSize" expand="block">
                 Profil speichern
               </IonButton>
               <IonButton
