@@ -1,0 +1,11 @@
+.customToolbar {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-light);
+}
+
+.customBackButton {
+  padding: 9px;
+  --icon-padding-end: 6px;
+  color: var(--ion-color-light);
+  font-size: 22px;
+}

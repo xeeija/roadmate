@@ -31,43 +31,38 @@ public class Authentication {
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Secret))
   };
 
-  public async Task<AuthenticationInformation> Authenticate(User user) {
-    if (user != null) {
-      var info = new AuthenticationInformation();
+  public async Task<AuthenticationInformation?> Authenticate(User user) {
+    var info = new AuthenticationInformation();
 
-      var expires = DateTime.UtcNow.AddDays(1);
+    var expires = DateTime.UtcNow.AddDays(1);
 
-      info.ExpirationDate = new DateTimeOffset(expires).ToUnixTimeSeconds();
+    info.ExpirationDate = new DateTimeOffset(expires).ToUnixTimeSeconds();
 
-      var tokenHandler = new JwtSecurityTokenHandler();
+    var tokenHandler = new JwtSecurityTokenHandler();
 
-      var tokenDescriptor = new SecurityTokenDescriptor {
-        Subject = new ClaimsIdentity(new[] {
-          new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
-          new Claim(ClaimTypes.Email, user.Email),
-          new Claim(ClaimTypes.Role, user.Role.ToString())
-        }),
-        Expires = expires,
-        Issuer = Issuer,
-        Audience = Audience,
-        SigningCredentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256Signature)
-      };
+    var tokenDescriptor = new SecurityTokenDescriptor {
+      Subject = new ClaimsIdentity(new[] {
+        new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role.ToString())
+      }),
+      Expires = expires,
+      Issuer = Issuer,
+      Audience = Audience,
+      SigningCredentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256Signature)
+    };
 
-      var token = tokenHandler.CreateToken(tokenDescriptor);
-      info.Token = tokenHandler.WriteToken(token);
+    var token = tokenHandler.CreateToken(tokenDescriptor);
+    info.Token = tokenHandler.WriteToken(token);
 
-      return await Task.FromResult(info);
-    }
-
-    return null!;
+    return await Task.FromResult(info);
   }
-
 
   public static async Task<bool> ValidateCurrentToken(string token) {
     var tokenHandler = new JwtSecurityTokenHandler();
 
     try {
-      var val = tokenHandler.ValidateToken(token, ValidationParams, out var validatedToken);
+      tokenHandler.ValidateToken(token, ValidationParams, out _);
     }
     catch {
       return await Task.FromResult(false);
@@ -86,7 +81,7 @@ public class Authentication {
         finaltoken = token.Replace("Bearer ", "");
       }
 
-      var val = tokenHandler.ValidateToken(finaltoken, ValidationParams, out var validatedToken);
+      var val = tokenHandler.ValidateToken(finaltoken, ValidationParams, out _);
 
       if (val.HasClaim(x => x.Type == ClaimTypes.Email)) {
         var claim = val.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);

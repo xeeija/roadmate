@@ -1,0 +1,97 @@
+name: backend
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "backend/**"
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    env:
+      DOTNET_VERSION: 7.0.x
+      # env vars for Postgres are only read in Prouction environment
+      ASPNETCORE_ENVIRONMENT: Production
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: roadmate
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+
+    # additional postgres service (container) on the runner
+    services:
+      postgres:
+        image: postgres:14.8
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET Core ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget
+
+      - name: Install dependencies
+        run: |
+          dotnet restore
+          dotnet tool restore
+
+      # - name: Install dotnet tools
+      #   run: dotnet tool restore
+
+        # Fix for Resharper hanging error above
+        # https://youtrack.jetbrains.com/issue/RSRP-494775/InspectCode-CleanupCode-hangs-on-.NET-8-RTM
+      # - name: Install Resharper
+      #   run: dotnet tool install --global JetBrains.ReSharper.GlobalTools --version 2023.3.0-eap08
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Inspect code
+        uses: muno92/resharper_inspectcode@v1
+        with:
+          workingDirectory: ./backend
+          solutionPath: ./roadmate.sln
+          minimumReportSeverity: WARNING
+          version: 2023.3.0-eap08
+        timeout-minutes: 3
+
+      - name: Apply database migrations
+        run: dotnet ef database update --no-build --configuration Release -p DAL -s API
+
+      - name: Run tests
+        run: dotnet test --no-restore --configuration Release --verbosity normal --logger trx --results-directory "TestResults-${{ env.DOTNET_VERSION }}"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: dotnet-results-${{ env.DOTNET_VERSION }}
+          path: TestResults-${{ env.DOTNET_VERSION }}
+        # Use always() to always run this step to publish test results when there are test failures
+        if: always()
