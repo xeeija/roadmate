@@ -168,7 +168,7 @@ const Profile: FC = () => {
                 </IonToggle>
               </IonItem>
               <br />
-              <IonButton  onClick={saveProfile} style={{ marginBottom: "20px" }} className="buttonSize" expand="block">
+              <IonButton onClick={() => void saveProfile()} style={{ marginBottom: "20px" }} className="buttonSize" expand="block">
                 Profil speichern
               </IonButton>
               <IonButton
