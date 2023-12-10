@@ -1,3 +1,7 @@
+import { jwtDecode } from "jwt-decode"
+import { JwtToken } from "../types"
+import AppStorage from "./AppStorage"
+import { AuthenticationInformation } from "./entities/AuthenticationInformation"
 import { ProblemDetails } from "./entities/ProblemDetails"
 import { LoginRequest } from "./entities/request/LoginRequest"
 import { RegisterRequest } from "./entities/request/RegisterRequest"
@@ -104,7 +108,6 @@ export class AuthService {
    * @param body (optional) Represents request for an new basic user.
    * @return Success
    */
-
   register(body: RegisterRequest | undefined): Promise<UserResponseItemResponseModel> {
     let url_ = this.baseUrl + "/api/Auth/Register"
     url_ = url_.replace(/[?&]$/, "")
@@ -124,6 +127,88 @@ export class AuthService {
     return this.http.fetch(url_test, options_).then((_response: Response) => {
       return this.processRegister(_response)
     })
+  }
+
+  public async getRole() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult = await storage.get("jwt_token")
+      const decToken = this.decodeToken(promiseResult.token)
+      //console.log(decToken)
+      return decToken?.role
+    } catch (error) {
+      //console.error('Error retrieving user ID:', error);
+      return null
+    }
+  }
+
+  public decodeToken = <T = JwtToken>(token: string) => jwtDecode<T>(token)
+
+  public async getUserIdFromAuthInfoAppStorage() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult = await storage.get("jwt_token")
+      const decToken = this.decodeToken(promiseResult.token)
+      return decToken?.nameid || null
+    } catch (error) {
+      //console.error('Error retrieving user ID:', error);
+      return null
+    }
+  }
+
+  public async getTokenFromAuthInfoAppStorage() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult = await storage.get("jwt_token")
+      return <string>promiseResult?.token || null
+    } catch (error) {
+      //console.error('Error retrieving token:', error);
+      return null
+    }
+  }
+
+  public async getUserIdAndTokenFromAuthInfoAppStorage() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult = await storage.get("jwt_token")
+      const decToken = this.decodeToken(promiseResult.token)
+      return [
+        decToken?.nameid || null,
+        promiseResult?.token || null,
+        decToken?.role || null,
+      ] as const
+    } catch (error) {
+      //console.error('Error retrieving user ID and token:', error);
+      return [null, null, null] as const
+    }
+  }
+
+  /**
+   * Get current user from local storage.
+   * @return A tuple with [userId, token, role]
+   */
+  public async getUserIdAndTokenAndRoleFromAuthInfoAppStorage() {
+    try {
+      const storage = new AppStorage()
+      const promiseResult: AuthenticationInformation = await storage.get("jwt_token")
+      // console.log("auth", promiseResult)
+
+      if (!promiseResult?.token) {
+        return [null, null, null] as const
+      }
+
+      const decToken = this.decodeToken(promiseResult?.token ?? "")
+
+      // console.log("decToken", decToken)
+      return [
+        decToken?.nameid || null,
+        promiseResult?.token || null,
+        decToken?.role || null,
+      ] as const
+    } catch (error) {
+      console.error("Error retrieving user ID and token:", error)
+      return [null, null, null] as const
+    }
   }
 
   protected processRegister(response: Response): Promise<UserResponseItemResponseModel> {

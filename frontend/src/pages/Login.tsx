@@ -53,7 +53,9 @@ const Login: FC = () => {
         await jwtStore.set("jwt_token", data.authentication)
         await jwtStore.set("user", data.user)
 
-        history.push("/homescreen")
+        // console.log("path", history.location.pathname)
+
+        setTimeout(() => history.push("/homescreen"))
       }
     } catch (error) {
       setResponseError("Ungültige E-Mail-Adresse oder Passwort. Bitte versuche es erneut.")

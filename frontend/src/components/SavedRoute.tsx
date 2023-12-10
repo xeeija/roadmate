@@ -1,6 +1,6 @@
-import React from "react"
 import { IonAlert, IonButton, IonCard, IonCardContent, IonIcon } from "@ionic/react"
 import { ellipsisHorizontal } from "ionicons/icons"
+import { FC } from "react"
 
 import "./SavedRoute.css"
 
@@ -9,7 +9,7 @@ interface RouteProps {
   id: number
 }
 
-const SavedRoute: React.FC<RouteProps> = ({ name, id }) => {
+const SavedRoute: FC<RouteProps> = ({ name, id }) => {
   return (
     <IonCard className="" color="light">
       <img

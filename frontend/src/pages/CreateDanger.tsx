@@ -13,8 +13,6 @@ import {
   IonTextarea,
   IonToggle,
 } from "@ionic/react"
-import ToolBar from "../components/navigation/ToolBar"
-import "./CreateDanger.css"
 import {
   alarm,
   caretDown,
@@ -23,9 +21,11 @@ import {
   locationSharp,
   warningSharp,
 } from "ionicons/icons"
-import { useState } from "react"
+import { FC, useState } from "react"
+import ToolBar from "../components/navigation/ToolBar"
+import "./CreateDanger.css"
 
-const CreateDanger: React.FC = () => {
+const CreateDanger: FC = () => {
   const [isChecked, setIsChecked] = useState(false)
   const handleToggleChange = () => {
     setIsChecked(!isChecked)

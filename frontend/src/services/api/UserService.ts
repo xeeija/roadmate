@@ -14,7 +14,8 @@ export class UserService {
     http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
   ) {
     this.http = http ? http : (window as any)
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : ""
+    this.baseUrl =
+      baseUrl !== undefined && baseUrl !== null ? baseUrl : import.meta.env.VITE_API_URL ?? "" //URL of the API
   }
 
   /**
@@ -105,11 +106,7 @@ export class UserService {
    * @param x_API_Version The ID of the entity to get.
    * @return Success
    */
-  userGET(
-    id: string,
-    x_API_Version: string | undefined,
-    token?: string
-  ): Promise<UserItemResponseModel> {
+  userGET(id: string, token?: string): Promise<UserItemResponseModel> {
     let url_ = this.baseUrl + "/api/User/{id}"
     if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.")
     url_ = url_.replace("{id}", encodeURIComponent("" + id))
@@ -119,6 +116,7 @@ export class UserService {
       method: "GET",
       headers: {
         Accept: "text/plain",
+        Authorization: "Bearer " + token,
       },
     }
 

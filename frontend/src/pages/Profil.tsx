@@ -1,24 +1,63 @@
 import {
-  IonButton,
-  IonContent,
-  IonHeader,
-  IonList,
-  IonPage,
   IonAvatar,
-  IonImg,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonToggle,
+  IonButton,
   IonCard,
   IonCardContent,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonImg,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonPage,
+  IonToggle,
 } from "@ionic/react"
-import "./Tab3.css"
-import { IonIcon } from "@ionic/react"
 import { chevronForward, exitOutline, notifications } from "ionicons/icons"
+import { FC, useContext, useEffect, useState } from "react"
+import { useHistory } from "react-router"
+import { UserContext } from "../components/ProtectedRoute"
 import ToolBar from "../components/navigation/ToolBar"
+import AppStorage from "../services/AppStorage"
+import { UserService } from "../services/api/UserService"
+import { User } from "../services/entities/User"
+import "./Profil.css"
 
-const Tab3: React.FC = () => {
+const Profile: FC = () => {
+  const userService = new UserService()
+  //const imageService = new ImageService();
+
+  const [profileUser, setProfileUser] = useState<User>()
+  //const [imageUri, setImageUri] = useState<string>('');
+  const { currentUserToken, currentUser } = useContext(UserContext)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (currentUser?.id && currentUserToken) {
+        try {
+          const userResponse = await userService.userGET(currentUser.id, currentUserToken)
+          setProfileUser(userResponse?.data)
+          console.log(userResponse?.data)
+        } catch (error) {
+          console.error("error fetching user", error)
+        }
+      }
+    }
+
+    void fetchData()
+  }, [])
+
+  const history = useHistory()
+
+  const handleLogout = async () => {
+    const jwtStore = new AppStorage()
+    await jwtStore.remove("jwt_token")
+    await jwtStore.remove("user")
+
+    history.push("/login")
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -30,7 +69,9 @@ const Tab3: React.FC = () => {
             <IonList>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <IonAvatar style={{ width: "120px", height: "120px", marginBottom: "9px" }}>
-                  <IonImg src="https://i.pravatar.cc/300?u=b" />
+                  <IonImg
+                    src={`https://api.dicebear.com/7.x/personas/svg?seed=${profileUser?.username}`}
+                  />
                 </IonAvatar>
               </div>
               <IonItem className="backgroundInput" style={{ marginTop: "15px" }}>
@@ -47,14 +88,14 @@ const Tab3: React.FC = () => {
                     size="default"
                     color="primary"
                     style={{ marginRight: "10px", verticalAlign: "middle" }}
-                  ></IonIcon>{" "}
+                  />{" "}
                   Meine Benachrichtigungen{" "}
                   <IonIcon
                     icon={chevronForward}
                     size="default"
                     color="primary"
                     style={{ marginLeft: "20px", verticalAlign: "middle" }}
-                  ></IonIcon>
+                  />
                 </IonLabel>
               </IonItem>
               <p style={{ marginLeft: "12px", marginTop: "20px" }}>Profileinstellungen</p>
@@ -63,21 +104,21 @@ const Tab3: React.FC = () => {
                   type="text"
                   label="Username"
                   labelPlacement="floating"
-                  placeholder="Helmie69"
-                  value="Helmie 69"
+                  placeholder="Helmi69"
+                  value={profileUser?.username}
                   disabled
-                ></IonInput>
+                />
               </IonItem>
               <br />
               <IonItem className="backgroundInput">
                 <IonInput
                   type="email"
-                  label="eMail"
+                  label="Email"
                   labelPlacement="floating"
-                  placeholder="michael@kohlmeier.de"
-                  value="michael@kohlmeier.de"
+                  placeholder="helmi@roadmate.at"
+                  value={profileUser?.email}
                   disabled
-                ></IonInput>
+                />
               </IonItem>
               <br />
               <IonItem className="backgroundInput">
@@ -85,22 +126,13 @@ const Tab3: React.FC = () => {
                   type="password"
                   label="Passwort"
                   labelPlacement="floating"
-                  placeholder="test1234"
-                  value="test1234"
+                  placeholder="Passwort"
+                  value="********"
                   disabled
-                ></IonInput>
+                />
               </IonItem>
               <br />
-              <IonItem className="backgroundInput">
-                <IonInput
-                  type="password"
-                  label="Passwort wiederholen"
-                  labelPlacement="floating"
-                  placeholder="test1234"
-                  value="test1234"
-                  disabled
-                ></IonInput>
-              </IonItem>
+
               <br />
               <IonItem className="backgroundInput">
                 <IonToggle style={{ marginTop: "5px", marginBottom: "5px" }} checked={true}>
@@ -111,7 +143,12 @@ const Tab3: React.FC = () => {
               <IonButton style={{ marginBottom: "20px" }} className="buttonSize" expand="block">
                 Profil speichern
               </IonButton>
-              <IonButton className="buttonSize" fill="outline" expand="block">
+              <IonButton
+                className="buttonSize"
+                fill="outline"
+                expand="block"
+                onClick={() => void handleLogout()}
+              >
                 Logout
                 <IonIcon
                   icon={exitOutline}
@@ -128,4 +165,4 @@ const Tab3: React.FC = () => {
   )
 }
 
-export default Tab3
+export default Profile

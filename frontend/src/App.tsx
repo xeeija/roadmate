@@ -9,16 +9,19 @@ import {
 } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
 import { home, map, personCircle } from "ionicons/icons"
+import { FC } from "react"
 import { Redirect, Route, Switch } from "react-router-dom"
-import Homescreen from "./pages/Homescreen"
-import Tab2 from "./pages/Tab2"
-import Tab3 from "./pages/Tab3"
-import Login from "./pages/Login"
-import Register from "./pages/Register"
-import PasswordReset from "./pages/PasswordReset"
+import ProtectedRoute from "./components/ProtectedRoute"
 import CreateDanger from "./pages/CreateDanger"
-import SavedRoutes from "./pages/SavedRoutes"
+import Gefahrenstellen from "./pages/DangerZones"
+import Homescreen from "./pages/Homescreen"
+import Login from "./pages/Login"
 import Notifications from "./pages/Notifications"
+import PasswordReset from "./pages/PasswordReset"
+import Profil from "./pages/Profil"
+import Register from "./pages/Register"
+import SavedRoutes from "./pages/SavedRoutes"
+import Tab2 from "./pages/Tab2"
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css"
@@ -37,13 +40,12 @@ import "@ionic/react/css/text-alignment.css"
 import "@ionic/react/css/text-transformation.css"
 
 /* Theme variables */
-import "./theme/variables.css"
 import "./theme/global.css"
-import Gefahrenstellen from "./pages/DangerZones"
+import "./theme/variables.css"
 
 setupIonicReact()
 
-const App: React.FC = () => (
+const App: FC = () => (
   <IonApp>
     <IonReactRouter>
       {/* Switch helps not to display the Taskbar (IonTabBar) in Login, Register and PasswordReset */}
@@ -57,49 +59,51 @@ const App: React.FC = () => (
         </Route>
 
         {/* Part of the App, where the Taskbar gets displayed */}
-        <Route path="/">
-          <IonTabs>
-            {/* animated={false} --> fixes sliding animation bug */}
-            <IonRouterOutlet animated={false}>
-              <Route exact path="/createDanger">
-                <CreateDanger />
-              </Route>
-              <Route exact path="/saved-routes">
-                <SavedRoutes />
-              </Route>
-              <Route exact path="/notifications">
-                <Notifications />
-              </Route>
-              <Route exact path="/dangerzones">
-                <Gefahrenstellen />
-              </Route>
-              <Route exact path="/homescreen">
-                <Homescreen />
-              </Route>
-              <Route exact path="/tab2">
-                <Tab2 />
-              </Route>
-              <Route path="/tab3">
-                <Tab3 />
-              </Route>
-              <Route exact path="/">
-                <Redirect to="/homescreen" />
-              </Route>
-            </IonRouterOutlet>
+        <ProtectedRoute>
+          <Route path="/">
+            <IonTabs>
+              {/* animated={false} --> fixes sliding animation bug */}
+              <IonRouterOutlet animated={false}>
+                <Route exact path="/createDanger">
+                  <CreateDanger />
+                </Route>
+                <Route exact path="/saved-routes">
+                  <SavedRoutes />
+                </Route>
+                <Route exact path="/notifications">
+                  <Notifications />
+                </Route>
+                <Route exact path="/dangerzones">
+                  <Gefahrenstellen />
+                </Route>
+                <Route exact path="/homescreen">
+                  <Homescreen />
+                </Route>
+                <Route exact path="/tab2">
+                  <Tab2 />
+                </Route>
+                <Route path="/profil">
+                  <Profil />
+                </Route>
+                <Route exact path="/">
+                  <Redirect to="/homescreen" />
+                </Route>
+              </IonRouterOutlet>
 
-            <IonTabBar slot="bottom">
-              <IonTabButton tab="tab1" href="/homescreen">
-                <IonIcon className="menu-icon" aria-hidden="true" icon={home} />
-              </IonTabButton>
-              <IonTabButton tab="tab2" href="/saved-routes">
-                <IonIcon className="menu-icon" aria-hidden="true" icon={map} />
-              </IonTabButton>
-              <IonTabButton tab="tab3" href="/tab3">
-                <IonIcon className="menu-icon" aria-hidden="true" icon={personCircle} />
-              </IonTabButton>
-            </IonTabBar>
-          </IonTabs>
-        </Route>
+              <IonTabBar slot="bottom">
+                <IonTabButton tab="tab1" href="/homescreen">
+                  <IonIcon className="menu-icon" aria-hidden="true" icon={home} />
+                </IonTabButton>
+                <IonTabButton tab="tab2" href="/saved-routes">
+                  <IonIcon className="menu-icon" aria-hidden="true" icon={map} />
+                </IonTabButton>
+                <IonTabButton tab="tab3" href="/profil">
+                  <IonIcon className="menu-icon" aria-hidden="true" icon={personCircle} />
+                </IonTabButton>
+              </IonTabBar>
+            </IonTabs>
+          </Route>
+        </ProtectedRoute>
       </Switch>
     </IonReactRouter>
   </IonApp>

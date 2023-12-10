@@ -8,14 +8,14 @@ import {
   IonText,
 } from "@ionic/react"
 
-import ToolBar from "../components/navigation/ToolBar"
-import Notification from "../components/Notification"
 import DangerAcute from "../components/DangerAcute"
+import Notification from "../components/Notification"
+import ToolBar from "../components/navigation/ToolBar"
 
+import { FC, useState } from "react"
 import "./Notifications.css"
-import { useState } from "react"
 
-const Notifications: React.FC = () => {
+const Notifications: FC = () => {
   //The following code is for the AcuteDanger modal
   const [showModal, setShowModal] = useState(false)
 

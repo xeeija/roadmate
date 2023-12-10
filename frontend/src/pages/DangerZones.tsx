@@ -10,13 +10,13 @@ import {
   IonPage,
 } from "@ionic/react"
 import { caretDown, caretUp, link } from "ionicons/icons"
-import { useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { MapContainer, TileLayer } from "react-leaflet"
 import Comment from "../components/Comment"
 import ToolBar from "../components/navigation/ToolBar"
 import "./DangerZones.css"
 
-const DangerZones: React.FC = () => {
+const DangerZones: FC = () => {
   const [inputValue, setInputValue] = useState<string>("")
   const [showMore, setShowMore] = useState(false)
 
