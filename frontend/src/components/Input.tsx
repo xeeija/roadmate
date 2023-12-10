@@ -1,31 +1,7 @@
+import { PredefinedColors, TextFieldTypes } from "@ionic/core"
 import { IonInput, IonItem, IonTextarea } from "@ionic/react"
 import { useField } from "formik"
 import { FC } from "react"
-
-export type TextFieldTypes =
-  | "date"
-  | "email"
-  | "number"
-  | "password"
-  | "search"
-  | "tel"
-  | "text"
-  | "url"
-  | "time"
-  | "week"
-  | "month"
-  | "datetime-local"
-
-export type ThemeColors =
-  | "primary"
-  | "secondary"
-  | "tertiary"
-  | "success"
-  | "warning"
-  | "danger"
-  | "light"
-  | "medium"
-  | "dark"
 
 interface Props {
   name: string
@@ -33,7 +9,7 @@ interface Props {
   label?: string
   placeholder?: string
   multiline?: boolean
-  color?: ThemeColors
+  color?: PredefinedColors
   lines?: "inset" | "full" | "none"
   className?: string
   clearInput?: boolean
