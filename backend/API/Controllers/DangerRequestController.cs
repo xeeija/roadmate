@@ -12,16 +12,20 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
   private const int resolveDangerThreshold = 2;
 
   private readonly DangerRequestService dangerRequestService;
+  private readonly DangerResolveRequestService dangerResolveRequestService;
   private readonly DangerService dangerService;
 
   public DangerRequestController(GlobalService service, IHttpContextAccessor accessor) :
     base(service.DangerRequestService, accessor) {
     dangerRequestService = service.DangerRequestService;
     dangerRequestService.LoadUser(Email).Wait();
+    dangerResolveRequestService = service.DangerResolveRequestService;
+    dangerResolveRequestService.LoadUser(Email).Wait();
     dangerService = service.DangerService;
     dangerService.LoadUser(Email).Wait();
   }
 
+  [HttpPost("Create")]
   public override async Task<ActionResult<ItemResponseModel<DangerRequest>>> Create([FromBody] DangerRequestModel request) {
     // var result = await base.Create(request);
     var result = await Service.Create(request.ToEntity());
@@ -78,11 +82,11 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
   }
 
   [HttpPost("Resolve")]
-  public async Task<ActionResult<ItemResponseModel<DangerRequest>>> Resolve([FromBody] DangerResolveRequestModel request) {
-    var danger = await dangerService.Get(request.DangerId.ToString(), new List<string> { "Requests" });
+  public async Task<ActionResult<ItemResponseModel<DangerResolveRequest>>> Resolve([FromBody] DangerResolveRequestModel request) {
+    var danger = await dangerService.Get(request.DangerId.ToString(), new List<string> { "Requests", "ResolveRequests" });
 
     if (!danger.IsAuthorized) {
-      danger.ErrorMessages.Add("Unauthorized to create danger");
+      danger.ErrorMessages.Add("Unauthorized to resolve danger");
       return BadRequest(danger);
     }
 
@@ -95,10 +99,8 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       return BadRequest(danger);
     }
 
-    request.CategoryId = danger.Data.CategoryId;
-
     // Resolve
-    var result = await Service.Create(request.ToEntity());
+    var result = await dangerResolveRequestService.Create(request.ToEntity());
 
     if (!result.IsAuthorized) {
       return Forbid();
@@ -108,8 +110,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       return BadRequest(result);
     }
 
-    var resolveRequests = danger.Data.Requests.Where(dr => dr.Type == RequestType.Resolve);
-    var distinctCount = resolveRequests.DistinctBy(dr => dr.UserId).Count();
+    var distinctCount = danger.Data.ResolveRequests.DistinctBy(dr => dr.UserId).Count();
 
     // Resolve danger
     if (distinctCount >= resolveDangerThreshold) {
