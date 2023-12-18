@@ -26,7 +26,28 @@ const DangerZones: FC = () => {
     setRenderMap(true)
   })
 
-  const commentData = [
+  // Add a state variable for the comments
+  const [comments, setComments] = useState([]);
+
+  // Define a function to fetch the comments
+  const fetchComments = async () => {
+    try {
+      // derzeit noch hardcoded
+      const response = await fetch('http://localhost:5211/api/Danger/e45326df-e18d-4a66-a40d-7cc53113ee64/Message');
+      const data = await response.json();
+      setComments(data);
+    } catch (error) {
+      console.error('Failed to fetch comments:', error);
+    }
+  };
+
+  // Call the fetchComments function when the component mounts
+    useEffect(() => {
+      fetchComments();
+    }, []);
+
+  //Hardcoded Solution
+  /*const commentData = [
     {
       avatarSrc: "https://i.pravatar.cc/300?u=b",
       username: "Alice",
@@ -43,7 +64,7 @@ const DangerZones: FC = () => {
         "Hallo, wie ist das eigenltich wenn ich von der Reitschulgasse komme, wo die Bimschienen sind, an welcher Ampel muss ich mich da orientieren und wie darf ich fahren?",
     },
     // weitere Einträge....
-  ]
+  ]*/
 
   const toggleShowMore = () => {
     setShowMore(!showMore)
@@ -111,9 +132,15 @@ const DangerZones: FC = () => {
 
               <h2 className="fontColors"> Letzte Fragen </h2>
 
-              <Comment data={commentData.slice(0, showMore ? commentData.length : 1)} />
+              <div>
+                {comments.map((comment, index) => (
+                  <p key={index}>{comment.message}</p>
+                ))}
+              </div>
 
-              {commentData.length > 1 && (
+              <Comment data={comments.slice(0, showMore ? comments.length : 1)} />
+
+              {comments.length > 1 && (
                 <IonButton className="answer" expand="block" fill="clear" onClick={toggleShowMore}>
                   Antworten
                   <IonIcon icon={showMore ? caretUp : caretDown} size="small" slot="start" />
