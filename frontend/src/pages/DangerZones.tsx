@@ -56,7 +56,7 @@ const DangerZones: FC = () => {
 
   // Add a state variable for the comments
   const [comments, setComments] = useState<DangerMessage>()
-  console.log(comments);
+  //console.log(comments);
 
   // Define a function to fetch the comments
   const fetchComments = async () => {
@@ -78,6 +78,25 @@ const DangerZones: FC = () => {
   useEffect(() => {
     fetchComments()
   }, [])
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+  
+    try {
+      const data = await messageService.messagePOST(
+        "e45326df-e18d-4a66-a40d-7cc53113ee64", // replace with the actual dangerId
+        { message: inputValue as DangerMessage }, // replace with the actual structure of DangerMessageRequest
+        currentUserToken || ""
+      );
+  
+      console.log(data);
+  
+      // Clear the input field
+      setInputValue('');
+    } catch (error) {
+      console.error('Failed to post question', error);
+    }
+  };
 
   //Hardcoded Solution
   /*const commentData = [
@@ -150,6 +169,7 @@ const DangerZones: FC = () => {
                 Gefahrenstelle mit hohem Unfallpotential.
               </p>
 
+              <form onSubmit={handleSubmit}>
               <IonItem className="questionBackground">
                 <IonInput
                   style={{ minHeight: "10px" }}
@@ -160,14 +180,15 @@ const DangerZones: FC = () => {
                   value={inputValue}
                   onIonChange={(e) => setInputValue(e.detail.value!)}
                 ></IonInput>
+                <IonButton type="submit">Submit</IonButton>
                 <IonIcon className="icons" icon={link} size="small"></IonIcon>
               </IonItem>
-
+              </form>
               <h2 className="fontColors"> Letzte Fragen </h2>
 
-              {/*
+              
 
-              <Comment data={comments.slice(0, showMore ? comments.length : 1)} />
+          {/*}    <Comment data={comments.slice(0, showMore ? comments.length : 1)} />
 
               <div>
                 {comments.map((comment, index) => (
@@ -183,7 +204,8 @@ const DangerZones: FC = () => {
                   <IonIcon icon={showMore ? caretUp : caretDown} size="small" slot="start" />
                 </IonButton>
               )}
-              */}
+          */}
+              
               <IonItem className="questionBackground">
                 <IonInput
                   style={{ minHeight: "10px" }}
