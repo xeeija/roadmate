@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   IonButton,
   IonCard,
@@ -10,41 +11,73 @@ import {
   IonPage,
 } from "@ionic/react"
 import { caretDown, caretUp, link } from "ionicons/icons"
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect, useState, useContext } from "react"
 import { MapContainer, TileLayer } from "react-leaflet"
 import Comment from "../components/Comment"
 import ToolBar from "../components/navigation/ToolBar"
 import "./DangerZones.css"
+import { DangerMessageService } from "../services/api/MessageService"
+import { DangerMessage } from "../services/entities/DangerMessage"
+import { UserContext } from "../components/ProtectedRoute"
+import { UserService } from "../services/api/UserService"
+import { User } from "../services/entities/User"
 
 const DangerZones: FC = () => {
   const [inputValue, setInputValue] = useState<string>("")
   const [showMore, setShowMore] = useState(false)
+  const userService = new UserService()
+  const [profileUser, setProfileUser] = useState<User>()
 
+  const { currentUserToken, currentUser } = useContext(UserContext)
+  
   const [renderMap, setRenderMap] = useState(false)
+
+  const messageService = new DangerMessageService()
 
   useEffect(() => {
     setRenderMap(true)
   })
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (currentUser?.id && currentUserToken) {
+        try {
+          const userResponse = await userService.userGET(currentUser.id, currentUserToken)
+          setProfileUser(userResponse?.data)
+          // console.log(userResponse?.data)
+        } catch (error) {
+          console.error("error fetching user", error)
+        }
+      }
+    }
+
+    void fetchData()
+  }, [])
+
   // Add a state variable for the comments
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<DangerMessage>()
+  console.log(comments);
 
   // Define a function to fetch the comments
   const fetchComments = async () => {
-    try {
-      // derzeit noch hardcoded
-      const response = await fetch('http://localhost:5211/api/Danger/e45326df-e18d-4a66-a40d-7cc53113ee64/Message');
-      const data = await response.json();
-      setComments(data);
-    } catch (error) {
-      console.error('Failed to fetch comments:', error);
+    if (currentUser?.id && currentUserToken) {
+      try {
+        const data = await messageService.messageGET(
+          "e45326df-e18d-4a66-a40d-7cc53113ee64",
+          currentUserToken || ""
+        )
+        //const data = await response.json()
+        setComments(data as DangerMessage)
+      } catch (error) {
+        console.error("error fetching comments", error)
+      }
     }
-  };
+  }
 
   // Call the fetchComments function when the component mounts
-    useEffect(() => {
-      fetchComments();
-    }, []);
+  useEffect(() => {
+    fetchComments()
+  }, [])
 
   //Hardcoded Solution
   /*const commentData = [
@@ -132,13 +165,17 @@ const DangerZones: FC = () => {
 
               <h2 className="fontColors"> Letzte Fragen </h2>
 
+              {/*
+
+              <Comment data={comments.slice(0, showMore ? comments.length : 1)} />
+
               <div>
                 {comments.map((comment, index) => (
                   <p key={index}>{comment.message}</p>
                 ))}
               </div>
-
-              <Comment data={comments.slice(0, showMore ? comments.length : 1)} />
+                  
+              
 
               {comments.length > 1 && (
                 <IonButton className="answer" expand="block" fill="clear" onClick={toggleShowMore}>
@@ -146,7 +183,7 @@ const DangerZones: FC = () => {
                   <IonIcon icon={showMore ? caretUp : caretDown} size="small" slot="start" />
                 </IonButton>
               )}
-
+              */}
               <IonItem className="questionBackground">
                 <IonInput
                   style={{ minHeight: "10px" }}
