@@ -8,7 +8,7 @@
 
 Gemeinsam Sicher Unterwegs.
 
-Your best mate on the road! RoadMate is a companion for all bike lovers which informs you about potential dangers on your routes. With live notifcations, a forum to ask your biking questions, saved routes and much more!
+Your best mate on the road! RoadMate is a companion for all bike lovers which informs you about potential dangers on your routes. With live notifications, a forum to ask your biking questions, saved routes and much more!
 
 ## 📋 Table of Contents
 
@@ -59,9 +59,9 @@ Run the following commands in the `backend` directory.
 
 1. Connect to the database
 
-    Connect either using Cloudbeaver, which should run on `localhost:8090` or with your preferred database editor.
+    Connect either using your preferred database editor, or alternatively using Cloudbeaver (depending on the setup, it runs on `localhost:8978` or `localhost:8090`).
 
-1. Configure Cloudbeaver (optional)
+2. Configure Cloudbeaver (optional)
 
     When Cloudbeaver is first started, create an admin account with your own username/password. Then add a Postgres
     connection with the following settings:
@@ -73,10 +73,16 @@ Run the following commands in the `backend` directory.
 
     Test the connection and save it.
 
-1. Migrations Setup
+3. Migrations Setup
 
     Migrations are handled with the dotnet CLI.
     The EF Core tools are already installed in the root folder and can be used in all projects.
+
+    Apply all pending migrations to local database initially (run in `backend/DAL`):
+
+    ```
+    dotnet ef database update -s ..\API
+    ```
 
     Alternatively, the EF Core CLI tools can be installed globally.
 
@@ -173,6 +179,7 @@ dotnet jb inspectcode roadmate.sln -o=logs/inspect.xml -e=WARNING --verbosity=WA
 
 Migrations are stored in the `backend/DAL` project, so commands should be executed in that directory.
 Migration names should be short and meaningful in PascalCase.
+Make sure that dotnet is not running before working with migrations.
 
 **Alwayys inspect the created migration before applying!**
 eg. a column is dropped and recreated instead of renamed.

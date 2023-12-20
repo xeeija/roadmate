@@ -13,3 +13,11 @@ services:
     volumes:
       - ./docker/data/PostgresData:/var/lib/postgresql/data
       - ./docker/config/postgres/docker-entrypoint-initdb:/docker-entrypoint-initdb.d/
+  # cloudbeaver:
+  #   image: dbeaver/cloudbeaver:23.2.3
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8090:8978
+  #   volumes:
+  #     - ./docker/data/Cloudbeaver/logs:/opt/cloudbeaver/logs
+  #     - ./docker/data/Cloudbeaver/workspace:/opt/cloudbeaver/workspace
