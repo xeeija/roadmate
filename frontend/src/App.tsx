@@ -75,6 +75,10 @@ const App: FC = () => (
                     <CreateDangerTest />
                   </Route>
 
+                  <Route exact path="/createDangerTest">
+                    <CreateDangerTest />
+                  </Route>
+
                   <Route exact path="/saved-routes">
                     <SavedRoutes />
                   </Route>
