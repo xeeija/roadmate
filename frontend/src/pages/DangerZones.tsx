@@ -21,6 +21,7 @@ import { DangerMessage } from "../services/entities/DangerMessage"
 import { UserContext } from "../components/ProtectedRoute"
 import { UserService } from "../services/api/UserService"
 import { User } from "../services/entities/User"
+import { DangerMessageRequest } from "../services/entities/request/DangerMessageRequest"
 
 const DangerZones: FC = () => {
   const [inputValue, setInputValue] = useState<string>("")
@@ -83,9 +84,14 @@ const DangerZones: FC = () => {
     event.preventDefault();
   
     try {
+      const messageRequest: DangerMessageRequest = {
+        message: inputValue,
+        referencedMessageId: "2813daca-e81a-4f83-a80f-312b0161327b"
+      };
+  
       const data = await messageService.messagePOST(
         "e45326df-e18d-4a66-a40d-7cc53113ee64", // replace with the actual dangerId
-        { message: inputValue as DangerMessage }, // replace with the actual structure of DangerMessageRequest
+        messageRequest,
         currentUserToken || ""
       );
   
