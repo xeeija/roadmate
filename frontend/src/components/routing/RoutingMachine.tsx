@@ -8,21 +8,22 @@ function createButton(label: string, container: HTMLElement): HTMLElement {
   btn.setAttribute("type", "button")
   btn.innerHTML = label
   btn.style.width = "100px"
-  btn.style.height = "50px"
+  btn.style.height = "40px"
   btn.style.fontSize = "12px"
   btn.style.backgroundColor = "#156064"
   btn.style.color = "white"
   btn.style.border = "none"
   btn.style.padding = "5px"
+  btn.style.margin = "5px"
   btn.style.borderRadius = "5px"
   return btn
 }
 
 const createRoutineMachineLayer = () => {
-  var ReversablePlan = L.Routing.Plan.extend({
+  var ExtendedPlan = L.Routing.Plan.extend({
     createGeocoders: function () {
       var container = L.Routing.Plan.prototype.createGeocoders.call(this),
-        reverseButton = createButton("Route speichern", container)
+        saveRoute = createButton("Route speichern", container)
       return container
     },
   }) as any as typeof L.Routing.Plan
@@ -32,15 +33,12 @@ const createRoutineMachineLayer = () => {
     L.latLng(47.066497966340485, 15.43830029261831),
   ]
 
-  var plan = new ReversablePlan(
-    [
-      L.latLng(47.06658740529705, 15.446622566627681),
-      L.latLng(47.066497966340485, 15.43830029261831),
-    ],
+  var plan = new ExtendedPlan(waypoints,
     {
       geocoder: L.Control.Geocoder.nominatim(),
       routeWhileDragging: true,
-      addWaypoints: true,
+      addWaypoints: false,
+      reverseWaypoints: true,
     }
   )
 
