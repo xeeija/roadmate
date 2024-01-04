@@ -1,0 +1,5 @@
+/* Disables the display of the turn-by-turn intructions of the routing */
+.leaflet-control-container .leaflet-routing-alternatives-container {
+    display: none;
+  }
+
