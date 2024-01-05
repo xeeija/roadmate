@@ -1,7 +1,15 @@
 import { PredefinedColors, TextFieldTypes } from "@ionic/core"
-import { IonInput, IonItem, IonTextarea } from "@ionic/react"
+import {
+  InputChangeEventDetail,
+  InputCustomEvent,
+  IonInput,
+  IonItem,
+  IonTextarea,
+  TextareaChangeEventDetail,
+  TextareaCustomEvent,
+} from "@ionic/react"
 import { useField } from "formik"
-import { FC } from "react"
+import { FC, ReactNode } from "react"
 
 interface Props {
   name: string
@@ -13,6 +21,11 @@ interface Props {
   lines?: "inset" | "full" | "none"
   className?: string
   clearInput?: boolean
+  onChange?: (
+    ev: InputCustomEvent<InputChangeEventDetail> | TextareaCustomEvent<TextareaChangeEventDetail>
+  ) => void
+  children?: ReactNode
+  iconPosition?: "start" | "end"
 }
 
 export const Input: FC<Props> = ({
@@ -25,6 +38,9 @@ export const Input: FC<Props> = ({
   className,
   clearInput = false,
   color = "light",
+  onChange,
+  iconPosition = "end",
+  children,
 }) => {
   const [field, { touched, error }] = useField(name)
 
@@ -42,9 +58,21 @@ export const Input: FC<Props> = ({
           labelPlacement="floating"
           placeholder={placeholder}
           clearInput={clearInput}
-          onIonChange={field.onChange}
+          onIonChange={(ev) => {
+            field.onChange(ev)
+
+            if (onChange) {
+              onChange(ev)
+            }
+          }}
           onIonBlur={field.onBlur}
-        />
+          style={{
+            display: "flex",
+            flexDirection: iconPosition === "end" ? "row-reverse" : "row",
+          }}
+        >
+          {children}
+        </InputComponent>
       </IonItem>
       {touched && error && <p className="error-message">{error}</p>}
     </>
