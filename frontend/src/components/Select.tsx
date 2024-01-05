@@ -1,6 +1,14 @@
 import { PredefinedColors } from "@ionic/core"
-import { IonItem, IonSelect, IonSelectOption } from "@ionic/react"
+import { IonIcon, IonItem, IonSelect, IonSelectOption } from "@ionic/react"
 import { useField } from "formik"
+import {
+  alarm,
+  caretDown,
+  hammer,
+  informationCircleOutline,
+  locationSharp,
+  warningSharp,
+} from "ionicons/icons"
 import { FC, Key, ReactNode } from "react"
 
 interface SelectOption {
@@ -18,6 +26,8 @@ interface Props {
   color?: PredefinedColors
   lines?: "inset" | "full" | "none"
   className?: string
+  icon: boolean
+  iconName?: string
 }
 
 export const Select: FC<Props> = ({
@@ -26,17 +36,30 @@ export const Select: FC<Props> = ({
   multiple,
   label,
   placeholder,
-  lines = "inset",
+  lines = "none",
   className,
-  color = "light",
+  //color = "light",
+  icon,
+  iconName,
 }) => {
   const [field, { touched, error }] = useField({ name, multiple })
 
+  // Map icon names to actual icons
+  const iconMap = {
+    warningSharp: warningSharp,
+    hammer: hammer,
+    alarm: alarm,
+    informationCircleOutline: informationCircleOutline,
+    locationSharp: locationSharp,
+    caretDown: caretDown,
+  }
+  const selectedIcon = iconMap[iconName as keyof typeof iconMap]
+
   return (
     <>
-      <IonItem color={color} lines={lines}>
+      <IonItem lines={lines} className={className}>
+        {icon && <IonIcon icon={selectedIcon} className="customIcon" />}
         <IonSelect
-          className={className}
           {...field}
           id={`${name}Input`}
           label={label}
@@ -47,7 +70,7 @@ export const Select: FC<Props> = ({
           interface="popover"
         >
           {options.map(({ value, label, key }) => (
-            <IonSelectOption key={key ?? value} value={value}>
+            <IonSelectOption key={key ?? value} value={value} className="customSelectOption">
               {label ?? value}
             </IonSelectOption>
           ))}
