@@ -28,8 +28,8 @@ const Comment: FC<CommentProps> = ({ data }) => {
           </IonCol>
           <IonCol className="date-icons" size-md="6">
             <span className="date">{item.date}</span>
-            <IonIcon className="icons" icon={informationCircle} size="small" />
-            <IonIcon className="icons" icon={arrowRedo} size="small" />
+            <IonIcon icon={informationCircle} />
+            <IonIcon icon={arrowRedo} />
           </IonCol>
           <IonCol size="12" size-sm="3">
             <p>{item.question}</p>

@@ -6,45 +6,62 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
-  IonInput,
-  IonItem,
   IonPage,
+  useIonToast,
 } from "@ionic/react"
-import { caretDown, caretUp, link } from "ionicons/icons"
-import { FC, useEffect, useState, useContext } from "react"
+import { Form, Formik } from "formik"
+import { send, warningOutline } from "ionicons/icons"
+import { FC, useContext, useEffect, useState } from "react"
 import { MapContainer, TileLayer } from "react-leaflet"
 import Comment from "../components/Comment"
-import ToolBar from "../components/navigation/ToolBar"
-import "./DangerZones.css"
-import { DangerMessageService } from "../services/api/MessageService"
-import { DangerMessage } from "../services/entities/DangerMessage"
+import { Input } from "../components/Input"
 import { UserContext } from "../components/ProtectedRoute"
-import { UserService } from "../services/api/UserService"
-import { User } from "../services/entities/User"
+import ToolBar from "../components/navigation/ToolBar"
+import { DangerService } from "../services/api/DangerService"
+import { DangerMessageService } from "../services/api/MessageService"
+import { Danger } from "../services/entities/Danger"
+import { DangerMessage } from "../services/entities/DangerMessage"
 import { DangerMessageRequest } from "../services/entities/request/DangerMessageRequest"
+import "./DangerZones.css"
 
 const DangerZones: FC = () => {
-  const [inputValue, setInputValue] = useState<string>("")
-  const [showMore, setShowMore] = useState(false)
-  const userService = new UserService()
-  const [profileUser, setProfileUser] = useState<User>()
-
-  const { currentUserToken, currentUser } = useContext(UserContext)
-  
-  const [renderMap, setRenderMap] = useState(false)
-
+  const dangerService = new DangerService()
   const messageService = new DangerMessageService()
 
-  useEffect(() => {
-    setRenderMap(true)
-  })
+  const { currentUserToken, currentUser } = useContext(UserContext)
+
+  const [danger, setDanger] = useState<Danger>()
+
+  const [inputValue, setInputValue] = useState<string>("")
+  const [showMore, setShowMore] = useState(false)
+
+  const [presentToast, dismissToast] = useIonToast()
+
+  const [renderMap, setRenderMap] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       if (currentUser?.id && currentUserToken) {
         try {
-          const userResponse = await userService.userGET(currentUser.id, currentUserToken)
-          setProfileUser(userResponse?.data)
+          const response = await dangerService.dangerWithMessagesGET(
+            "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1",
+            currentUserToken
+          )
+
+          if (response.data) {
+            setDanger(response.data)
+            setRenderMap(true)
+          } else {
+            await presentToast({
+              duration: 5000,
+              position: "bottom",
+              buttons: [{ text: "OK", handler: () => dismissToast() }],
+              message: `Fehler: ${response.errorMessages?.join("\n")}`,
+              color: "danger",
+              icon: warningOutline,
+            })
+          }
+
           // console.log(userResponse?.data)
         } catch (error) {
           console.error("error fetching user", error)
@@ -64,7 +81,7 @@ const DangerZones: FC = () => {
     if (currentUser?.id && currentUserToken) {
       try {
         const data = await messageService.messageGET(
-          "e45326df-e18d-4a66-a40d-7cc53113ee64",
+          "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1",
           currentUserToken || ""
         )
         //const data = await response.json()
@@ -77,32 +94,32 @@ const DangerZones: FC = () => {
 
   // Call the fetchComments function when the component mounts
   useEffect(() => {
-    fetchComments()
+    void fetchComments()
   }, [])
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-  
+    event.preventDefault()
+
     try {
       const messageRequest: DangerMessageRequest = {
         message: inputValue,
-        referencedMessageId: "2813daca-e81a-4f83-a80f-312b0161327b"
-      };
-  
+        // referencedMessageId: "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1",
+      }
+
       const data = await messageService.messagePOST(
-        "e45326df-e18d-4a66-a40d-7cc53113ee64", // replace with the actual dangerId
+        "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1", // replace with the actual dangerId
         messageRequest,
         currentUserToken || ""
-      );
-  
-      console.log(data);
-  
+      )
+
+      console.log(data)
+
       // Clear the input field
-      setInputValue('');
+      setInputValue("")
     } catch (error) {
-      console.error('Failed to post question', error);
+      console.error("Failed to post question", error)
     }
-  };
+  }
 
   //Hardcoded Solution
   /*const commentData = [
@@ -128,9 +145,8 @@ const DangerZones: FC = () => {
     setShowMore(!showMore)
   }
 
-  const locationCenter = [47.06658740529705, 15.446622566627681]
   const latDelta = 0.00065655287861
-  const lngDelta = 0.000134937615081
+  const lonDelta = 0.000134937615081
 
   const leafletOptions = {
     maxZoom: 20,
@@ -148,7 +164,10 @@ const DangerZones: FC = () => {
         {renderMap && (
           <div id="map" style={{ zIndex: 0 }}>
             <MapContainer
-              center={{ lat: locationCenter[0] - latDelta, lng: locationCenter[1] - lngDelta }}
+              center={{
+                lat: (danger?.lat ?? 47) - latDelta,
+                lng: (danger?.lon ?? 15.4) - lonDelta,
+              }}
               zoom={18}
               zoomControl={false}
               scrollWheelZoom={false}
@@ -166,43 +185,113 @@ const DangerZones: FC = () => {
         <div style={{ zIndex: 1 }}>
           <IonCard style={{ marginTop: "-100%" }} className="rounded-card">
             <IonCardContent>
-              <h1 className="fontColors">Dietrichsteinplatz</h1>
-              <h3 style={{ marginTop: "15px" }}>Problemstellung</h3>
-              <p>
-                Der Dietrichsteinplatz in der Grazer Innenstadt ist ein gefährlicher
-                Verkehrsknotenpunkt, besonders für Radfahrerinnen. Die unübersichtliche
-                Straßenführung sorgt, gemeinsam mit der hohen Frequentierung für eine große
-                Gefahrenstelle mit hohem Unfallpotential.
-              </p>
+              <h1 className="fontColors">{danger?.title}</h1>
 
-              <form onSubmit={handleSubmit}>
-              <IonItem className="questionBackground">
-                <IonInput
-                  style={{ minHeight: "10px" }}
-                  type="text"
-                  labelPlacement="stacked"
-                  clearInput={true}
-                  placeholder="Eine Frage stellen ..."
-                  value={inputValue}
-                  onIonChange={(e) => setInputValue(e.detail.value!)}
-                ></IonInput>
-                <IonButton type="submit">Submit</IonButton>
-                <IonIcon className="icons" icon={link} size="small"></IonIcon>
-              </IonItem>
-              </form>
+              <p>{danger?.description}</p>
+
+              <Formik
+                initialValues={{
+                  message: "",
+                }}
+                enableReinitialize={true}
+                validateOnChange={true}
+                onSubmit={async ({ message }) => {
+                  //console.log(values)
+                  try {
+                    const response = await messageService.messagePOST(
+                      "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1", // replace with the actual dangerId
+                      {
+                        message,
+                        // referencedMessageId
+                      },
+                      currentUserToken || ""
+                    )
+
+                    console.log(response)
+
+                    // Clear the input field
+                    setInputValue("")
+                  } catch (error) {
+                    console.error("Failed to post question", error)
+                  }
+                }}
+              >
+                {() => (
+                  <Form>
+                    <Input name="message" label="Stelle eine Frage...">
+                      <IonButton type="submit" fill="clear" aria-label="Send">
+                        <IonIcon slot="icon-only" icon={send} size="small" aria-hidden="true" />
+                      </IonButton>
+                    </Input>
+                  </Form>
+                )}
+              </Formik>
+
               <h2 className="fontColors"> Letzte Fragen </h2>
 
-              
+              {/* {danger?.messages?.map((message, i) => (
+                <Comment data={}></Comment>
+                <div key={message.id}>
+                  {message.message}
+                </div>
+              ))} */}
 
-          {/*}    <Comment data={comments.slice(0, showMore ? comments.length : 1)} />
+              <Comment
+                data={(danger?.messages ?? [])
+                  .filter((m) => m.referencedMessageId === null)
+                  .map((message) => ({
+                    date: message.createdAt?.toLocaleString() ?? "",
+                    question: message.message ?? "",
+                    username: message.id?.substring(0, 4) ?? "",
+                    // avatarSrc: `https://api.dicebear.com/7.x/personas/svg?seed=${message.userId}&scale=150`,
+                    avatarSrc: `https://api.dicebear.com/7.x/personas/svg?seed=${message.id}&scale=150`,
+                  }))}
+              />
+
+              <Formik
+                initialValues={{
+                  answer: "",
+                }}
+                enableReinitialize={true}
+                validateOnChange={true}
+                onSubmit={async ({ answer }) => {
+                  //console.log(values)
+                  try {
+                    const response = await messageService.messagePOST(
+                      "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1", // replace with the actual dangerId
+                      {
+                        message: answer,
+                        // referencedMessageId
+                      },
+                      currentUserToken || ""
+                    )
+
+                    console.log(response)
+
+                    // Clear the input field
+                    setInputValue("")
+                  } catch (error) {
+                    console.error("Failed to post question", error)
+                  }
+                }}
+              >
+                {() => (
+                  <Form>
+                    <Input name={`answer-id`} label="Antwort...">
+                      <IonButton type="submit" fill="clear" aria-label="Send">
+                        <IonIcon slot="icon-only" icon={send} size="small" aria-hidden="true" />
+                      </IonButton>
+                    </Input>
+
+                    {/*}    <Comment data={comments.slice(0, showMore ? comments.length : 1)} />
 
               <div>
                 {comments.map((comment, index) => (
                   <p key={index}>{comment.message}</p>
                 ))}
               </div>
-                  
-              
+
+
 
               {comments.length > 1 && (
                 <IonButton className="answer" expand="block" fill="clear" onClick={toggleShowMore}>
@@ -211,18 +300,9 @@ const DangerZones: FC = () => {
                 </IonButton>
               )}
           */}
-              
-              <IonItem className="questionBackground">
-                <IonInput
-                  style={{ minHeight: "10px" }}
-                  type="text"
-                  labelPlacement="stacked"
-                  clearInput={true}
-                  placeholder="Antwort..."
-                  value={inputValue}
-                  onIonChange={(e) => setInputValue(e.detail.value!)}
-                ></IonInput>
-              </IonItem>
+                  </Form>
+                )}
+              </Formik>
             </IonCardContent>
           </IonCard>
         </div>
