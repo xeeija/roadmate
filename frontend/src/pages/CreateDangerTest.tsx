@@ -12,27 +12,38 @@ import {
   IonInput,
   IonItem,
   IonPage,
-  IonSelect,
-  IonSelectOption,
-  IonTextarea,
   IonToggle,
 } from "@ionic/react"
-import {
-  alarm,
-  caretDown,
-  hammer,
-  informationCircleOutline,
-  locationSharp,
-  warningSharp,
-} from "ionicons/icons"
+import { Form, Formik } from "formik"
+import { hammer, informationCircleOutline } from "ionicons/icons"
 import { FC, useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router"
+import * as yup from "yup"
+import { Input } from "../components/Input"
 import { UserContext } from "../components/ProtectedRoute"
+import { Select } from "../components/Select"
 import ToolBar from "../components/navigation/ToolBar"
+import { DangerCategoryService } from "../services/api/DangerCategoryService"
 import { DangerService } from "../services/api/DangerService"
 import { UserService } from "../services/api/UserService"
+import { DangerCategory } from "../services/entities/DangerCategory"
 import { User } from "../services/entities/User"
 import "./CreateDanger.css"
+
+interface DangerRequestData {
+  userId: string
+  lat: number
+  lon: number
+  categoryId: string
+  timestamp: Date
+  description?: string
+  location?: string
+  addressName: string
+  title: string
+  categoryID: string
+  otherCategory?: string
+  activeAt?: Date
+}
 
 interface DangerData {
   dangerType: string
@@ -47,10 +58,18 @@ interface DangerData {
   activeAt?: Date
 }
 
+interface SelectValues {
+  category: string
+  dangerLocation: string
+  type: string
+  time: string
+  description: string
+}
+
 const CreateDangerTest: FC = () => {
   const history = useHistory()
 
-  // ADDED: USER SERVICE
+  // Get User Token and UserId
   const userService = new UserService()
   const dangerService = new DangerService()
   const [profileUser, setProfileUser] = useState<User>()
@@ -72,8 +91,84 @@ const CreateDangerTest: FC = () => {
     void fetchData()
   }, [])
   const [isChecked, setIsChecked] = useState(false)
+
   const handleToggleChange = () => {
     setIsChecked(!isChecked)
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (currentUser?.id && currentUserToken) {
+        try {
+          const userResponse = await userService.userGET(currentUser.id, currentUserToken)
+          setProfileUser(userResponse?.data)
+          console.log(userResponse?.data)
+        } catch (error) {
+          console.error("error fetching user", error)
+        }
+      }
+    }
+
+    void fetchData()
+  }, [])
+
+  // Get Danger Categories
+  const [dangerCategories, setDangerCategories] = useState<DangerCategory[]>()
+
+  const fetchDangerCategories = async () => {
+    try {
+      const dangerCategoryService = new DangerCategoryService()
+      const result = await dangerCategoryService.dangerCategoryGET2(currentUserToken || "")
+      // console.log(result.data)
+      setDangerCategories(result.data)
+      // Note: React State won't update immediately therefore the console.log will show undefined
+      // console.log(dangerCategories)
+    } catch (error) {
+      console.error("Error fetching danger categories:", error)
+    }
+  }
+
+  useEffect(() => {
+    //console.log("Fetching danger categories")
+    void fetchDangerCategories()
+  }, [])
+
+  // Before sending data to backend, transform data to DangerRequestData
+  const createDangerRequestData = (values: SelectValues) => {
+    const dangerRequestData: DangerRequestData = {
+      userId: profileUser?.id || "",
+      lat: 0,
+      lon: 0,
+      categoryId: values.category,
+      timestamp: new Date(),
+      description: values.description,
+      addressName: "",
+      title: "test",
+      categoryID: "",
+    }
+
+    if (values.dangerLocation === "currentLocation") {
+      // TODO: Get current location
+      dangerRequestData.lat = 1.856754
+      dangerRequestData.lon = 1.234567
+    } else if (values.dangerLocation === "otherLocation") {
+      dangerRequestData.lat = 0
+      dangerRequestData.lon = 0
+    }
+    if (values.time === "otherTime") {
+      //TODO: Get time from Time/Date Picker
+    }
+
+    void handleDangerRequest(dangerRequestData)
+  }
+
+  const handleDangerRequest = async (dangerRequestData: DangerRequestData) => {
+    try {
+      console.log(dangerRequestData)
+      //TODO: Send dangerRequestData to backend (DangerRequest Service)
+    } catch (error) {
+      console.error("Danger Request error", error)
+    }
   }
 
   // ----- Fallback Values ----
@@ -82,6 +177,19 @@ const CreateDangerTest: FC = () => {
     lon: 9.993682,
     categoryID: "8b2bd105-5ae3-4f00-8939-0f0603bee564",
   }
+
+  const initialValues: SelectValues = {
+    //TODO: Category per default auf Unfall setzen
+    category: "",
+    dangerLocation: "currentLocation",
+    type: "",
+    time: "currentTime",
+    description: "",
+  }
+
+  const validationSchema = yup.object({
+    description: yup.string(),
+  })
 
   const testData: DangerData = {
     dangerType: "Unfall",
@@ -93,27 +201,6 @@ const CreateDangerTest: FC = () => {
     otherCategory: "",
     categoryID: "8b2bd105-5ae3-4f00-8939-0f0603bee564",
     activeAt: new Date(),
-  }
-
-  const handleDangerRequest = async (dangerData: DangerData) => {
-    // Fallback values for testing
-    dangerData.categoryID = fallBackValues.categoryID
-    dangerData.lat = fallBackValues.lat
-    dangerData.lon = fallBackValues.lon
-    console.log(dangerData)
-
-    /*
-    try {
-      //console.log("In handleDangerRequest")
-      const response = await dangerService.dangerPOST(dangerData, currentUserToken || "")
-
-      const data = response?.data
-      if (data) {
-        history.push(`/homescreen`)
-      }
-    } catch (error) {
-      console.error("Danger Request error", error)
-    } */
   }
 
   // -----------------------ChatGPT Help ----------------------------
@@ -146,124 +233,101 @@ const CreateDangerTest: FC = () => {
       <IonContent scroll-y="false">
         <IonCard color="light" className="customCard">
           <IonCardContent>
-            {/* ----- Input DangerType ----- */}
-            <IonItem className="customItem">
-              <IonIcon icon={warningSharp} className="customIcon" />
-              <IonSelect
-                label="Art der Gefahrenstelle"
-                labelPlacement={"floating"}
-                toggleIcon={caretDown}
-                interface="popover"
-                onIonChange={(e) => handleFieldChange("dangerType", e.detail.value as string)}
-              >
-                {/* TODO Hier kommen die möglichen Arten von Gefahrenstellen --> Service zu implementieren */}
-                <IonSelectOption className="customSelectOption" value="unfall">
-                  Unfall
-                </IonSelectOption>
-                <IonSelectOption className="customSelectOption" value="block">
-                  Klimakleber
-                </IonSelectOption>
-              </IonSelect>
-            </IonItem>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={(values) => {
+                void createDangerRequestData(values)
+              }}
+            >
+              <Form>
+                {/* <Select
+                  name="categoryId"
+                  label="Art der Gefahrenstelle"
+                  icon={true}
+                  iconName="warningSharp"
+                  className="customItem"
+                  //Hier CategoryId hinein mappen
+                  options={[
+                    { value: "123", label: "Unfall" },
+                    { value: "456", label: "Klimakleber" },
+                  ]}
+                /> */}
 
-            {/* ----- Input Location ----- */}
-            <IonItem className="customItem">
-              <IonIcon icon={locationSharp} className="customIcon" />
-              <IonSelect
-                label="Wo ist die Gefahrenstelle"
-                labelPlacement={"floating"}
-                toggleIcon={caretDown}
-                interface="popover"
-                onIonChange={(e) => handleFieldChange("location", e.detail.value as string)}
-              >
-                <IonSelectOption className="customSelectOption" value="meinStandort">
-                  Mein Standort
-                </IonSelectOption>
-                <IonSelectOption className="customSelectOption" value="mapStandort">
-                  Auf der Karte wählen
-                </IonSelectOption>
-              </IonSelect>
-            </IonItem>
+                {/* Select Danger Category */}
+                <Select
+                  name="category"
+                  label="Art der Gefahrenstelle"
+                  icon={true}
+                  iconName="warningSharp"
+                  className="customItem"
+                  options={
+                    dangerCategories?.map((x) => ({ value: x?.id || "", label: x?.name || "" })) ||
+                    []
+                  }
+                />
 
-            {/* ----- Toggle Permanent/Temporary ----- */}
-            <IonItem className="customItem">
-              <IonIcon icon={hammer} className="customIcon" />
-              <IonInput
-                label="Permanente Gefahrenstelle?"
-                labelPlacement={"floating"}
-                value={isChecked ? "Ja" : "Nein"}
-                readonly={true}
-              ></IonInput>
-              <IonToggle
-                className="customToggle custom-toggle-input"
-                checked={isChecked}
-                onIonChange={handleToggleChange}
-                //onIonChange={(e) => handleFieldChange("dangerType", e.detail.value as string)}
-              />
-            </IonItem>
+                {/* Select Danger Location */}
+                <Select
+                  name="dangerLocation"
+                  label="Wo ist die Gefahrenstelle"
+                  icon={true}
+                  iconName="locationSharp"
+                  className="customItem"
+                  options={[
+                    { value: "currentLocation", label: "Mein Standort" },
+                    { value: "otherLocation", label: "Auf der Karte wählen" },
+                  ]}
+                  //onChange={handleLocationChange}
+                />
 
-            {/* ----- Input Time ----- */}
-            <IonItem className="customItem">
-              <IonIcon icon={alarm} className="customIcon" />
-              <IonSelect
-                label="Wann ist der Vorfall passiert?"
-                labelPlacement={"floating"}
-                toggleIcon={caretDown}
-                interface="popover"
-                disabled={isChecked}
-              >
-                <IonSelectOption className="customSelectOption" value="timeNow">
-                  In diesem Augenblick
-                </IonSelectOption>
-                <IonSelectOption className="customSelectOption" value="exactTime">
-                  Uhrzeit wählen
-                </IonSelectOption>
-              </IonSelect>
-            </IonItem>
+                {/* Toggle Permanent Danger */}
+                <IonItem className="customItem" lines="none">
+                  <IonIcon icon={hammer} className="customIcon" />
+                  <IonInput
+                    label="Permanente Gefahrenstelle?"
+                    labelPlacement={"floating"}
+                    value={isChecked ? "Ja" : "Nein"}
+                    readonly={true}
+                  ></IonInput>
+                  <IonToggle
+                    className="customToggle custom-toggle-input"
+                    checked={isChecked}
+                    onIonChange={handleToggleChange}
+                  />
+                </IonItem>
 
-            <IonItem className="customItem">
-              <IonIcon icon={informationCircleOutline} className="customDescriptionIcon" />
-              <IonTextarea
-                className="customTextArea"
-                label="Beschreibung?"
-                labelPlacement={"floating"}
-                placeholder="Beschreibe die Gefahrenstelle etwas näher"
-                onIonChange={(e) => handleFieldChange("description", e.detail.value as string)}
-              ></IonTextarea>
+                {/* Select Timestamp */}
+                <Select
+                  name="time"
+                  label="Wann ist der Vorfall passiert?"
+                  icon={true}
+                  iconName="alarm"
+                  className="customItem"
+                  options={[
+                    { value: "currentTime", label: "In diesem Augenblick" },
+                    { value: "otherTime", label: "Uhrzeit wählen" },
+                  ]}
+                />
 
-              {/* responseError && <p className="error-message">{responseError}</p>
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={(values) => {
-                  void handleDangerRequest(values)
-                }}
-              >
-                {() => (
-                  <Form>
-                    <Input
-                      multiline
-                      className="customTextArea"
-                      name="description"
-                      label="Beschreibung"
-                      placeholder="Beschreibe die Gefahrenstelle etwas näher"
-                    />
-                    <Field as="select" name="color">
-                      <option value="red">Red</option>
-                      <option value="green">Green</option>
-                      <option value="blue">Blue</option>
-                    </Field>
-                  </Form>
-                )}
-              </Formik> */}
-            </IonItem>
-            <IonButton className="customButton" onClick={() => handleDangerRequest(formData)}>
-              Gefahrenstelle melden
-            </IonButton>
-            {/*
-            <IonButton className="customButton" onClick={() => handleDangerRequest(testData)}>
-              Gefahrenstelle melden
-            </IonButton> */}
+                {/* Input Description */}
+                <div className="customItem textArea">
+                  <IonIcon icon={informationCircleOutline} className="customDescriptionIcon" />
+                  <Input
+                    multiline
+                    color="light"
+                    name="description"
+                    label="Beschreibung?"
+                    placeholder="Beschreibe die Gefahrenstelle etwas näher"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <IonButton className="customButton" type="submit">
+                  Gefahrenstelle melden
+                </IonButton>
+              </Form>
+            </Formik>
           </IonCardContent>
         </IonCard>
       </IonContent>
