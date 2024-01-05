@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
-import RoutineMachine from "./RoutingMachine"
+import RoutingMachine from "./RoutingMachine"
 import "../../pages/Homescreen.css"
 import "../routing/RoutingMachine.css"
 import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react"
@@ -75,7 +75,7 @@ const Map = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              <RoutineMachine />
+              <RoutingMachine />
               {dangerPoints.map((dangerPoint, index) => (
                 <Marker
                   key={index}
