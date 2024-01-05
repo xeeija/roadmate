@@ -24,7 +24,7 @@ export class DangerService {
    * @param id The ID of the entity to get.
    * @return Success
    */
-  dangerGET(id: string), token?: string): Promise<DangerItemResponseModel> {
+  dangerGET(id: string, token?: string): Promise<DangerItemResponseModel> {
     let url_ = this.baseUrl + "/api/Danger/{id}"
     if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.")
     url_ = url_.replace("{id}", encodeURIComponent("" + id))
@@ -34,7 +34,31 @@ export class DangerService {
       method: "GET",
       headers: {
         Accept: "text/plain",
-        Authorization: "Bearer " + token
+        Authorization: "Bearer " + token,
+      },
+    }
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processDangerGET(_response)
+    })
+  }
+
+  /**
+   * Gets the entity with the specified ID and includes messages.
+   * @param id The ID of the entity to get.
+   * @return Success
+   */
+  dangerWithMessagesGET(id: string, token?: string): Promise<DangerItemResponseModel> {
+    let url_ = this.baseUrl + "/api/Danger/{id}/WithMessages"
+    if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.")
+    url_ = url_.replace("{id}", encodeURIComponent("" + id))
+    url_ = url_.replace(/[?&]$/, "")
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+        Authorization: "Bearer " + token,
       },
     }
 
