@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from "react";
-import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
-import RoutineMachine from "./RoutingMachine";
-import "../../pages/Homescreen.css";
-import {IonButton, IonContent, IonIcon, IonPage} from "@ionic/react";
-import * as L from "leaflet";
-import DATemporary from "../../resources/DATemporary.svg";
-import DAPermanent from "../../resources/DAPermanent.svg";
-import {warningSharp} from "ionicons/icons";
+import React, { useEffect, useState } from "react"
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
+import RoutingMachine from "./RoutingMachine"
+import "../../pages/Homescreen.css"
+import "../routing/RoutingMachine.css"
+import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react"
+import * as L from "leaflet"
+import DATemporary from "../../resources/DATemporary.svg"
+import DAPermanent from "../../resources/DAPermanent.svg"
+import { warningSharp } from "ionicons/icons"
 
 const Map = () => {
   const [renderMap, setRenderMap] = useState(false)
@@ -27,7 +28,7 @@ const Map = () => {
       type: "Temporary",
     },
     {
-      position: [47.074918, 15.430190],
+      position: [47.074918, 15.43019],
       description: "Demo",
       type: "Temporary",
     },
@@ -37,7 +38,7 @@ const Map = () => {
       type: "Temporary",
     },
     {
-      position: [47.068552, 15.404050],
+      position: [47.068552, 15.40405],
       description: "Gefährliche Stelle",
       type: "Permanent",
     },
@@ -59,7 +60,6 @@ const Map = () => {
     iconSize: [31, 38],
   })
 
-
   return (
     <IonPage>
       <IonContent fullscreen>
@@ -75,7 +75,7 @@ const Map = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              <RoutineMachine />
+              <RoutingMachine />
               {dangerPoints.map((dangerPoint, index) => (
                 <Marker
                   key={index}
@@ -90,9 +90,13 @@ const Map = () => {
           </div>
         )}
       </IonContent>
-      <IonButton className="createDangerButton" ><a href="/createDanger" style={{ color:"white", textDecoration: "none"}}><IonIcon icon={warningSharp} className="createDangerIcon" /></a></IonButton>
+      <IonButton className="createDangerButton">
+        <a href="/createDanger" style={{ color: "white", textDecoration: "none" }}>
+          <IonIcon icon={warningSharp} className="createDangerIcon" />
+        </a>
+      </IonButton>
     </IonPage>
-  );
-};
+  )
+}
 
-export default Map;
+export default Map
