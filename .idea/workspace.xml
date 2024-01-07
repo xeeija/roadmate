@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="afe9d172-343b-4618-bfa5-a3d13ea58cf8" name="Changes" comment="114: add createDanger button">
+    <list default="true" id="5d80c0d6-bf88-41a0-8d23-12162fb3d15e" name="Changes" comment="67: rebase">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Homescreen.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Homescreen.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/theme/variables.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/theme/variables.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +33,9 @@
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2WaCpBeuWyfG1SA0zyUDAcEXnpW" />
   <component name="ProjectViewState">

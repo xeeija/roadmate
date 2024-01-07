@@ -25,9 +25,12 @@ function createButton(label: string, container: HTMLElement): HTMLElement {
   btn.style.width = "100px"
   btn.style.height = "40px"
   btn.style.fontSize = "12px"
+  btn.style.fontFamily= "Hammersmith One"
+  btn.style.fontWeight = "lighter";
+  btn.style.fontStyle = "normal"
   btn.style.backgroundColor = "#156064"
   btn.style.color = "white"
-  btn.style.border = "none"
+  btn.style.borderColor = "transparent"
   btn.style.padding = "5px"
   btn.style.margin = "5px"
   btn.style.borderRadius = "5px"
@@ -106,6 +109,8 @@ const createRoutingMachineLayer = () => {
     addWaypoints: false,
     fitSelectedRoutes: true,
     showAlternatives: false,
+    collapsible: false,
+
   })
 
   const container = instance.getContainer();

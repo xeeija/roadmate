@@ -114,6 +114,7 @@ const Map: FC = () => {
               id="mapId"
               zoom={14}
               center={{ lat: 47.06658740529705, lng: 15.446622566627681 }}
+              zoomControl={false}
             >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
