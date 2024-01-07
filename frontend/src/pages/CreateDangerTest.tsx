@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   IonButton,
   IonCard,
@@ -24,11 +20,19 @@ import { UserContext } from "../components/ProtectedRoute"
 import { Select } from "../components/Select"
 import ToolBar from "../components/navigation/ToolBar"
 import { DangerCategoryService } from "../services/api/DangerCategoryService"
+import { DangerRequestService } from "../services/api/DangerRequestService"
 import { DangerService } from "../services/api/DangerService"
 import { UserService } from "../services/api/UserService"
 import { DangerCategory } from "../services/entities/DangerCategory"
 import { User } from "../services/entities/User"
 import "./CreateDanger.css"
+
+// TODO's:
+// - Type of Danger mitgeben? (akut/permanent)
+// - Funktionen: getCurrentLocation und handleLocationChange
+// - EventHandler einbauen
+//   - Map Picker
+//   - Time/DatePicker
 
 interface DangerRequestData {
   userId: string
@@ -66,6 +70,26 @@ interface SelectValues {
   description: string
 }
 
+const validationSchema = yup.object({
+  description: yup.string(),
+})
+
+const initialValues: SelectValues = {
+  //TODO: Category per default auf Unfall setzen
+  category: "",
+  dangerLocation: "currentLocation",
+  type: "",
+  time: "currentTime",
+  description: "",
+}
+
+// // TODO: E.g. when user selects "Auf der Karte wählen"
+// const handleLocationChange = (event: CustomEvent) => {
+//   if (event.detail.value === "otherLocation") {
+//     console.log("User wants to select location on map")
+//   }
+// }
+
 const CreateDangerTest: FC = () => {
   const history = useHistory()
 
@@ -102,7 +126,23 @@ const CreateDangerTest: FC = () => {
         try {
           const userResponse = await userService.userGET(currentUser.id, currentUserToken)
           setProfileUser(userResponse?.data)
-          console.log(userResponse?.data)
+          // console.log(userResponse?.data)
+        } catch (error) {
+          console.error("error fetching user", error)
+        }
+      }
+    }
+
+    void fetchData()
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (currentUser?.id && currentUserToken) {
+        try {
+          const userResponse = await userService.userGET(currentUser.id, currentUserToken)
+          setProfileUser(userResponse?.data)
+          //console.log(userResponse?.data)
         } catch (error) {
           console.error("error fetching user", error)
         }
@@ -131,10 +171,11 @@ const CreateDangerTest: FC = () => {
   useEffect(() => {
     //console.log("Fetching danger categories")
     void fetchDangerCategories()
+    void fetchDangerCategories()
   }, [])
 
   // Before sending data to backend, transform data to DangerRequestData
-  const createDangerRequestData = (values: SelectValues) => {
+  const createDangerRequestData = async (values: SelectValues) => {
     const dangerRequestData: DangerRequestData = {
       userId: profileUser?.id || "",
       lat: 0,
@@ -159,15 +200,20 @@ const CreateDangerTest: FC = () => {
       //TODO: Get time from Time/Date Picker
     }
 
-    void handleDangerRequest(dangerRequestData)
+    void (await handleDangerRequest(dangerRequestData))
   }
 
+  const dangerRequestService = new DangerRequestService()
   const handleDangerRequest = async (dangerRequestData: DangerRequestData) => {
     try {
-      console.log(dangerRequestData)
-      //TODO: Send dangerRequestData to backend (DangerRequest Service)
+      //console.log(dangerRequestData)
+      const response = await dangerRequestService.create(dangerRequestData, currentUserToken || "")
+      const data = response?.data
+      if (data) {
+        history.push(`/homescreen`)
+      }
     } catch (error) {
-      console.error("Danger Request error", error)
+      console.error("DangerRequest error", error)
     }
   }
 
