@@ -3,7 +3,7 @@ import { createControlComponent } from "@react-leaflet/core"
 import "leaflet-routing-machine"
 import "leaflet-control-geocoder"
 
-interface ButtonStyle {
+/* interface ButtonStyle {
   [key: string]: string | undefined
   width?: string
   height?: string
@@ -14,20 +14,28 @@ interface ButtonStyle {
   padding?: string
   margin?: string
   borderRadius?: string
-}
+} */
 
-function createButton(label: string, container: HTMLElement, style: ButtonStyle): HTMLElement {
+function createButton(label: string, container: HTMLElement): HTMLElement {
   const btn = L.DomUtil.create("button", "", container)
   btn.setAttribute("type", "button")
   btn.innerHTML = label
   btn.id = "saveRoute"
+  btn.style.width = "100px"
+  btn.style.height = "40px"
+  btn.style.fontSize = "12px"
+  btn.style.backgroundColor = "#156064"
+  btn.style.color = "white"
+  btn.style.border = "none"
+  btn.style.padding = "5px"
+  btn.style.margin = "5px"
+  btn.style.borderRadius = "5px"
 
-  // Apply the styles
-  for (const property in style) {
+  /*   for (const property in style) {
     if (property !== "length" && property !== "parentRule") {
-      ;(btn.style as any)[property] = style[property]
+      (btn.style as React.CSSProperties)[property] = style[property]
     }
-  }
+  } */
 
   btn.addEventListener("click", () => {
     console.log("Route wurde gespeichert")
@@ -37,10 +45,14 @@ function createButton(label: string, container: HTMLElement, style: ButtonStyle)
 }
 
 const createRoutingMachineLayer = () => {
-  var ExtendedPlan = L.Routing.Plan.extend({
+  const ExtendedPlan = L.Routing.Plan.extend({
     createGeocoders: function () {
-      var container = L.Routing.Plan.prototype.createGeocoders.call(this),
-        saveRoute = createButton("Route speichern", container, {
+      const container: HTMLElement = L.Routing.Plan.prototype.createGeocoders.call(
+        this
+      ) as HTMLElement
+      createButton(
+        "Route speichern",
+        container /* , {
           width: "100px",
           height: "40px",
           fontSize: "12px",
@@ -49,18 +61,19 @@ const createRoutingMachineLayer = () => {
           border: "none",
           padding: "5px",
           margin: "5px",
-          borderRadius: "5px",
-        })
+          borderRadius: "5px", 
+        }*/
+      )
       return container
     },
-  }) as any as typeof L.Routing.Plan
+  }) as typeof L.Routing.Plan
 
   const waypoints = [
     L.latLng(47.061207394310735, 15.431929877161728),
     L.latLng(47.06028439128265, 15.45535951123882),
   ]
 
-  var plan = new ExtendedPlan(waypoints, {
+  const plan = new ExtendedPlan(waypoints, {
     geocoder: L.Control.Geocoder.nominatim(),
     routeWhileDragging: true,
     addWaypoints: true,
