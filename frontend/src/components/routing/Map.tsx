@@ -1,22 +1,30 @@
-import React, { useEffect, useState } from "react"
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
+import React, {FC, useEffect, useState } from "react"
+import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
+import {IonButton, IonContent, IonIcon, IonPage, IonText} from "@ionic/react";
 import RoutingMachine from "./RoutingMachine"
 import "../../pages/Homescreen.css"
 import "../routing/RoutingMachine.css"
-import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react"
 import * as L from "leaflet"
 import DATemporary from "../../resources/DATemporary.svg"
 import DAPermanent from "../../resources/DAPermanent.svg"
-import { warningSharp } from "ionicons/icons"
+import {locationSharp, warningSharp} from "ionicons/icons";
+import DangerAcute from "../DangerAcute";
 
-const Map = () => {
-  const [renderMap, setRenderMap] = useState(false)
+interface DangerPoint {
+  position: [number, number];
+  description: string;
+  type: "Temporary" | "Permanent";
+}
+
+const Map: FC = () => {
+  const [renderMap, setRenderMap] = useState(false);
+  const [showDangerAcute, setShowDangerAcute] = useState(false);
 
   useEffect(() => {
-    setRenderMap(true)
-  })
+    setRenderMap(true);
+  }, []);
 
-  const dangerPoints = [
+  const dangerPoints: DangerPoint[] = [
     {
       position: [47.043186, 15.404706],
       description: "Achtung Verkehrsunfall",
@@ -47,18 +55,54 @@ const Map = () => {
       description: "Achtung Absturzgefahr",
       type: "Permanent",
     },
-    //Diese Gefahrenstellen sollen später aus der Datenbank kommen und im useEffect aufgerufen und befüllt werden
-  ]
+  ];
 
   const iconTemporary = L.icon({
     iconUrl: DATemporary,
     iconSize: [31, 38],
-  })
+  });
 
   const iconPermanent = L.icon({
     iconUrl: DAPermanent,
     iconSize: [31, 38],
-  })
+  });
+
+  const CustomPopup: FC<{ description: string }> = ({ description }) => {
+    return (
+      <Popup>
+        <div>{description}</div>
+      </Popup>
+    );
+  };
+
+  const MarkerWithPopup: FC<{ position: { lat: number; lng: number }; type: string; description: string }> = ({position, type, description,}) => {
+    const icon = type === "Temporary" ? iconTemporary : iconPermanent;
+
+    const handleClick = () => {
+      if (type === "Temporary") {
+        // Show DangerAcute component when iconTemporary is clicked
+        setShowDangerAcute(true);
+      }
+    };
+
+    return (
+      <Marker position={position} icon={icon} autoPanOnFocus={true} eventHandlers={{ click: handleClick }}>
+        <CustomPopup description={description} />
+      </Marker>
+    );
+  };
+
+  const ClickHandler: FC = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const map = useMapEvents({
+      click: () => {
+        // what happens when map is clicked
+        console.log("Map clicked");
+      },
+    });
+
+    return null;
+  };
 
   return (
     <IonPage>
@@ -73,20 +117,20 @@ const Map = () => {
             >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               />
               <RoutingMachine />
+              <ClickHandler />
               {dangerPoints.map((dangerPoint, index) => (
-                <Marker
+                <MarkerWithPopup
                   key={index}
                   position={{ lat: dangerPoint.position[0], lng: dangerPoint.position[1] }}
-                  icon={dangerPoint.type === "Temporary" ? iconTemporary : iconPermanent}
-                  autoPanOnFocus={true}
-                >
-                  <Popup>{dangerPoint.description}</Popup>
-                </Marker>
+                  type={dangerPoint.type}
+                  description={dangerPoint.description}
+                />
               ))}
             </MapContainer>
+            {showDangerAcute && <DangerAcute closeModal={() => setShowDangerAcute(false)} />}
           </div>
         )}
       </IonContent>
@@ -95,6 +139,13 @@ const Map = () => {
           <IonIcon icon={warningSharp} className="createDangerIcon" />
         </a>
       </IonButton>
+      <div className="legend">
+        <IonText>
+          <IonIcon icon={locationSharp} className="akutIcon"/>Akute Gefahrenstelle<br/>
+          <IonIcon icon={locationSharp} className="permanentIcon"/>Permanente Gefahrenstelle
+        </IonText>
+      </div>
+
     </IonPage>
   )
 }

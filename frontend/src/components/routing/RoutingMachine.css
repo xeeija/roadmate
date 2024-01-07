@@ -1,3 +1,56 @@
+/* routing-machine-styles.css */
+
+/* Hintergrund Main Part Text */
+.leaflet-routing-alt {
+  background-color: white;
+  padding: 10px;
+  border-radius: 15px;
+  font-family: "Hammersmith One", sans-serif;
+  font-size: 12px;
+}
+
+
+/* Hintergrund Rand Ganz Außen*/
+.leaflet-routing-container{
+  z-index: 2;
+  background-color: white;
+  padding: 3px;
+  border-radius: 20px;
+
+}
+
+.leaflet-routing-alt h2 {
+  font-family: "Hammersmith One", sans-serif;
+  font-size: 16px;
+}
+
+/* Schließen X */
+.leaflet-routing-collapse-btn{
+  right: 10px;
+}
+
+/* Open/Close Routing */
+.leaflet-routing-collapsible{
+  border-radius: 6px;
+}
+
+/* Plus Minus Buttons */
+.leaflet-bar{
+ border-radius: 10px;
+}
+
+/* Plus Button */
+.leaflet-control-zoom-in{
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Minus Button */
+.leaflet-control-zoom-out {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
 /* Disables the display of the turn-by-turn intructions of the routing */
 .leaflet-control-container .leaflet-routing-alternatives-container {
   display: none;

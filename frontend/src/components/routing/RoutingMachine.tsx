@@ -2,6 +2,7 @@ import L from "leaflet"
 import { createControlComponent } from "@react-leaflet/core"
 import "leaflet-routing-machine"
 import "leaflet-control-geocoder"
+import "./RoutingMachine.css";
 
 /* interface ButtonStyle {
   [key: string]: string | undefined
@@ -61,7 +62,7 @@ const createRoutingMachineLayer = () => {
           border: "none",
           padding: "5px",
           margin: "5px",
-          borderRadius: "5px", 
+          borderRadius: "5px",
         }*/
       )
       return container
@@ -107,8 +108,13 @@ const createRoutingMachineLayer = () => {
     showAlternatives: false,
   })
 
+  const container = instance.getContainer();
+  if (container) {
+    container.classList.add("custom-routing-machine-container");
+  }
+
   return instance
-}
+};
 
 const RoutingMachine = createControlComponent(createRoutingMachineLayer)
 

@@ -21,6 +21,31 @@
 
 .createDangerButton {
   position: absolute;
-  bottom: 30px;
+  bottom: 25px;
   right: 10px;
+}
+
+.legend{
+  z-index: 0;
+  position: fixed;
+  bottom: 30px;
+  left: 15px;
+  padding: 7px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: "Hammersmith One", sans-serif;
+  text-align: left;
+  text-space: 2px;
+
+}
+
+.akutIcon {
+  font-size: 20px;
+  color: var(--ion-color-danger);
+}
+
+.permanentIcon {
+  font-size: 20px;
+  color: var(--ion-color-warning);
 }
