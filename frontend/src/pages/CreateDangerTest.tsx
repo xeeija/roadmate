@@ -11,7 +11,13 @@ import {
   IonToggle,
 } from "@ionic/react"
 import { Form, Formik } from "formik"
-import { hammer, informationCircleOutline } from "ionicons/icons"
+import {
+  alarm,
+  hammer,
+  informationCircleOutline,
+  locationSharp,
+  warningSharp,
+} from "ionicons/icons"
 import { FC, useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router"
 import * as yup from "yup"
@@ -304,8 +310,7 @@ const CreateDangerTest: FC = () => {
                 <Select
                   name="category"
                   label="Art der Gefahrenstelle"
-                  icon={true}
-                  iconName="warningSharp"
+                  icon={warningSharp}
                   className="customItem"
                   options={
                     dangerCategories?.map((x) => ({ value: x?.id || "", label: x?.name || "" })) ||
@@ -317,8 +322,7 @@ const CreateDangerTest: FC = () => {
                 <Select
                   name="dangerLocation"
                   label="Wo ist die Gefahrenstelle"
-                  icon={true}
-                  iconName="locationSharp"
+                  icon={locationSharp}
                   className="customItem"
                   options={[
                     { value: "currentLocation", label: "Mein Standort" },
@@ -347,8 +351,7 @@ const CreateDangerTest: FC = () => {
                 <Select
                   name="time"
                   label="Wann ist der Vorfall passiert?"
-                  icon={true}
-                  iconName="alarm"
+                  icon={alarm}
                   className="customItem"
                   options={[
                     { value: "currentTime", label: "In diesem Augenblick" },
@@ -361,7 +364,6 @@ const CreateDangerTest: FC = () => {
                   <IonIcon icon={informationCircleOutline} className="customDescriptionIcon" />
                   <Input
                     multiline
-                    color="light"
                     name="description"
                     label="Beschreibung?"
                     placeholder="Beschreibe die Gefahrenstelle etwas näher"
