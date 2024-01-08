@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
-    partial class PostgresDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240108183254_DangerCategory_Order")]
+    partial class DangerCategory_Order
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,16 +125,11 @@ namespace DAL.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("ID");
 
                     b.HasIndex("DangerId");
 
                     b.HasIndex("ReferencedMessageId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("DangerMessage");
                 });
@@ -403,17 +401,9 @@ namespace DAL.Migrations
                         .WithMany("Answers")
                         .HasForeignKey("ReferencedMessageId");
 
-                    b.HasOne("DAL.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Danger");
 
                     b.Navigation("ReferencedMessage");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DAL.Entities.DangerRequest", b =>
