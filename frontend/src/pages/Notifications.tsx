@@ -38,14 +38,18 @@ const Notifications: FC = () => {
       if (currentUserToken) {
         try {
           const response = await notificationService.notificationGET2(currentUserToken);
-          setNotifications(response?.data);
+          setNotifications(response.data?.map(notification => ({
+            ...notification,
+            description: notification.description || "",
+            readAt: new Date(notification.readAt as Date)
+          })) || []);
         } catch (error) {
-          console.error('Failed to fetch notifications:', error);
+          console.error("Failed to fetch notifications:", error);
         }
       }
     }
     void fetchData();
-  }, [])
+  }, [currentUserToken, notificationService])
 
   return (
     <IonPage>
@@ -65,9 +69,9 @@ const Notifications: FC = () => {
             {notifications.map((notification, index) => (
               <Notification
                 key={index}
-                name={notification.description}
-                date={new Date(notification.readAt)}
-                route="Arbeitsweg" // Replace with actual route if available
+                name={notification.description as string}
+                date={new Date(notification.readAt as Date)}
+                route="Arbeitsweg" 
                 id={index}
               />
             ))}
