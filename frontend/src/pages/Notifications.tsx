@@ -69,8 +69,8 @@ const Notifications: FC = () => {
             {notifications.map((notification, index) => (
               <Notification
                 key={index}
-                name={notification.description as string}
-                date={new Date(notification.readAt as Date)}
+                name={notification.description}
+                date={new Date(notification.readAt ?? "")}
                 route="Arbeitsweg" 
                 id={index}
               />
