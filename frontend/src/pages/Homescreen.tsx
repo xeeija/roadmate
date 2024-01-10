@@ -1,10 +1,14 @@
+import { FC } from "react"
 import Map from "../components/routing/Map"
 import "./Homescreen.css"
 
-export default function Mappy() {
+const Homescreen: FC = () => {
   return (
     <div className="map">
       <Map />
     </div>
   )
 }
+
+export default Homescreen
+

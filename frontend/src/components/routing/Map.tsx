@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState } from "react"
+import React, {FC, useContext, useEffect, useState } from "react"
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import {IonButton, IonContent, IonIcon, IonPage, IonText} from "@ionic/react";
 import RoutingMachine from "./RoutingMachine"
@@ -9,6 +9,7 @@ import DATemporary from "../../resources/DATemporary.svg"
 import DAPermanent from "../../resources/DAPermanent.svg"
 import {locationSharp, warningSharp} from "ionicons/icons";
 import DangerAcute from "../DangerAcute";
+import { UserContext } from "../ProtectedRoute"
 
 interface DangerPoint {
   position: [number, number];
@@ -16,9 +17,12 @@ interface DangerPoint {
   type: "Temporary" | "Permanent";
 }
 
+
 const Map: FC = () => {
   const [renderMap, setRenderMap] = useState(false);
   const [showDangerAcute, setShowDangerAcute] = useState(false);
+
+  const { currentUserToken, currentUser } = useContext(UserContext)
 
   useEffect(() => {
     setRenderMap(true);
@@ -120,8 +124,9 @@ const Map: FC = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               />
-              <RoutingMachine />
+              <RoutingMachine userId={currentUser?.id ?? ""} userToken={currentUserToken ?? ""} />
               <ClickHandler />
+              
               {dangerPoints.map((dangerPoint, index) => (
                 <MarkerWithPopup
                   key={index}
