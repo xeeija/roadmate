@@ -1,11 +1,15 @@
 .rounded-card {
-  --border-radius: 35px;
-  background-color: #f0f8f9;
-  border-top-left-radius: var(--border-radius);
+  /* * {
+    --inner-padding-end: 0 !important;
+  } */
+
+  --border-radius: 16px;
+  border-radius: var(--border-radius);
+  /* border-top-left-radius: var(--border-radius);
   border-top-right-radius: var(--border-radius);
   border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  margin-top: 50px;
+  border-bottom-right-radius: 0; */
+  margin-top: 48px;
 }
 
 .questionBackground {
@@ -34,11 +38,15 @@
   color: #156064;
   justify-content: flex-start;
   text-align: left;
-  margin-right: 60%;
+  /* margin-right: 60%; */
 }
 
 #map {
   height: 100%;
   position: sticky;
   top: 0;
+}
+
+.message-input {
+  color: var(--ion-text-color);
 }
