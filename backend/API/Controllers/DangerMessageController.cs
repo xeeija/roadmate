@@ -49,6 +49,12 @@ public class DangerMessageController : BaseController<DangerMessage, DangerMessa
     var entity = request.ToEntity();
     entity.DangerId = dangerId;
 
+    if (CurrentUser?.ID == null) {
+      return Forbid();
+    }
+
+    entity.UserId = CurrentUser.ID;
+
     var response = await Service.Create(entity);
 
     if (!response.IsAuthorized) {
