@@ -7,17 +7,22 @@ import {
   IonPage,
   IonText,
 } from "@ionic/react"
-
+import { FC, useContext, useEffect, useState } from "react"
 import DangerAcute from "../components/DangerAcute"
 import Notification from "../components/Notification"
+import { UserContext } from "../components/ProtectedRoute"
 import ToolBar from "../components/navigation/ToolBar"
-
-import { FC, useState } from "react"
+import { NotificationService } from "../services/api/NotificationService"
+import { NotificationListItemResponseModel } from "../services/entities/response/NotificationListItemResponseModel"
 import "./Notifications.css"
 
 const Notifications: FC = () => {
   //The following code is for the AcuteDanger modal
+  //const userService = new UserService()
   const [showModal, setShowModal] = useState(false)
+  const [notifications, setNotifications] = useState<NotificationListItemResponseModel[]>([])
+  const { currentUserToken } = useContext(UserContext)
+  const notificationService = new NotificationService()
 
   const openModal = () => {
     setShowModal(true)
@@ -25,6 +30,26 @@ const Notifications: FC = () => {
   const closeModal = () => {
     setShowModal(false)
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (currentUserToken) {
+        try {
+          const response = await notificationService.notificationGET2(currentUserToken)
+          setNotifications(
+            response.data?.map((notification) => ({
+              ...notification,
+              description: notification.description || "",
+              readAt: new Date(notification.readAt as Date),
+            })) || []
+          )
+        } catch (error) {
+          console.error("Failed to fetch notifications:", error)
+        }
+      }
+    }
+    void fetchData()
+  }, [currentUserToken, notificationService])
 
   return (
     <IonPage>
@@ -40,68 +65,15 @@ const Notifications: FC = () => {
 
           <div className="notifications-list">
             <IonList style={{ color: "white" }}>
-              <Notification
-                name="Unfall 1 gemeldet"
-                date={new Date("2023-10-21T14:52:00")}
-                route="Arbeitsweg"
-                id={1}
-              />
-              <Notification
-                name="Unfall 2 gemeldet"
-                date={new Date("2023-10-21T17:11:00")}
-                route="Arbeitsweg"
-                id={2}
-              />
-
-              {/* Add more notifications here */}
-              <Notification
-                name="Unfall 3 gemeldet"
-                date={new Date("2023-10-21T17:11:00")}
-                route="Arbeitsweg"
-                id={3}
-              />
-              <Notification
-                name="Unfall 4 gemeldet"
-                date={new Date("2023-10-21T17:11:00")}
-                route="Arbeitsweg"
-                id={4}
-              />
-              <Notification
-                name="Unfall 5 gemeldet"
-                date={new Date("2023-10-21T17:11:00")}
-                route="Arbeitsweg"
-                id={5}
-              />
-              <Notification
-                name="Unfall 6 gemeldet"
-                date={new Date("2023-10-21T17:11:00")}
-                route="Arbeitsweg"
-                id={6}
-              />
-              <Notification
-                name="Unfall 7 gemeldet"
-                date={new Date("2023-10-21T17:11:00")}
-                route="Arbeitsweg"
-                id={7}
-              />
-              <Notification
-                name="Unfall 8 gemeldet"
-                date={new Date("2023-10-21T17:11:00")}
-                route="Arbeitsweg"
-                id={8}
-              />
-              <Notification
-                name="Unfall 9 gemeldet"
-                date={new Date("2023-10-21T17:11:00")}
-                route="Arbeitsweg"
-                id={9}
-              />
-              <Notification
-                name="Unfall 10 gemeldet"
-                date={new Date("2023-10-21T17:11:00")}
-                route="Arbeitsweg"
-                id={10}
-              />
+              {notifications.map((notification, index) => (
+                <Notification
+                  key={index}
+                  name={notification.description}
+                  date={new Date(notification.readAt ?? "")}
+                  route="Arbeitsweg"
+                  id={index}
+                />
+              ))}
               {/* Test DangerAcute Component */}
               <IonButton onClick={openModal}>Akute Gefahrenstelle öffnen</IonButton>
               {showModal && <DangerAcute closeModal={closeModal} />}
