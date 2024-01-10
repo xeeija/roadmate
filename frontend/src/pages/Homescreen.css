@@ -26,6 +26,8 @@
 }
 
 .legend{
+  display: inline-grid;
+  column-gap: 4px;
   z-index: 0;
   position: fixed;
   bottom: 30px;
@@ -33,19 +35,34 @@
   padding: 7px;
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 12px;
   font-family: "Hammersmith One", sans-serif;
   text-align: left;
-  text-space: 2px;
 
+}
+
+.legend-text{
+  padding-top: 3px;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.legend-text2{
+  padding-top: 2px;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .akutIcon {
-  font-size: 20px;
+  font-size: 17px;
   color: var(--ion-color-danger);
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .permanentIcon {
-  font-size: 20px;
+  font-size: 17px;
   color: var(--ion-color-warning);
+  grid-column: 1;
+  grid-row: 2;
 }

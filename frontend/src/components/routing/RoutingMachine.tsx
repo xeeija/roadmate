@@ -22,18 +22,19 @@ function createButton(label: string, container: HTMLElement): HTMLElement {
   btn.setAttribute("type", "button")
   btn.innerHTML = label
   btn.id = "saveRoute"
-  btn.style.width = "100px"
-  btn.style.height = "40px"
-  btn.style.fontSize = "12px"
+  btn.style.width = "135px"
+  btn.style.height = "35px"
+  btn.style.fontSize = "13px"
   btn.style.fontFamily= "Hammersmith One"
   btn.style.fontWeight = "lighter";
-  btn.style.fontStyle = "normal"
   btn.style.backgroundColor = "#156064"
   btn.style.color = "white"
   btn.style.borderColor = "transparent"
   btn.style.padding = "5px"
-  btn.style.margin = "5px"
   btn.style.borderRadius = "5px"
+  btn.style.position = "absolute"
+  btn.style.top = "110px"
+  btn.style.right = "50px"
 
   /*   for (const property in style) {
     if (property !== "length" && property !== "parentRule") {

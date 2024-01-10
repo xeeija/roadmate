@@ -141,10 +141,10 @@ const Map: FC = () => {
         </a>
       </IonButton>
       <div className="legend">
-        <IonText>
-          <IonIcon icon={locationSharp} className="akutIcon"/>Akute Gefahrenstelle<br/>
-          <IonIcon icon={locationSharp} className="permanentIcon"/>Permanente Gefahrenstelle
-        </IonText>
+        <IonIcon icon={locationSharp} className="akutIcon"/>
+        <IonText className="legend-text">Akute Gefahrenstelle</IonText>
+        <IonIcon icon={locationSharp} className="permanentIcon"/>
+        <IonText className="legend-text2">Permanente Gefahrenstelle</IonText>
       </div>
 
     </IonPage>
