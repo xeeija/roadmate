@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Services;
 
 public class RouteService : BaseService<Route> {
+  private readonly PostgresDbContext _context;
   public RouteService(PostgresDbContext context) : base(context) {
+    _context = context;
   }
-  public async Task<List<Route>> GetUserRoutes(string userId) {
-    return await Routes
-        .Where(route => route.UserId == userId)
-        .ToListAsync();
+  public async Task<IEnumerable<Route>> GetRoutesByUserId(Guid userId) {
+    return await _context.Route.Where(r => r.UserId == userId).ToListAsync();
   }
 }
