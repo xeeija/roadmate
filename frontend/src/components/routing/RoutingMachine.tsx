@@ -2,6 +2,7 @@ import L from "leaflet"
 import { createControlComponent } from "@react-leaflet/core"
 import "leaflet-routing-machine"
 import "leaflet-control-geocoder"
+import "./RoutingMachine.css";
 
 /* interface ButtonStyle {
   [key: string]: string | undefined
@@ -21,15 +22,19 @@ function createButton(label: string, container: HTMLElement): HTMLElement {
   btn.setAttribute("type", "button")
   btn.innerHTML = label
   btn.id = "saveRoute"
-  btn.style.width = "100px"
-  btn.style.height = "40px"
-  btn.style.fontSize = "12px"
+  btn.style.width = "135px"
+  btn.style.height = "35px"
+  btn.style.fontSize = "13px"
+  btn.style.fontFamily= "Hammersmith One"
+  btn.style.fontWeight = "lighter";
   btn.style.backgroundColor = "#156064"
   btn.style.color = "white"
-  btn.style.border = "none"
+  btn.style.borderColor = "transparent"
   btn.style.padding = "5px"
-  btn.style.margin = "5px"
   btn.style.borderRadius = "5px"
+  btn.style.position = "absolute"
+  btn.style.top = "110px"
+  btn.style.right = "50px"
 
   /*   for (const property in style) {
     if (property !== "length" && property !== "parentRule") {
@@ -61,7 +66,7 @@ const createRoutingMachineLayer = () => {
           border: "none",
           padding: "5px",
           margin: "5px",
-          borderRadius: "5px", 
+          borderRadius: "5px",
         }*/
       )
       return container
@@ -105,10 +110,17 @@ const createRoutingMachineLayer = () => {
     addWaypoints: false,
     fitSelectedRoutes: true,
     showAlternatives: false,
+    collapsible: false,
+
   })
 
+  const container = instance.getContainer();
+  if (container) {
+    container.classList.add("custom-routing-machine-container");
+  }
+
   return instance
-}
+};
 
 const RoutingMachine = createControlComponent(createRoutingMachineLayer)
 
