@@ -1,4 +1,5 @@
 ﻿using DAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.Models.Request;
@@ -24,5 +25,15 @@ public class DangerController : BaseController<Danger, DangerModel> {
     }
 
     return response;
+  }
+
+  /// <summary>
+  /// Manually create a Danger. This should not be used usually, because Dangers are created automatically, if the DangerRequest threshold in an area is met.
+  /// </summary>
+  /// <param name="request"></param>
+  /// <returns></returns>
+  [Authorize(Roles = "Admin")]
+  public override Task<ActionResult<ItemResponseModel<Danger>>> Create([FromBody] DangerModel request) {
+    return base.Create(request);
   }
 }
