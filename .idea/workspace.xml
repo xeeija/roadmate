@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d80c0d6-bf88-41a0-8d23-12162fb3d15e" name="Changes" comment="67: rebase">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" afterDir="false" />
+    <list default="true" id="5d80c0d6-bf88-41a0-8d23-12162fb3d15e" name="Changes" comment="67: add zieleingabe design, fix darkmode">
       <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +86,15 @@
       <option name="project" value="LOCAL" />
       <updated>1704644719046</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="67: add zieleingabe design, fix darkmode">
+      <option name="closed" value="true" />
+      <created>1704893677994</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1704893677994</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -108,6 +113,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="114: refactor map" />
-    <option name="LAST_COMMIT_MESSAGE" value="114: refactor map" />
+    <MESSAGE value="67: add zieleingabe design, fix darkmode" />
+    <option name="LAST_COMMIT_MESSAGE" value="67: add zieleingabe design, fix darkmode" />
   </component>
 </project>
