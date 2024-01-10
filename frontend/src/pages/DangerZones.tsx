@@ -13,16 +13,19 @@ import { Form, Formik } from "formik"
 import { send, warningOutline } from "ionicons/icons"
 import { FC, useContext, useEffect, useState } from "react"
 import { MapContainer, TileLayer } from "react-leaflet"
-import Comment from "../components/Comment"
+import { useParams } from "react-router"
 import { Input } from "../components/Input"
+import MessageList from "../components/MessageList"
 import { UserContext } from "../components/ProtectedRoute"
 import ToolBar from "../components/navigation/ToolBar"
 import { DangerService } from "../services/api/DangerService"
 import { DangerMessageService } from "../services/api/MessageService"
 import { Danger } from "../services/entities/Danger"
-import { DangerMessage } from "../services/entities/DangerMessage"
-import { DangerMessageRequest } from "../services/entities/request/DangerMessageRequest"
 import "./DangerZones.css"
+
+type Params = {
+  dangerId: string
+}
 
 const DangerZones: FC = () => {
   const dangerService = new DangerService()
@@ -35,6 +38,7 @@ const DangerZones: FC = () => {
   const [inputValue, setInputValue] = useState<string>("")
   const [showMore, setShowMore] = useState(false)
 
+  const { dangerId } = useParams<Params>()
   const [presentToast, dismissToast] = useIonToast()
 
   const [renderMap, setRenderMap] = useState(false)
@@ -43,10 +47,7 @@ const DangerZones: FC = () => {
     const fetchData = async () => {
       if (currentUser?.id && currentUserToken) {
         try {
-          const response = await dangerService.dangerWithMessagesGET(
-            "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1",
-            currentUserToken
-          )
+          const response = await dangerService.dangerWithMessagesGET(dangerId, currentUserToken)
 
           if (response.data) {
             setDanger(response.data)
@@ -73,53 +74,53 @@ const DangerZones: FC = () => {
   }, [])
 
   // Add a state variable for the comments
-  const [comments, setComments] = useState<DangerMessage>()
+  // const [comments, setComments] = useState<DangerMessage>()
   //console.log(comments);
 
   // Define a function to fetch the comments
-  const fetchComments = async () => {
-    if (currentUser?.id && currentUserToken) {
-      try {
-        const data = await messageService.messageGET(
-          "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1",
-          currentUserToken || ""
-        )
-        //const data = await response.json()
-        setComments(data as DangerMessage)
-      } catch (error) {
-        console.error("error fetching comments", error)
-      }
-    }
-  }
+  // const fetchComments = async () => {
+  //   if (currentUser?.id && currentUserToken) {
+  //     try {
+  //       const data = await messageService.messageGET(
+  //         dangerId, // "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1",
+  //         currentUserToken || ""
+  //       )
+  //       //const data = await response.json()
+  //       setComments(data as DangerMessage)
+  //     } catch (error) {
+  //       console.error("error fetching comments", error)
+  //     }
+  //   }
+  // }
 
-  // Call the fetchComments function when the component mounts
-  useEffect(() => {
-    void fetchComments()
-  }, [])
+  // // Call the fetchComments function when the component mounts
+  // useEffect(() => {
+  //   void fetchComments()
+  // }, [])
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
+  // const handleSubmit = async (event: React.FormEvent) => {
+  //   event.preventDefault()
 
-    try {
-      const messageRequest: DangerMessageRequest = {
-        message: inputValue,
-        // referencedMessageId: "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1",
-      }
+  //   try {
+  //     const messageRequest: DangerMessageRequest = {
+  //       message: inputValue,
+  //       // referencedMessageId: "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1",
+  //     }
 
-      const data = await messageService.messagePOST(
-        "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1", // replace with the actual dangerId
-        messageRequest,
-        currentUserToken || ""
-      )
+  //     const data = await messageService.messagePOST(
+  //       dangerId,
+  //       messageRequest,
+  //       currentUserToken || ""
+  //     )
 
-      console.log(data)
+  //     console.log(data)
 
-      // Clear the input field
-      setInputValue("")
-    } catch (error) {
-      console.error("Failed to post question", error)
-    }
-  }
+  //     // Clear the input field
+  //     setInputValue("")
+  //   } catch (error) {
+  //     console.error("Failed to post question", error)
+  //   }
+  // }
 
   //Hardcoded Solution
   /*const commentData = [
@@ -199,7 +200,7 @@ const DangerZones: FC = () => {
                   //console.log(values)
                   try {
                     const response = await messageService.messagePOST(
-                      "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1", // replace with the actual dangerId
+                      dangerId,
                       {
                         message,
                         // referencedMessageId
@@ -236,16 +237,8 @@ const DangerZones: FC = () => {
                 </div>
               ))} */}
 
-              <Comment
-                data={(danger?.messages ?? [])
-                  .filter((m) => m.referencedMessageId === null)
-                  .map((message) => ({
-                    date: message.createdAt?.toLocaleString() ?? "",
-                    question: message.message ?? "",
-                    username: message.id?.substring(0, 4) ?? "",
-                    // avatarSrc: `https://api.dicebear.com/7.x/personas/svg?seed=${message.userId}&scale=150`,
-                    avatarSrc: `https://api.dicebear.com/7.x/personas/svg?seed=${message.id}&scale=150`,
-                  }))}
+              <MessageList
+                messages={(danger?.messages ?? []).filter((m) => m.referencedMessageId === null)}
               />
 
               <Formik
@@ -258,7 +251,7 @@ const DangerZones: FC = () => {
                   //console.log(values)
                   try {
                     const response = await messageService.messagePOST(
-                      "becfdc3c-ab87-4ff3-aa09-dbea2f882bb1", // replace with the actual dangerId
+                      dangerId,
                       {
                         message: answer,
                         // referencedMessageId

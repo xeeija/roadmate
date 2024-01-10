@@ -12,9 +12,8 @@ import { home, map, personCircle } from "ionicons/icons"
 import { FC } from "react"
 import { Redirect, Route, Switch } from "react-router-dom"
 import ProtectedRoute from "./components/ProtectedRoute"
-import { ToastProvider } from "./utils/toastUtils"
 import CreateDanger from "./pages/CreateDanger"
-import Gefahrenstellen from "./pages/DangerZones"
+import DangerZones from "./pages/DangerZones"
 import Homescreen from "./pages/Homescreen"
 import Login from "./pages/Login"
 import Notifications from "./pages/Notifications"
@@ -23,6 +22,7 @@ import Profil from "./pages/Profil"
 import Register from "./pages/Register"
 import SavedRoutes from "./pages/SavedRoutes"
 import Tab2 from "./pages/Tab2"
+import { ToastProvider } from "./utils/toastUtils"
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css"
@@ -75,8 +75,8 @@ const App: FC = () => (
                   <Route exact path="/notifications">
                     <Notifications />
                   </Route>
-                  <Route exact path="/dangerzones">
-                    <Gefahrenstellen />
+                  <Route exact path="/dangerzones/:dangerId">
+                    <DangerZones />
                   </Route>
                   <Route exact path="/homescreen">
                     <Homescreen />
