@@ -12,6 +12,7 @@ import { home, map, personCircle } from "ionicons/icons"
 import { FC } from "react"
 import { Redirect, Route, Switch } from "react-router-dom"
 import ProtectedRoute from "./components/ProtectedRoute"
+import { ToastProvider } from "./utils/toastUtils"
 import CreateDanger from "./pages/CreateDanger"
 import Gefahrenstellen from "./pages/DangerZones"
 import Homescreen from "./pages/Homescreen"
@@ -60,49 +61,51 @@ const App: FC = () => (
 
         {/* Part of the App, where the Taskbar gets displayed */}
         <ProtectedRoute>
-          <Route path="/">
-            <IonTabs>
-              {/* animated={false} --> fixes sliding animation bug */}
-              <IonRouterOutlet animated={false}>
-                <Route exact path="/createDanger">
-                  <CreateDanger />
-                </Route>
-                <Route exact path="/saved-routes">
-                  <SavedRoutes />
-                </Route>
-                <Route exact path="/notifications">
-                  <Notifications />
-                </Route>
-                <Route exact path="/dangerzones">
-                  <Gefahrenstellen />
-                </Route>
-                <Route exact path="/homescreen">
-                  <Homescreen />
-                </Route>
-                <Route exact path="/tab2">
-                  <Tab2 />
-                </Route>
-                <Route path="/profil">
-                  <Profil />
-                </Route>
-                <Route exact path="/">
-                  <Redirect to="/homescreen" />
-                </Route>
-              </IonRouterOutlet>
+          <ToastProvider>
+            <Route path="/">
+              <IonTabs>
+                {/* animated={false} --> fixes sliding animation bug */}
+                <IonRouterOutlet animated={false}>
+                  <Route exact path="/createDanger">
+                    <CreateDanger />
+                  </Route>
+                  <Route exact path="/saved-routes">
+                    <SavedRoutes />
+                  </Route>
+                  <Route exact path="/notifications">
+                    <Notifications />
+                  </Route>
+                  <Route exact path="/dangerzones">
+                    <Gefahrenstellen />
+                  </Route>
+                  <Route exact path="/homescreen">
+                    <Homescreen />
+                  </Route>
+                  <Route exact path="/tab2">
+                    <Tab2 />
+                  </Route>
+                  <Route path="/profil">
+                    <Profil />
+                  </Route>
+                  <Route exact path="/">
+                    <Redirect to="/homescreen" />
+                  </Route>
+                </IonRouterOutlet>
 
-              <IonTabBar slot="bottom">
-                <IonTabButton tab="tab1" href="/homescreen">
-                  <IonIcon className="menu-icon" aria-hidden="true" icon={home} />
-                </IonTabButton>
-                <IonTabButton tab="tab2" href="/saved-routes">
-                  <IonIcon className="menu-icon" aria-hidden="true" icon={map} />
-                </IonTabButton>
-                <IonTabButton tab="tab3" href="/profil">
-                  <IonIcon className="menu-icon" aria-hidden="true" icon={personCircle} />
-                </IonTabButton>
-              </IonTabBar>
-            </IonTabs>
-          </Route>
+                <IonTabBar slot="bottom">
+                  <IonTabButton tab="tab1" href="/homescreen">
+                    <IonIcon className="menu-icon" aria-hidden="true" icon={home} />
+                  </IonTabButton>
+                  <IonTabButton tab="tab2" href="/saved-routes">
+                    <IonIcon className="menu-icon" aria-hidden="true" icon={map} />
+                  </IonTabButton>
+                  <IonTabButton tab="tab3" href="/profil">
+                    <IonIcon className="menu-icon" aria-hidden="true" icon={personCircle} />
+                  </IonTabButton>
+                </IonTabBar>
+              </IonTabs>
+            </Route>
+          </ToastProvider>
         </ProtectedRoute>
       </Switch>
     </IonReactRouter>

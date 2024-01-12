@@ -13,8 +13,7 @@ import {
   IonList,
   IonPage,
   IonToggle,
-  ToastOptions,
-  useIonToast,
+  ToastOptions
 } from "@ionic/react"
 import {
   checkmarkOutline,
@@ -31,6 +30,7 @@ import ToolBar from "../components/navigation/ToolBar"
 import AppStorage from "../services/AppStorage"
 import { UserService } from "../services/api/UserService"
 import { User } from "../services/entities/User"
+import { presentToast, dismissToast } from "../utils/toastUtils";
 import "./Profil.css"
 
 const Profile: FC = () => {
@@ -67,8 +67,6 @@ const Profile: FC = () => {
     history.push("/login")
   }
 
-  const [presentToast, dismissToast] = useIonToast()
-
   const toastOptions: ToastOptions = {
     duration: 5000,
     position: "bottom",
@@ -78,7 +76,7 @@ const Profile: FC = () => {
   const saveProfile = async () => {
     if (!currentUserToken) {
       // alert("You are not logged in")
-      await presentToast({
+      presentToast({
         ...toastOptions,
         message: "Du bist nicht eingeloggt",
         color: "danger",
@@ -91,7 +89,7 @@ const Profile: FC = () => {
       // Call the API to update the user profile
       await userService.userPUT(profileUser?.id ?? "", profileUser, currentUserToken)
       // Show a success message
-      await presentToast({
+       presentToast({
         ...toastOptions,
         message: "Profil gespeichert",
         color: "success",
@@ -99,7 +97,7 @@ const Profile: FC = () => {
       })
     } catch (error) {
       // Show an error message
-      await presentToast({
+       presentToast({
         ...toastOptions,
         message: `Fehler: ${(error as Error).message}`,
         color: "danger",

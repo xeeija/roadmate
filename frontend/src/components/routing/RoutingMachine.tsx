@@ -5,19 +5,9 @@ import "leaflet-control-geocoder"
 import "./RoutingMachine.css"
 import { RouteService } from "../../services/api/RouteService"
 import { RouteRequest } from "../../services/entities/request/RouteRequest"
-
-/* interface ButtonStyle {
-  [key: string]: string | undefined
-  width?: string
-  height?: string
-  fontSize?: string
-  backgroundColor?: string
-  color?: string
-  border?: string
-  padding?: string
-  margin?: string
-  borderRadius?: string
-} */
+import { presentToast, dismissToast } from "../../utils/toastUtils"
+import { ToastOptions } from "@ionic/react"
+import { checkmarkOutline } from "ionicons/icons"
 
 interface ExtendedControlOptions extends ControlOptions {
   userId: string
@@ -47,18 +37,24 @@ function createButton(
   btn.style.top = "110px"
   btn.style.right = "50px"
 
-  /*   for (const property in style) {
-    if (property !== "length" && property !== "parentRule") {
-      (btn.style as React.CSSProperties)[property] = style[property]
-    }
-  } */
-
   btn.addEventListener("click", () => {
     handleSaveRoute()
+    presentToast({
+      ...toastOptions,
+      message: "Route gespeichert",
+      color: "success",
+      icon: checkmarkOutline,
+    })
     console.log("Route gespeichert")
   })
 
   return btn
+}
+
+const toastOptions: ToastOptions = {
+  duration: 5000,
+  position: "bottom",
+  buttons: [{ text: "OK", handler: () => dismissToast() }],
 }
 
 const createRoutingMachineLayer = () => {
