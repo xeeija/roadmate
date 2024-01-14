@@ -264,7 +264,7 @@ export class RouteService {
    * Gets all entities.
    * @return Success
    */
-  routeGET2(): Promise<RouteListItemResponseModel> {
+  routeGET2(token: string): Promise<RouteListItemResponseModel> {
     let url_ = this.baseUrl + "/api/Route"
     url_ = url_.replace(/[?&]$/, "")
 
@@ -272,6 +272,7 @@ export class RouteService {
       method: "GET",
       headers: {
         Accept: "text/plain",
+        Authorization: "Bearer " + token,
       },
     }
 

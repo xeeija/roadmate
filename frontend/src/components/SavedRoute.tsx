@@ -3,21 +3,20 @@ import { ellipsisHorizontal } from "ionicons/icons"
 import { FC } from "react"
 
 import "./SavedRoute.css"
+import StaticMap from "./StaticMap"
 
 interface RouteProps {
   name: string
   id: number
+  position: { fromLat: number; fromLng: number; toLat: number; toLng: number }
 }
 
-const SavedRoute: FC<RouteProps> = ({ name, id }) => {
+const SavedRoute: FC<RouteProps> = ({ name, id, position }) => {
   return (
     <IonCard className="" color="light">
-      <img
-        alt="Picture"
-        className="route-picture"
-        src="https://ionicframework.com/docs/img/demos/card-media.png"
-      />
-
+      <div className="map-container">
+        <StaticMap route={position} />
+      </div>
       <IonCardContent className="content-container">
         <div className="route-title">{name}</div>
         <div className="route-action">

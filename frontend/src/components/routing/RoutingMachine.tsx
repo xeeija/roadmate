@@ -7,11 +7,13 @@ import { RouteService } from "../../services/api/RouteService"
 import { RouteRequest } from "../../services/entities/request/RouteRequest"
 import { presentToast, dismissToast } from "../../utils/toastUtils"
 import { ToastOptions } from "@ionic/react"
-import { checkmarkOutline } from "ionicons/icons"
+import { checkmarkOutline, warningOutline } from "ionicons/icons"
 
 interface ExtendedControlOptions extends ControlOptions {
   userId: string
   userToken: string
+  show: boolean
+  waypoints?: L.LatLng[]
 }
 
 function createButton(
@@ -39,13 +41,6 @@ function createButton(
 
   btn.addEventListener("click", () => {
     handleSaveRoute()
-    presentToast({
-      ...toastOptions,
-      message: "Route gespeichert",
-      color: "success",
-      icon: checkmarkOutline,
-    })
-    console.log("Route gespeichert")
   })
 
   return btn
@@ -61,12 +56,25 @@ const createRoutingMachineLayer = () => {
   return (props: ExtendedControlOptions) => {
     const userId = props.userId
     const userToken = props.userToken
+    const waypoints = props.waypoints || []
 
     const routeService = new RouteService()
     const handleSaveRoute = () => {
       const waypoints = plan.getWaypoints()
+      console.log(waypoints)
       const fromWaypoint = waypoints[0]
       const toWaypoint = waypoints[waypoints.length - 1]
+
+      if (!fromWaypoint.latLng || !toWaypoint.latLng) {
+        presentToast({
+          ...toastOptions,
+          message: "Start- oder Endpunkt fehlt. Route kann nicht gespeichert werden.",
+          color: "warning",
+          icon: warningOutline,
+        })
+        console.log("Start point or end point is missing. Cannot save route.")
+        return
+      }
 
       const routeData: RouteRequest = {
         userId: userId,
@@ -88,9 +96,21 @@ const createRoutingMachineLayer = () => {
         .routePOST(userToken, routeData)
         .then((response) => {
           console.log(response)
+          presentToast({
+            ...toastOptions,
+            message: "Route gespeichert",
+            color: "success",
+            icon: checkmarkOutline,
+          })
         })
         .catch((error) => {
           console.log(error)
+          presentToast({
+            ...toastOptions,
+            message: "Route speichern fehlgeschlagen",
+            color: "danger",
+            icon: warningOutline,
+          })
         })
     }
 
@@ -105,10 +125,10 @@ const createRoutingMachineLayer = () => {
       },
     }) as typeof L.Routing.Plan
 
-    const waypoints = [
+    /*     const waypoints = [
       L.latLng(47.061207394310735, 15.431929877161728),
       L.latLng(47.06028439128265, 15.45535951123882),
-    ]
+    ] */
 
     const plan = new ExtendedPlan(waypoints, {
       geocoder: L.Control.Geocoder.nominatim(),
@@ -129,7 +149,7 @@ const createRoutingMachineLayer = () => {
         profile: "driving",
         language: "de",
       }),
-      show: true,
+      show: props.show,
       autoRoute: true,
       addWaypoints: false,
       fitSelectedRoutes: true,
