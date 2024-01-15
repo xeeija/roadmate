@@ -14,3 +14,8 @@
 .route-action {
   margin-left: 20px;
 }
+
+.map-container {
+  height: 150px;
+  width: 100%;
+}

@@ -1,28 +1,37 @@
-import React, {FC, useEffect, useState } from "react"
-import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
-import {IonButton, IonContent, IonIcon, IonPage, IonText} from "@ionic/react";
+import React, { FC, useContext, useEffect, useState } from "react"
+import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet"
+import { IonButton, IonContent, IonIcon, IonPage, IonText } from "@ionic/react"
 import RoutingMachine from "./RoutingMachine"
 import "../../pages/Homescreen.css"
 import "../routing/RoutingMachine.css"
 import * as L from "leaflet"
 import DATemporary from "../../resources/DATemporary.svg"
 import DAPermanent from "../../resources/DAPermanent.svg"
-import {locationSharp, warningSharp} from "ionicons/icons";
-import DangerAcute from "../DangerAcute";
+import { locationSharp, warningSharp } from "ionicons/icons"
+import DangerAcute from "../DangerAcute"
+import { UserContext } from "../ProtectedRoute"
 
 interface DangerPoint {
-  position: [number, number];
-  description: string;
-  type: "Temporary" | "Permanent";
+  position: [number, number]
+  description: string
+  type: "Temporary" | "Permanent"
 }
 
-const Map: FC = () => {
-  const [renderMap, setRenderMap] = useState(false);
-  const [showDangerAcute, setShowDangerAcute] = useState(false);
+interface MapProps {
+  route?: { fromLat: number; fromLng: number; toLat: number; toLng: number }
+}
+
+const Map: FC<MapProps> = ({ route }) => {
+  const [renderMap, setRenderMap] = useState(false)
+  const [showDangerAcute, setShowDangerAcute] = useState(false)
+
+  const { currentUserToken, currentUser } = useContext(UserContext)
 
   useEffect(() => {
-    setRenderMap(true);
-  }, []);
+    setRenderMap(true)
+  }, [])
+
+  useEffect(() => {}, [route])
 
   const dangerPoints: DangerPoint[] = [
     {
@@ -55,54 +64,63 @@ const Map: FC = () => {
       description: "Achtung Absturzgefahr",
       type: "Permanent",
     },
-  ];
+  ]
 
   const iconTemporary = L.icon({
     iconUrl: DATemporary,
     iconSize: [31, 38],
-  });
+  })
 
   const iconPermanent = L.icon({
     iconUrl: DAPermanent,
     iconSize: [31, 38],
-  });
+  })
 
   const CustomPopup: FC<{ description: string }> = ({ description }) => {
     return (
       <Popup>
         <div>{description}</div>
       </Popup>
-    );
-  };
+    )
+  }
 
-  const MarkerWithPopup: FC<{ position: { lat: number; lng: number }; type: string; description: string }> = ({position, type, description,}) => {
-    const icon = type === "Temporary" ? iconTemporary : iconPermanent;
+  const MarkerWithPopup: FC<{
+    position: { lat: number; lng: number }
+    type: string
+    description: string
+  }> = ({ position, type, description }) => {
+    const icon = type === "Temporary" ? iconTemporary : iconPermanent
 
     const handleClick = () => {
       if (type === "Temporary") {
         // Show DangerAcute component when iconTemporary is clicked
-        setShowDangerAcute(true);
+        setShowDangerAcute(true)
       }
-    };
+    }
 
     return (
-      <Marker position={position} icon={icon} autoPanOnFocus={true} eventHandlers={{ click: handleClick }}>
+      <Marker
+        position={position}
+        icon={icon}
+        autoPanOnFocus={true}
+        eventHandlers={{ click: handleClick }}
+      >
         <CustomPopup description={description} />
       </Marker>
-    );
-  };
+    )
+  }
 
   const ClickHandler: FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const map = useMapEvents({
       click: () => {
         // what happens when map is clicked
-        console.log("Map clicked");
+        console.log("Map clicked")
       },
-    });
+    })
 
-    return null;
-  };
+    return null
+  }
 
   return (
     <IonPage>
@@ -120,8 +138,19 @@ const Map: FC = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               />
-              <RoutingMachine />
+              <RoutingMachine
+                key={JSON.stringify(route)}
+                userId={currentUser?.id ?? ""}
+                userToken={currentUserToken ?? ""}
+                show={true}
+                waypoints={
+                  route && route.fromLat && route.fromLng && route.toLat && route.toLng
+                    ? [L.latLng(route.fromLat, route.fromLng), L.latLng(route.toLat, route.toLng)]
+                    : []
+                }
+              />
               <ClickHandler />
+
               {dangerPoints.map((dangerPoint, index) => (
                 <MarkerWithPopup
                   key={index}
@@ -141,12 +170,11 @@ const Map: FC = () => {
         </a>
       </IonButton>
       <div className="legend">
-        <IonIcon icon={locationSharp} className="akutIcon"/>
+        <IonIcon icon={locationSharp} className="akutIcon" />
         <IonText className="legend-text">Akute Gefahrenstelle</IonText>
-        <IonIcon icon={locationSharp} className="permanentIcon"/>
+        <IonIcon icon={locationSharp} className="permanentIcon" />
         <IonText className="legend-text2">Permanente Gefahrenstelle</IonText>
       </div>
-
     </IonPage>
   )
 }
