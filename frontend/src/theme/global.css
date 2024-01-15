@@ -47,3 +47,8 @@ body {
   background-size: cover;
   --ion-background-color: transparent;
 }
+
+/* Fix page jumping up when focus is in an input field */
+ion-content {
+  --keyboard-offset: 0 !important;
+}

@@ -6,5 +6,6 @@ export interface DangerCategory {
     createdAt?: Date;
     updatedAt?: Date | undefined;
     name?: string | undefined;
+    order?: number | undefined;
     dangers?: Danger[] | undefined;
 }
