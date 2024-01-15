@@ -38,7 +38,7 @@ The following needs to be installed:
 1. First, clone the project with
 
     ```
-    git clone https://github.com/fhj-aim22/wherebear-backend.git
+    git clone https://github.com/xeeija/roadmate.git
     ```
 
 1. Run the docker-compose file, which will create a network with the API, a local Postgres database and DBeaver (Cloudbeaver) to access it.
