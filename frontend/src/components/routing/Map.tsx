@@ -10,6 +10,7 @@ import DAPermanent from "../../resources/DAPermanent.svg"
 import { locationSharp, warningSharp } from "ionicons/icons"
 import DangerAcute from "../DangerAcute"
 import { UserContext } from "../ProtectedRoute"
+import MarkerClusterGroup from "react-leaflet-cluster"
 
 interface DangerPoint {
   position: [number, number]
@@ -150,15 +151,16 @@ const Map: FC<MapProps> = ({ route }) => {
                 }
               />
               <ClickHandler />
-
-              {dangerPoints.map((dangerPoint, index) => (
-                <MarkerWithPopup
-                  key={index}
-                  position={{ lat: dangerPoint.position[0], lng: dangerPoint.position[1] }}
-                  type={dangerPoint.type}
-                  description={dangerPoint.description}
-                />
-              ))}
+              <MarkerClusterGroup chunkedLoading maxClusterRadius={40} showCoverageOnHover={false}>
+                {dangerPoints.map((dangerPoint, index) => (
+                  <MarkerWithPopup
+                    key={index}
+                    position={{ lat: dangerPoint.position[0], lng: dangerPoint.position[1] }}
+                    type={dangerPoint.type}
+                    description={dangerPoint.description}
+                  />
+                ))}
+              </MarkerClusterGroup>
             </MapContainer>
             {showDangerAcute && <DangerAcute closeModal={() => setShowDangerAcute(false)} />}
           </div>

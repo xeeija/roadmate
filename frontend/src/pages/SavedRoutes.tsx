@@ -3,6 +3,7 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
+  IonSpinner,
   RefresherEventDetail,
 } from "@ionic/react"
 import { FC, useContext, useEffect, useState } from "react"
@@ -15,12 +16,14 @@ import { Route } from "../services/entities/Route"
 
 const SavedRoutes: FC = () => {
   const [allRoutes, setAllRoutes] = useState<Route[]>()
-  const { currentUserToken, currentUser } = useContext(UserContext)
+  const [isLoading, setIsLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
+  const { currentUserToken, currentUser } = useContext(UserContext)
 
   const routeService = new RouteService()
 
   const fetchData = async () => {
+    setIsLoading(true)
     if (currentUser?.id && currentUserToken) {
       try {
         const allRoutesResponse = await routeService.routeGET2(currentUserToken)
@@ -29,6 +32,7 @@ const SavedRoutes: FC = () => {
         console.error("error fetching routes", error)
       }
     }
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -57,7 +61,9 @@ const SavedRoutes: FC = () => {
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
         <div className="saved-routes-list">
-          {allRoutes && allRoutes.length > 0 ? (
+          {isLoading ? (
+            <IonSpinner />
+          ) : allRoutes && allRoutes.length > 0 ? (
             allRoutes.map((route, index) => (
               <SavedRoute
                 key={index}
