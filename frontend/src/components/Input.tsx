@@ -26,6 +26,7 @@ interface Props {
   ) => void
   children?: ReactNode
   iconPosition?: "start" | "end"
+  autoGrow?: boolean
 }
 
 export const Input: FC<Props> = ({
@@ -40,6 +41,7 @@ export const Input: FC<Props> = ({
   color = "light",
   onChange,
   iconPosition = "end",
+  autoGrow = true,
   children,
 }) => {
   const [field, { touched, error }] = useField(name)
@@ -70,6 +72,9 @@ export const Input: FC<Props> = ({
             display: "flex",
             flexDirection: iconPosition === "end" ? "row-reverse" : "row",
           }}
+          {...(multiline && {
+            autoGrow: autoGrow,
+          })}
         >
           {children}
         </InputComponent>

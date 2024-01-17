@@ -30,12 +30,6 @@ type Params = {
   dangerId: string
 }
 
-type AnswerData = {
-  // [messageId: `answer.${string}`]: string
-  message: string
-  referencedMessageId: string
-}
-
 const DangerZones: FC = () => {
   const dangerService = new DangerService()
   const messageService = new DangerMessageService()
@@ -44,48 +38,42 @@ const DangerZones: FC = () => {
 
   const [danger, setDanger] = useState<Danger>()
 
-  const [inputValue, setInputValue] = useState<string>("")
-  const [showMore, setShowMore] = useState(false)
-
   const { dangerId } = useParams<Params>()
   const [presentToast, dismissToast] = useIonToast()
 
   const [renderMap, setRenderMap] = useState(false)
 
-  const initialAnswerData: AnswerData = {
-    message: "",
-    referencedMessageId: "",
+  const fetchDanger = async () => {
+    if (currentUser?.id && currentUserToken) {
+      try {
+        const response = await dangerService.dangerWithMessagesGET(dangerId, currentUserToken)
+
+        if (response.data) {
+          setDanger(response.data)
+          setRenderMap(true)
+        } else {
+          await presentToast({
+            duration: 5000,
+            position: "bottom",
+            buttons: [{ text: "OK", handler: () => dismissToast() }],
+            message: `Fehler: ${response.errorMessages?.join("\n")}`,
+            color: "danger",
+            icon: warningOutline,
+          })
+        }
+
+        // console.log(userResponse?.data)
+      } catch (error) {
+        console.error("error fetching user", error)
+      }
+    }
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (currentUser?.id && currentUserToken) {
-        try {
-          const response = await dangerService.dangerWithMessagesGET(dangerId, currentUserToken)
-
-          if (response.data) {
-            setDanger(response.data)
-            setRenderMap(true)
-          } else {
-            await presentToast({
-              duration: 5000,
-              position: "bottom",
-              buttons: [{ text: "OK", handler: () => dismissToast() }],
-              message: `Fehler: ${response.errorMessages?.join("\n")}`,
-              color: "danger",
-              icon: warningOutline,
-            })
-          }
-
-          // console.log(userResponse?.data)
-        } catch (error) {
-          console.error("error fetching user", error)
-        }
-      }
-    }
-
-    void fetchData()
+    void fetchDanger()
   }, [])
+
+  const messages = (danger?.messages ?? []).filter((m) => m.referencedMessageId === null)
 
   const latDelta = 0.00065655287861
   const lonDelta = 0.000134937615081
@@ -141,8 +129,11 @@ const DangerZones: FC = () => {
                 }}
                 enableReinitialize={true}
                 validateOnChange={true}
-                onSubmit={async ({ message }) => {
-                  //console.log(values
+                onSubmit={async ({ message }, { resetForm }) => {
+                  if (!message) {
+                    return
+                  }
+
                   try {
                     const response = await messageService.messagePOST(
                       dangerId,
@@ -152,8 +143,10 @@ const DangerZones: FC = () => {
 
                     console.log(response)
 
-                    // Clear the input field
-                    setInputValue("")
+                    resetForm()
+
+                    // Reload messages
+                    await fetchDanger()
                   } catch (error) {
                     console.error("Failed to post question", error)
                   }
@@ -162,7 +155,7 @@ const DangerZones: FC = () => {
                 {() => (
                   <Form>
                     <Input name="message" label="Stelle eine Frage..." className="message-input">
-                      <IonButton type="submit" fill="clear" aria-label="Send">
+                      <IonButton type="submit" fill="clear" aria-label="Send" id="question-input">
                         <IonIcon
                           slot="icon-only"
                           color="tertiary"
@@ -183,55 +176,64 @@ const DangerZones: FC = () => {
               {/* <MessageList messages={(danger?.messages ?? []).filter((m) => m.referencedMessageId === null)} /> */}
 
               <IonGrid className="backgroundCard">
-                {(danger?.messages ?? [])
-                  .filter((m) => m.referencedMessageId === null)
-                  .map((message) => (
-                    <IonItem key={message.id} style={{ flexDirection: "column" }}>
-                      <Formik
-                        initialValues={{
-                          answer: "",
-                        }}
-                        enableReinitialize={true}
-                        validateOnChange={true}
-                        onSubmit={async ({ answer }) => {
-                          console.log(answer, message.id)
+                {messages.map((message, index) => (
+                  <IonItem
+                    key={message.id}
+                    style={{ flexDirection: "column" }}
+                    lines={index + 1 === messages.length ? "none" : "inset"}
+                  >
+                    <Formik
+                      initialValues={{
+                        answer: "",
+                      }}
+                      enableReinitialize={true}
+                      // validateOnChange={true}
+                      validateOnBlur={true}
+                      onSubmit={async ({ answer }, { resetForm }) => {
+                        if (!answer) {
+                          return
+                        }
 
-                          try {
-                            const response = await messageService.messagePOST(
-                              dangerId,
-                              {
-                                message: answer,
-                                referencedMessageId: message.id,
-                              },
-                              currentUserToken || ""
-                            )
+                        console.log("submit answer", answer, message.id)
 
-                            console.log(response)
+                        try {
+                          const response = await messageService.messagePOST(
+                            dangerId,
+                            {
+                              message: answer,
+                              referencedMessageId: message.id,
+                            },
+                            currentUserToken || ""
+                          )
 
-                            // Clear the input field
-                            setInputValue("")
-                          } catch (error) {
-                            console.error("Failed to post answer", error)
-                          }
-                        }}
-                      >
-                        {() => (
-                          <Form style={{ width: "100%" }}>
-                            {/* {JSON.stringify(values)} */}
-                            <Comment
-                              key={message.id}
-                              username={message.user?.username ?? "User"}
-                              date={message.createdAt}
-                              avatar={message.userId ?? ""}
-                              answers={message.answers}
-                            >
-                              {message.message}
-                            </Comment>
-                          </Form>
-                        )}
-                      </Formik>
-                    </IonItem>
-                  ))}
+                          console.log(response)
+
+                          resetForm()
+
+                          // Reload messages
+                          await fetchDanger()
+                        } catch (error) {
+                          console.error("Failed to post answer", error)
+                        }
+                      }}
+                    >
+                      {({ values, errors }) => (
+                        <Form style={{ width: "100%" }} id={`form-${message.id}`}>
+                          <Comment
+                            key={message.id}
+                            username={message.user?.username ?? "User"}
+                            date={message.createdAt}
+                            avatar={message.userId ?? ""}
+                            answers={message.answers}
+                            messageId={message.id ?? ""}
+                          >
+                            {message.message}
+                          </Comment>
+                        </Form>
+                      )}
+                    </Formik>
+                  </IonItem>
+                ))}
               </IonGrid>
             </IonCardContent>
           </IonCard>

@@ -52,3 +52,8 @@ body {
 ion-content {
   --keyboard-offset: 0 !important;
 }
+
+/* Fix weird bug that buttons in input are only working 1 in 10 times clicked */
+ion-input > ion-button {
+  pointer-events: auto !important;
+}
