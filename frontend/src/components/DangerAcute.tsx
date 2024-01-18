@@ -29,9 +29,9 @@ const DangerAcute: FC<DangerAcuteProps> = ({ closeModal, addressName , createdAt
   const [isModalOpen] = useState(true)
 
   const quoteDate = JSON.stringify(createdAt).slice(1, 17);
-  const [datePart, timePart] = quoteDate.split('T');
-  const [year, month, day] = datePart.split('-');
-  const [hours, minutes] = timePart.split(':');
+  const [datePart, timePart] = quoteDate.split("T");
+  const [year, month, day] = datePart.split("-");
+  const [hours, minutes] = timePart.split(":");
 
   const formattedDate = `${day}.${month}.${year} um ${hours}:${minutes} Uhr`;
 

@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d80c0d6-bf88-41a0-8d23-12162fb3d15e" name="Changes" comment="67: add zieleingabe design, fix darkmode">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="5d80c0d6-bf88-41a0-8d23-12162fb3d15e" name="Changes" comment="141: add dangerpoints and pop up">
       <change beforePath="$PROJECT_DIR$/frontend/src/components/DangerAcute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/DangerAcute.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/services/api/DangerService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/api/DangerService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +76,7 @@
       <workItem from="1702904012093" duration="9895000" />
       <workItem from="1704894995703" duration="1082000" />
       <workItem from="1705592073964" duration="611000" />
-      <workItem from="1705592808637" duration="8214000" />
+      <workItem from="1705592808637" duration="8407000" />
     </task>
     <task id="LOCAL-00001" summary="114: refactor map">
       <created>1702140442186</created>
@@ -103,7 +100,15 @@
       <option name="project" value="LOCAL" />
       <updated>1704893677994</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="141: add dangerpoints and pop up">
+      <option name="closed" value="true" />
+      <created>1705602283504</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1705602283504</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -123,6 +128,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="67: add zieleingabe design, fix darkmode" />
     <MESSAGE value="114: refactor map" />
-    <option name="LAST_COMMIT_MESSAGE" value="114: refactor map" />
+    <MESSAGE value="141: add dangerpoints and pop up" />
+    <option name="LAST_COMMIT_MESSAGE" value="141: add dangerpoints and pop up" />
   </component>
 </project>
