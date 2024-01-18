@@ -52,7 +52,7 @@ const DangerAcute: FC<DangerAcuteProps> = ({ closeModal, addressName , createdAt
               <IonIcon icon={locationOutline} slot="start"></IonIcon>
               <p className="description-title">Position: &nbsp;</p>
               <p className="description">
-                <b>{addressName ? addressName : "Unfall"}</b>
+                <b>{addressName ? addressName : "Hauptstraße 42"}</b>
               </p>
             </IonItem>
 
@@ -72,15 +72,13 @@ const DangerAcute: FC<DangerAcuteProps> = ({ closeModal, addressName , createdAt
                 <b>27.10.2023 um 15:00 Uhr</b>
               </p>
             </IonItem>
-
-
             */}
 
             <IonItem lines="none">
               <IonIcon icon={cogOutline} slot="start"></IonIcon>
               <p className="description-title">Status: &nbsp;</p>
               <p className="description">
-                <b style={{ paddingLeft: "35px" }}> Aktiv</b>
+                <b style={{ paddingLeft: "35px" }}>Aktiv</b>
               </p>
               <div className="status"></div>
             </IonItem>
