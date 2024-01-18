@@ -286,7 +286,7 @@ export class DangerService {
    * Gets all entities.
    * @return Success
    */
-  dangerGET2(): Promise<DangerListItemResponseModel> {
+  dangerGET2(token: string): Promise<DangerListItemResponseModel> {
     let url_ = this.baseUrl + "/api/Danger"
     url_ = url_.replace(/[?&]$/, "")
 
@@ -294,6 +294,7 @@ export class DangerService {
       method: "GET",
       headers: {
         Accept: "text/plain",
+        Authorization: "Bearer " + token,
       },
     }
 
