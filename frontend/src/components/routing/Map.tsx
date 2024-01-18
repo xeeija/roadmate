@@ -12,11 +12,8 @@ import DangerAcute from "../DangerAcute"
 import { UserContext } from "../ProtectedRoute"
 import MarkerClusterGroup from "react-leaflet-cluster"
 
-interface DangerPoint {
-  position: [number, number]
-  description: string
-  type: "Temporary" | "Permanent"
-}
+import {DangerService} from "../../services/api/DangerService";
+import {Danger} from "../../services/entities/Danger";
 
 interface MapProps {
   route?: { fromLat: number; fromLng: number; toLat: number; toLng: number }
@@ -26,46 +23,39 @@ const Map: FC<MapProps> = ({ route }) => {
   const [renderMap, setRenderMap] = useState(false)
   const [showDangerAcute, setShowDangerAcute] = useState(false)
 
+  const  [addressName, setAddressName] = useState<string>("")
+  const [createdAt, setCreatedAt] = useState<Date>(new Date())
+  const [isActive, setIsActive] = useState<boolean>(false)
+  const [title, setTitle] = useState<string>("")
+  const [description, setDescription] = useState<string>("")
+
   const { currentUserToken, currentUser } = useContext(UserContext)
+
+  const [dangerPoints, setDangerPoints] = useState<Danger[]>([])
+
+  const dangerService = new DangerService()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (currentUserToken) {
+        try {
+          const dangerResponse = await dangerService.dangerGET2(currentUserToken)
+          setDangerPoints(dangerResponse?.data||[])
+        } catch (error) {
+          console.error("error fetching dangerpoints", error)
+        }
+      }
+    }
+
+    void fetchData()
+  }, [])
+
 
   useEffect(() => {
     setRenderMap(true)
   }, [])
 
   useEffect(() => {}, [route])
-
-  const dangerPoints: DangerPoint[] = [
-    {
-      position: [47.043186, 15.404706],
-      description: "Achtung Verkehrsunfall",
-      type: "Temporary",
-    },
-    {
-      position: [47.066371, 15.435594],
-      description: "Baustelle",
-      type: "Temporary",
-    },
-    {
-      position: [47.074918, 15.43019],
-      description: "Demo",
-      type: "Temporary",
-    },
-    {
-      position: [47.061374, 15.437807],
-      description: "Veranstaltung",
-      type: "Temporary",
-    },
-    {
-      position: [47.068552, 15.40405],
-      description: "Gefährliche Stelle",
-      type: "Permanent",
-    },
-    {
-      position: [47.07484396226711, 15.451459913278665],
-      description: "Achtung Absturzgefahr",
-      type: "Permanent",
-    },
-  ]
 
   const iconTemporary = L.icon({
     iconUrl: DATemporary,
@@ -89,13 +79,22 @@ const Map: FC<MapProps> = ({ route }) => {
     position: { lat: number; lng: number }
     type: string
     description: string
-  }> = ({ position, type, description }) => {
+    address: string
+    createdAt: Date
+    isActive: boolean
+    title: string
+  }> = ({ position, type, description, address, createdAt, isActive, title }) => {
     const icon = type === "Temporary" ? iconTemporary : iconPermanent
 
-    const handleClick = () => {
+    const handleClick = (address : string, createdAt : Date, isActive : boolean, title : string, description : string) => {
       if (type === "Temporary") {
         // Show DangerAcute component when iconTemporary is clicked
         setShowDangerAcute(true)
+        setAddressName(address)
+        setCreatedAt(createdAt)
+        setIsActive(isActive)
+        setTitle(title)
+        setDescription(description)
       }
     }
 
@@ -104,7 +103,7 @@ const Map: FC<MapProps> = ({ route }) => {
         position={position}
         icon={icon}
         autoPanOnFocus={true}
-        eventHandlers={{ click: handleClick }}
+        eventHandlers={{ click: () => handleClick(address, createdAt, isActive, title, description) }}
       >
         <CustomPopup description={description} />
       </Marker>
@@ -155,14 +154,18 @@ const Map: FC<MapProps> = ({ route }) => {
                 {dangerPoints.map((dangerPoint, index) => (
                   <MarkerWithPopup
                     key={index}
-                    position={{ lat: dangerPoint.position[0], lng: dangerPoint.position[1] }}
-                    type={dangerPoint.type}
-                    description={dangerPoint.description}
+                    position={{ lat: dangerPoint.lat??0, lng: dangerPoint.lon??0 }}
+                    type={dangerPoint.type??""}
+                    description={dangerPoint.description??""}
+                    address={dangerPoint.addressName??""}
+                    createdAt={dangerPoint.createdAt??new Date()}
+                    isActive={dangerPoint.isActive??false}
+                    title={dangerPoint.title??""}
                   />
                 ))}
               </MarkerClusterGroup>
             </MapContainer>
-            {showDangerAcute && <DangerAcute closeModal={() => setShowDangerAcute(false)} />}
+            {showDangerAcute && <DangerAcute closeModal={() => setShowDangerAcute(false)} addressName={addressName} createdAt={createdAt} isActive={isActive} title={title} description={description}/>}
           </div>
         )}
       </IonContent>

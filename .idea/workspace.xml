@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d80c0d6-bf88-41a0-8d23-12162fb3d15e" name="Changes" comment="67: add zieleingabe design, fix darkmode">
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.css" afterDir="false" />
+    <list default="true" id="5d80c0d6-bf88-41a0-8d23-12162fb3d15e" name="Changes" comment="141: add dangerpoints and pop up">
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/DangerAcute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/DangerAcute.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +34,9 @@
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2WaCpBeuWyfG1SA0zyUDAcEXnpW" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -59,7 +62,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="afe9d172-343b-4618-bfa5-a3d13ea58cf8" name="Changes" comment="" />
+      <changelist id="5d80c0d6-bf88-41a0-8d23-12162fb3d15e" name="Changes" comment="67: add zieleingabe design, fix darkmode" />
       <created>1696961485016</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -71,6 +74,9 @@
       <workItem from="1702832853993" duration="1882000" />
       <workItem from="1702835138084" duration="2108000" />
       <workItem from="1702904012093" duration="9895000" />
+      <workItem from="1704894995703" duration="1082000" />
+      <workItem from="1705592073964" duration="611000" />
+      <workItem from="1705592808637" duration="8407000" />
     </task>
     <task id="LOCAL-00001" summary="114: refactor map">
       <created>1702140442186</created>
@@ -94,7 +100,15 @@
       <option name="project" value="LOCAL" />
       <updated>1704893677994</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="141: add dangerpoints and pop up">
+      <option name="closed" value="true" />
+      <created>1705602283504</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1705602283504</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -112,8 +126,9 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="114: refactor map" />
     <MESSAGE value="67: add zieleingabe design, fix darkmode" />
-    <option name="LAST_COMMIT_MESSAGE" value="67: add zieleingabe design, fix darkmode" />
+    <MESSAGE value="114: refactor map" />
+    <MESSAGE value="141: add dangerpoints and pop up" />
+    <option name="LAST_COMMIT_MESSAGE" value="141: add dangerpoints and pop up" />
   </component>
 </project>
