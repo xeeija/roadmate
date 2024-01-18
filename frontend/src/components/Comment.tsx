@@ -12,7 +12,7 @@ export interface CommentProps {
   date: string | number | Date | undefined
   children: ReactNode
   answers?: DangerMessage[]
-  // messageId: string
+  messageId: string
   // onAnswer?: (message: string, referencedMessageId?: string) => Promise<void>
   disableAnswer?: boolean
 }
@@ -23,6 +23,7 @@ export const Comment: FC<CommentProps> = ({
   date,
   answers,
   children,
+  messageId,
   disableAnswer,
 }) => {
   const [showMore, setShowMore] = useState(false)
@@ -30,7 +31,15 @@ export const Comment: FC<CommentProps> = ({
 
   const AnswerInput = (
     <Input name="answer" label="Antworten...">
-      <IonButton type="submit" fill="clear" aria-label="Send">
+      <IonButton
+        type="submit"
+        id={`submit-${messageId}`}
+        fill="clear"
+        aria-label="Send"
+        onClick={() => {
+          setShowAnswer(false)
+        }}
+      >
         <IonIcon slot="icon-only" icon={send} color="tertiary" size="small" aria-hidden="true" />
       </IonButton>
     </Input>
@@ -59,7 +68,7 @@ export const Comment: FC<CommentProps> = ({
         }}
       >
         {!disableAnswer && (
-          <IonButton fill="clear" color="tertiary" onClick={() => setShowAnswer(true)}>
+          <IonButton fill="clear" color="tertiary" onClick={() => setShowAnswer((x) => !x)}>
             <IonIcon icon={arrowRedo} />
           </IonButton>
         )}
@@ -79,10 +88,11 @@ export const Comment: FC<CommentProps> = ({
           color="tertiary"
           size="small"
           onClick={() => {
-            setShowMore(!showMore)
-            if (!showMore) {
+            if (showMore) {
               setShowAnswer(false)
             }
+
+            setShowMore((x) => !x)
           }}
           style={{
             marginLeft: "-0.5rem",
@@ -110,13 +120,14 @@ export const Comment: FC<CommentProps> = ({
               date={answer.createdAt}
               avatar={answer.userId ?? ""}
               disableAnswer
+              messageId={answer.id ?? ""}
             >
               {answer.message}
             </Comment>
           ))}
         </div>
       )}
-      {!answers && showAnswer && AnswerInput}
+      {!showMore && showAnswer && AnswerInput}
     </IonRow>
   )
 }

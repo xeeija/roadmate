@@ -24,16 +24,11 @@ import ToolBar from "../components/navigation/ToolBar"
 import { DangerService } from "../services/api/DangerService"
 import { DangerMessageService } from "../services/api/MessageService"
 import { Danger } from "../services/entities/Danger"
+import { DangerItemResponseModel } from "../services/entities/response/DangerItemResponseModel"
 import "./DangerZones.css"
 
 type Params = {
   dangerId: string
-}
-
-type AnswerData = {
-  // [messageId: `answer.${string}`]: string
-  message: string
-  referencedMessageId: string
 }
 
 const DangerZones: FC = () => {
@@ -44,48 +39,61 @@ const DangerZones: FC = () => {
 
   const [danger, setDanger] = useState<Danger>()
 
-  const [inputValue, setInputValue] = useState<string>("")
-  const [showMore, setShowMore] = useState(false)
-
   const { dangerId } = useParams<Params>()
   const [presentToast, dismissToast] = useIonToast()
 
   const [renderMap, setRenderMap] = useState(false)
+  const [notFound, setNotFound] = useState(false)
 
-  const initialAnswerData: AnswerData = {
-    message: "",
-    referencedMessageId: "",
+  const fetchDanger = async () => {
+    if (currentUser?.id && currentUserToken) {
+      try {
+        const response = await dangerService.dangerWithMessagesGET(dangerId, currentUserToken)
+
+        if (response.data) {
+          setDanger(response.data)
+          setRenderMap(true)
+        } else {
+          const errorMessage = response.errorMessages?.join("\n") || "404 Not Found"
+
+          // todo: refactor
+          if (errorMessage === "404 Not Found") {
+            setNotFound(true)
+          }
+
+          await presentToast({
+            duration: 5000,
+            position: "bottom",
+            buttons: [{ text: "OK", handler: () => dismissToast() }],
+            message: `Fehler: ${errorMessage}`,
+            color: "danger",
+            icon: warningOutline,
+          })
+        }
+
+        // console.log(userResponse?.data)
+      } catch (error) {
+        const errorMessage = (error as Error)?.message
+        const errorMessages = (error as DangerItemResponseModel)?.errorMessages?.join("\n")
+
+        await presentToast({
+          duration: 5000,
+          position: "bottom",
+          buttons: [{ text: "OK", handler: () => dismissToast() }],
+          message: `Fehler: ${errorMessage ?? errorMessages}`,
+          color: "danger",
+          icon: warningOutline,
+        })
+        console.error("error fetching user:", error)
+      }
+    }
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (currentUser?.id && currentUserToken) {
-        try {
-          const response = await dangerService.dangerWithMessagesGET(dangerId, currentUserToken)
-
-          if (response.data) {
-            setDanger(response.data)
-            setRenderMap(true)
-          } else {
-            await presentToast({
-              duration: 5000,
-              position: "bottom",
-              buttons: [{ text: "OK", handler: () => dismissToast() }],
-              message: `Fehler: ${response.errorMessages?.join("\n")}`,
-              color: "danger",
-              icon: warningOutline,
-            })
-          }
-
-          // console.log(userResponse?.data)
-        } catch (error) {
-          console.error("error fetching user", error)
-        }
-      }
-    }
-
-    void fetchData()
+    void fetchDanger()
   }, [])
+
+  const messages = (danger?.messages ?? []).filter((m) => m.referencedMessageId === null)
 
   const latDelta = 0.00065655287861
   const lonDelta = 0.000134937615081
@@ -102,8 +110,8 @@ const DangerZones: FC = () => {
       <IonHeader>
         <ToolBar title="Forum" />
       </IonHeader>
-      <IonContent>
-        {renderMap && (
+      {renderMap && (
+        <IonContent>
           <div id="map" style={{ zIndex: 0 }}>
             <MapContainer
               center={{
@@ -123,78 +131,90 @@ const DangerZones: FC = () => {
               />
             </MapContainer>
           </div>
-        )}
-        <div style={{ zIndex: 1 }}>
-          <IonCard style={{ marginTop: "-100%" }} className="rounded-card" color="light">
-            <IonCardContent>
-              <IonText color="tertiary">
-                <h1 style={{ marginBottom: "0.5rem" }}>{danger?.title}</h1>
-              </IonText>
 
-              <IonText color="dark">
-                <p style={{ marginBottom: "1rem" }}>{danger?.description}</p>
-              </IonText>
+          <div style={{ zIndex: 1 }}>
+            <IonCard style={{ marginTop: "-100%" }} className="rounded-card" color="light">
+              <IonCardContent>
+                <IonText color="tertiary">
+                  <h1 style={{ marginBottom: "0.5rem" }}>{danger?.title}</h1>
+                </IonText>
 
-              <Formik
-                initialValues={{
-                  message: "",
-                }}
-                enableReinitialize={true}
-                validateOnChange={true}
-                onSubmit={async ({ message }) => {
-                  //console.log(values
-                  try {
-                    const response = await messageService.messagePOST(
-                      dangerId,
-                      { message },
-                      currentUserToken || ""
-                    )
+                <IonText color="dark">
+                  <p style={{ marginBottom: "1rem" }}>{danger?.description}</p>
+                </IonText>
 
-                    console.log(response)
+                <Formik
+                  initialValues={{
+                    message: "",
+                  }}
+                  enableReinitialize={true}
+                  validateOnChange={true}
+                  onSubmit={async ({ message }, { resetForm }) => {
+                    if (!message) {
+                      return
+                    }
 
-                    // Clear the input field
-                    setInputValue("")
-                  } catch (error) {
-                    console.error("Failed to post question", error)
-                  }
-                }}
-              >
-                {() => (
-                  <Form>
-                    <Input name="message" label="Stelle eine Frage..." className="message-input">
-                      <IonButton type="submit" fill="clear" aria-label="Send">
-                        <IonIcon
-                          slot="icon-only"
-                          color="tertiary"
-                          icon={send}
-                          size="small"
-                          aria-hidden="true"
-                        />
-                      </IonButton>
-                    </Input>
-                  </Form>
-                )}
-              </Formik>
+                    try {
+                      const response = await messageService.messagePOST(
+                        dangerId,
+                        { message },
+                        currentUserToken || ""
+                      )
 
-              <IonText color="tertiary">
-                <h2>Letzte Fragen</h2>
-              </IonText>
+                      console.log(response)
 
-              {/* <MessageList messages={(danger?.messages ?? []).filter((m) => m.referencedMessageId === null)} /> */}
+                      resetForm()
 
-              <IonGrid className="backgroundCard">
-                {(danger?.messages ?? [])
-                  .filter((m) => m.referencedMessageId === null)
-                  .map((message) => (
-                    <IonItem key={message.id} style={{ flexDirection: "column" }}>
+                      // Reload messages
+                      await fetchDanger()
+                    } catch (error) {
+                      console.error("Failed to post question", error)
+                    }
+                  }}
+                >
+                  {() => (
+                    <Form>
+                      <Input name="message" label="Stelle eine Frage..." className="message-input">
+                        <IonButton type="submit" fill="clear" aria-label="Send" id="question-input">
+                          <IonIcon
+                            slot="icon-only"
+                            color="tertiary"
+                            icon={send}
+                            size="small"
+                            aria-hidden="true"
+                          />
+                        </IonButton>
+                      </Input>
+                    </Form>
+                  )}
+                </Formik>
+
+                <IonText color="tertiary">
+                  <h2>Letzte Fragen</h2>
+                </IonText>
+
+                {/* <MessageList messages={(danger?.messages ?? []).filter((m) => m.referencedMessageId === null)} /> */}
+
+                <IonGrid className="backgroundCard">
+                  {messages.map((message, index) => (
+                    <IonItem
+                      key={message.id}
+                      style={{ flexDirection: "column" }}
+                      lines={index + 1 === messages.length ? "none" : "inset"}
+                    >
                       <Formik
                         initialValues={{
                           answer: "",
                         }}
                         enableReinitialize={true}
-                        validateOnChange={true}
-                        onSubmit={async ({ answer }) => {
-                          console.log(answer, message.id)
+                        // validateOnChange={true}
+                        validateOnBlur={true}
+                        onSubmit={async ({ answer }, { resetForm }) => {
+                          if (!answer) {
+                            return
+                          }
+
+                          console.log("submit answer", answer, message.id)
 
                           try {
                             const response = await messageService.messagePOST(
@@ -208,22 +228,24 @@ const DangerZones: FC = () => {
 
                             console.log(response)
 
-                            // Clear the input field
-                            setInputValue("")
+                            resetForm()
+
+                            // Reload messages
+                            await fetchDanger()
                           } catch (error) {
                             console.error("Failed to post answer", error)
                           }
                         }}
                       >
-                        {() => (
-                          <Form style={{ width: "100%" }}>
-                            {/* {JSON.stringify(values)} */}
+                        {({ values, errors }) => (
+                          <Form style={{ width: "100%" }} id={`form-${message.id}`}>
                             <Comment
                               key={message.id}
                               username={message.user?.username ?? "User"}
                               date={message.createdAt}
                               avatar={message.userId ?? ""}
                               answers={message.answers}
+                              messageId={message.id ?? ""}
                             >
                               {message.message}
                             </Comment>
@@ -232,11 +254,22 @@ const DangerZones: FC = () => {
                       </Formik>
                     </IonItem>
                   ))}
-              </IonGrid>
-            </IonCardContent>
+                </IonGrid>
+              </IonCardContent>
+            </IonCard>
+          </div>
+        </IonContent>
+      )}
+
+      {notFound && (
+        <IonContent>
+          <IonCard style={{ marginTop: "" }} color="light">
+            <IonText color="tertiary">
+              <h2 style={{ marginLeft: "1rem" }}>404 Not Found</h2>
+            </IonText>
           </IonCard>
-        </div>
-      </IonContent>
+        </IonContent>
+      )}
     </IonPage>
   )
 }
