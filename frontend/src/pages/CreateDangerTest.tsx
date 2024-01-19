@@ -27,18 +27,15 @@ import { Select } from "../components/Select"
 import ToolBar from "../components/navigation/ToolBar"
 import { DangerCategoryService } from "../services/api/DangerCategoryService"
 import { DangerRequestService } from "../services/api/DangerRequestService"
-import { DangerService } from "../services/api/DangerService"
 import { UserService } from "../services/api/UserService"
 import { DangerCategory } from "../services/entities/DangerCategory"
 import { User } from "../services/entities/User"
 import "./CreateDanger.css"
+//import DatePicker from "react-datepicker"
 
 // TODO's:
-// - Type of Danger mitgeben? (akut/permanent)
-// - Funktionen: getCurrentLocation und handleLocationChange
-// - EventHandler einbauen
-//   - Map Picker
-//   - Time/DatePicker
+// - handleLocationChange
+// - Error handling? (e.g. invalid time/location, geoLocation)
 
 interface DangerRequestData {
   userId: string
@@ -55,19 +52,6 @@ interface DangerRequestData {
   activeAt?: Date
 }
 
-interface DangerData {
-  dangerType: string
-  description?: string
-  location?: string
-  lat: number
-  lon: number
-  addressName: string
-  title: string
-  categoryID: string
-  otherCategory?: string
-  activeAt?: Date
-}
-
 interface SelectValues {
   category: string
   dangerLocation: string
@@ -76,32 +60,14 @@ interface SelectValues {
   description: string
 }
 
-const validationSchema = yup.object({
-  description: yup.string(),
-})
-
-const initialValues: SelectValues = {
-  //TODO: Category per default auf Unfall setzen
-  category: "",
-  dangerLocation: "currentLocation",
-  type: "",
-  time: "currentTime",
-  description: "",
-}
-
-// // TODO: E.g. when user selects "Auf der Karte wählen"
-// const handleLocationChange = (event: CustomEvent) => {
-//   if (event.detail.value === "otherLocation") {
-//     console.log("User wants to select location on map")
-//   }
-// }
-
 const CreateDangerTest: FC = () => {
   const history = useHistory()
 
   // Get User Token and UserId
+  // Permanent danger toggle
+
+  // Get user token and userId
   const userService = new UserService()
-  const dangerService = new DangerService()
   const [profileUser, setProfileUser] = useState<User>()
   const { currentUserToken, currentUser } = useContext(UserContext)
 
@@ -119,6 +85,38 @@ const CreateDangerTest: FC = () => {
     }
 
     void fetchData()
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (currentUser?.id && currentUserToken) {
+        try {
+          const userResponse = await userService.userGET(currentUser.id, currentUserToken)
+          setProfileUser(userResponse?.data)
+          // console.log(userResponse?.data)
+        } catch (error) {
+          console.error("error fetching user", error)
+        }
+      }
+    }
+
+    void fetchData()
+  }, [])
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (currentUser?.id && currentUserToken) {
+        try {
+          const userResponse = await userService.userGET(currentUser.id, currentUserToken)
+          setProfileUser(userResponse?.data)
+          // console.log(userResponse?.data)
+        } catch (error) {
+          console.error("error fetching user", error)
+        }
+      }
+    }
+
+    void fetchUserData()
   }, [])
   const [isChecked, setIsChecked] = useState(false)
 
@@ -143,7 +141,12 @@ const CreateDangerTest: FC = () => {
   }, [])
 
   useEffect(() => {
-    const fetchData = async () => {
+    void fetchDangerCategories()
+    void getCurrentLocation()
+  }, [])
+
+  useEffect(() => {
+    const fetchUserData = async () => {
       if (currentUser?.id && currentUserToken) {
         try {
           const userResponse = await userService.userGET(currentUser.id, currentUserToken)
@@ -155,10 +158,15 @@ const CreateDangerTest: FC = () => {
       }
     }
 
-    void fetchData()
+    void fetchUserData()
   }, [])
 
-  // Get Danger Categories
+  useEffect(() => {
+    void fetchDangerCategories()
+    void getCurrentLocation()
+  }, [])
+
+  // Get danger categories
   const [dangerCategories, setDangerCategories] = useState<DangerCategory[]>()
 
   const fetchDangerCategories = async () => {
@@ -174,37 +182,61 @@ const CreateDangerTest: FC = () => {
     }
   }
 
-  useEffect(() => {
-    //console.log("Fetching danger categories")
-    void fetchDangerCategories()
-    void fetchDangerCategories()
-  }, [])
+  // Get location
+  const [location, setLocation] = useState({ lat: 0, lon: 0 })
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords
+          setLocation({ lat: latitude, lon: longitude })
+          // console.log("Location: ", location)
+        },
+        (error) => {
+          console.log("Error: ", error)
+        }
+      )
+    } else {
+      console.error("Geolocation is not supported in this browser.")
+      // Error handling?
+    }
+  }
+
+  const [showLocationPicker, setShowLocationPicker] = useState(false)
+  const handleLocationChange = (event: CustomEvent) => {
+    const selectedValue = (event.target as HTMLInputElement).value
+    setShowLocationPicker(selectedValue === "otherLocation")
+  }
+
+  // Get time from time/date picker
+  const [showTimePicker, setShowTimePicker] = useState(false)
+  const [time, setTime] = useState<Date>(new Date())
+
+  const displayTimePicker = (event: CustomEvent) => {
+    const selectedValue = (event.target as HTMLInputElement).value
+    setShowTimePicker(selectedValue === "otherTime")
+  }
+
+  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTime(new Date(event.target.value))
+    // console.log("Selected Time: ", time)
+  }
 
   // Before sending data to backend, transform data to DangerRequestData
   const createDangerRequestData = async (values: SelectValues) => {
     const dangerRequestData: DangerRequestData = {
       userId: profileUser?.id || "",
-      lat: 0,
-      lon: 0,
+      lat: location.lat,
+      lon: location.lon,
       categoryId: values.category,
-      timestamp: new Date(),
+      timestamp: values.time === "currentTime" ? new Date() : time,
       description: values.description,
       addressName: "",
       title: "test",
       categoryID: "",
     }
 
-    if (values.dangerLocation === "currentLocation") {
-      // TODO: Get current location
-      dangerRequestData.lat = 1.856754
-      dangerRequestData.lon = 1.234567
-    } else if (values.dangerLocation === "otherLocation") {
-      dangerRequestData.lat = 0
-      dangerRequestData.lon = 0
-    }
-    if (values.time === "otherTime") {
-      //TODO: Get time from Time/Date Picker
-    }
+    // debugger
 
     void (await handleDangerRequest(dangerRequestData))
   }
@@ -212,7 +244,7 @@ const CreateDangerTest: FC = () => {
   const dangerRequestService = new DangerRequestService()
   const handleDangerRequest = async (dangerRequestData: DangerRequestData) => {
     try {
-      //console.log(dangerRequestData)
+      // console.log(dangerRequestData)
       const response = await dangerRequestService.create(dangerRequestData, currentUserToken || "")
       const data = response?.data
       if (data) {
@@ -221,13 +253,6 @@ const CreateDangerTest: FC = () => {
     } catch (error) {
       console.error("DangerRequest error", error)
     }
-  }
-
-  // ----- Fallback Values ----
-  const fallBackValues = {
-    lat: 53.551086,
-    lon: 9.993682,
-    categoryID: "8b2bd105-5ae3-4f00-8939-0f0603bee564",
   }
 
   const initialValues: SelectValues = {
@@ -242,39 +267,6 @@ const CreateDangerTest: FC = () => {
   const validationSchema = yup.object({
     description: yup.string(),
   })
-
-  const testData: DangerData = {
-    dangerType: "Unfall",
-    description: "test DangerService",
-    lat: fallBackValues.lat,
-    lon: fallBackValues.lon,
-    addressName: "Schlumpfstraße 12",
-    title: "Test",
-    otherCategory: "",
-    categoryID: "8b2bd105-5ae3-4f00-8939-0f0603bee564",
-    activeAt: new Date(),
-  }
-
-  // -----------------------ChatGPT Help ----------------------------
-  const [formData, setFormData] = useState<DangerData>({
-    dangerType: "",
-    description: "",
-    location: "",
-    lat: 0,
-    lon: 0,
-    addressName: "",
-    title: "",
-    categoryID: "",
-    otherCategory: "",
-    activeAt: new Date(),
-  })
-
-  const handleFieldChange = (fieldName: keyof DangerData, value: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [fieldName]: value,
-    }))
-  }
 
   return (
     <IonPage>
@@ -293,19 +285,6 @@ const CreateDangerTest: FC = () => {
               }}
             >
               <Form>
-                {/* <Select
-                  name="categoryId"
-                  label="Art der Gefahrenstelle"
-                  icon={true}
-                  iconName="warningSharp"
-                  className="customItem"
-                  //Hier CategoryId hinein mappen
-                  options={[
-                    { value: "123", label: "Unfall" },
-                    { value: "456", label: "Klimakleber" },
-                  ]}
-                /> */}
-
                 {/* Select Danger Category */}
                 <Select
                   name="category"
@@ -326,10 +305,13 @@ const CreateDangerTest: FC = () => {
                   className="customItem"
                   options={[
                     { value: "currentLocation", label: "Mein Standort" },
-                    { value: "otherLocation", label: "Auf der Karte wählen" },
+                    { value: "otherLocation", label: "Adresse wählen" },
                   ]}
-                  //onChange={handleLocationChange}
+                  onChange={handleLocationChange}
                 />
+
+                {/* TODO */}
+                {showLocationPicker && <Input name="adress" label="Adresse" />}
 
                 {/* Toggle Permanent Danger */}
                 <IonItem className="customItem" lines="none">
@@ -357,18 +339,41 @@ const CreateDangerTest: FC = () => {
                     { value: "currentTime", label: "In diesem Augenblick" },
                     { value: "otherTime", label: "Uhrzeit wählen" },
                   ]}
+                  onChange={displayTimePicker}
                 />
 
-                {/* Input Description */}
-                <div className="customItem textArea">
-                  <IonIcon icon={informationCircleOutline} className="customDescriptionIcon" />
-                  <Input
-                    multiline
-                    name="description"
-                    label="Beschreibung?"
-                    placeholder="Beschreibe die Gefahrenstelle etwas näher"
+                {showTimePicker && (
+                  <input
+                    //style={{ display: "block", margin: "0 auto" }}
+                    className="customDatePicker"
+                    type="datetime-local"
+                    id="danger-time"
+                    name="danger-time"
+                    onChange={handleTimeChange}
                   />
-                </div>
+                )}
+
+                {/* {showTimePicker && (
+                  // React Datepicker doesn't work properly
+                  <div style={{ position: "relative", zIndex: 999 }}>
+                    <DatePicker
+                      showTimeSelect
+                      minTime={new Date(0, 0, 0, 12, 30)}
+                      maxTime={new Date(0, 0, 0, 19, 0)}
+                      selected={date}
+                      //onChange={}
+                    />
+                  </div>
+                )} */}
+
+                {/* Input additional danger Description */}
+                <Input
+                  multiline
+                  name="description"
+                  label="Beschreibung?"
+                  icon={informationCircleOutline}
+                  placeholder="Beschreibe die Gefahrenstelle etwas näher"
+                />
 
                 {/* Submit Button */}
                 <IonButton className="customButton" type="submit">

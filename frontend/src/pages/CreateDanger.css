@@ -71,3 +71,17 @@
 .textArea ion-textarea {
   height: 150px;
 }
+
+.customDatePicker {
+  display: block;
+  margin: 0 auto;
+  height: 40px;
+  width: 100%;
+  color: #3e3e3e;
+  border: none;
+  border-radius: 10px;
+  padding-left: 15px;
+  padding-right: 18px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+}
