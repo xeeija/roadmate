@@ -1,19 +1,28 @@
-import L, { ControlOptions } from "leaflet"
-import { createControlComponent } from "@react-leaflet/core"
-import "leaflet-routing-machine"
-import "leaflet-control-geocoder"
-import "./RoutingMachine.css"
-import { RouteService } from "../../services/api/RouteService"
-import { RouteRequest } from "../../services/entities/request/RouteRequest"
-import { presentToast, dismissToast } from "../../utils/toastUtils"
 import { ToastOptions } from "@ionic/react"
-import { checkmarkOutline, warningOutline } from "ionicons/icons"
+import { createControlComponent } from "@react-leaflet/core"
+import { warningOutline } from "ionicons/icons"
+import L, { ControlOptions } from "leaflet"
+import "leaflet-control-geocoder"
+import "leaflet-routing-machine"
+import { dismissToast, presentToast } from "../../utils/toastUtils"
+import "./RoutingMachine.css"
 
 interface ExtendedControlOptions extends ControlOptions {
   userId: string
   userToken: string
   show: boolean
   waypoints?: L.LatLng[]
+  showRouteAlert?: (route: RouteData) => void
+}
+
+export type RouteData = {
+  name: string
+  fromLat: number
+  fromLon: number
+  toLat: number
+  toLon: number
+  fromAddressName: string
+  toAddressName: string
 }
 
 function createButton(
@@ -54,11 +63,8 @@ const toastOptions: ToastOptions = {
 
 const createRoutingMachineLayer = () => {
   return (props: ExtendedControlOptions) => {
-    const userId = props.userId
-    const userToken = props.userToken
     const waypoints = props.waypoints || []
 
-    const routeService = new RouteService()
     const handleSaveRoute = () => {
       const waypoints = plan.getWaypoints()
       console.log(waypoints)
@@ -76,42 +82,18 @@ const createRoutingMachineLayer = () => {
         return
       }
 
-      const routeData: RouteRequest = {
-        userId: userId,
-        name:
-          "Von " +
-          fromWaypoint.name?.split(",", 3).slice(0, 2).join(",") +
-          " nach " +
-          toWaypoint.name?.split(",", 3).slice(0, 2).join(","),
+      const fromName = fromWaypoint.name?.split(",", 3).slice(0, 2).join(",")
+      const toName = toWaypoint.name?.split(",", 3).slice(0, 2).join(",")
+
+      props.showRouteAlert?.({
+        name: `Von ${fromName} nach ${toName}`,
         fromLat: fromWaypoint.latLng.lat,
         fromLon: fromWaypoint.latLng.lng,
         toLat: toWaypoint.latLng.lat,
         toLon: toWaypoint.latLng.lng,
-        fromAddressName: fromWaypoint.name,
-        toAddressName: toWaypoint.name,
-        notificationEnabled: true,
-      }
-
-      routeService
-        .routePOST(userToken, routeData)
-        .then((response) => {
-          console.log(response)
-          presentToast({
-            ...toastOptions,
-            message: "Route gespeichert",
-            color: "success",
-            icon: checkmarkOutline,
-          })
-        })
-        .catch((error) => {
-          console.log(error)
-          presentToast({
-            ...toastOptions,
-            message: "Route speichern fehlgeschlagen",
-            color: "danger",
-            icon: warningOutline,
-          })
-        })
+        fromAddressName: `${fromWaypoint.name}`,
+        toAddressName: `${toWaypoint.name}`,
+      })
     }
 
     const ExtendedPlan = L.Routing.Plan.extend({
