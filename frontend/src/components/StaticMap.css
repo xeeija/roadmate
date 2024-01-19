@@ -3,3 +3,9 @@
   width: 100%;
   height: 150px;
 }
+
+
+.leaflet-routing-container-hide {
+  display: none;
+}
+

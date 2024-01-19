@@ -27,7 +27,7 @@ const SavedRoute: FC<RouteProps> = ({ name, id, position, setRefreshKey }) => {
   }
 
   return (
-    <IonCard className="" color="light">
+    <IonCard className="cardcolor">
       <div className="map-container">
         <StaticMap route={position} />
       </div>
@@ -36,7 +36,7 @@ const SavedRoute: FC<RouteProps> = ({ name, id, position, setRefreshKey }) => {
         <div className="route-action">
           {/*TODO: Button needs an identifier */}
           <IonButton fill="clear" slot="end" id={"openMenu" + id} size="small">
-            <IonAlert
+            <IonAlert className="cardcolor"
               header="Aktion auswählen"
               trigger={"openMenu" + id}
               buttons={[

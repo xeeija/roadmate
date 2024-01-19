@@ -57,6 +57,7 @@ const StaticMap = ({
               userId={currentUser?.id ?? ""}
               userToken={currentUserToken ?? ""}
               show={false}
+              isStatic={true}
               waypoints={[
                 L.latLng(route.fromLat, route.fromLng),
                 L.latLng(route.toLat, route.toLng),
