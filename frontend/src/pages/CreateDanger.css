@@ -1,5 +1,5 @@
 .customCard {
-  background-color: #f0f8f9;
+  background-color: var(--ion-color-light);
   border-radius: 35px 35px 0 0;
   margin-top: 110px;
   bottom: 10px;
@@ -27,18 +27,24 @@
 .customDescriptionIcon {
   color: #92949c;
   font-size: 42px;
-  padding-right: 10px;
-  padding-left: 0;
-  padding-bottom: 110px;
+  padding-left: 14px;
+  padding-top: 10px;
+  margin-right: -10px;
+  z-index: 999;
 }
 
 .customItem {
   background-color: white;
   border-radius: 15px;
+  overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 25px;
   --keyboard-offset: none;
   font-size: 15px;
+}
+
+.customItem.textArea {
+  display: flex;
 }
 
 .customToggle {
@@ -57,4 +63,25 @@
 .customTextArea {
   height: 170px;
   position: relative;
+}
+.textArea {
+  --ion-color-base: white;
+}
+
+.textArea ion-textarea {
+  height: 150px;
+}
+
+.customDatePicker {
+  display: block;
+  margin: 0 auto;
+  height: 40px;
+  width: 100%;
+  color: #3e3e3e;
+  border: none;
+  border-radius: 10px;
+  padding-left: 15px;
+  padding-right: 18px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
 }

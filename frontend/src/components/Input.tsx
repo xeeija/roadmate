@@ -2,6 +2,7 @@ import { PredefinedColors, TextFieldTypes } from "@ionic/core"
 import {
   InputChangeEventDetail,
   InputCustomEvent,
+  IonIcon,
   IonInput,
   IonItem,
   IonTextarea,
@@ -27,6 +28,7 @@ interface Props {
   children?: ReactNode
   iconPosition?: "start" | "end"
   autoGrow?: boolean
+  icon?: string
 }
 
 export const Input: FC<Props> = ({
@@ -43,6 +45,7 @@ export const Input: FC<Props> = ({
   iconPosition = "end",
   autoGrow = true,
   children,
+  icon,
 }) => {
   const [field, { touched, error }] = useField(name)
 
@@ -51,6 +54,7 @@ export const Input: FC<Props> = ({
   return (
     <>
       <IonItem color={color} lines={lines}>
+        {icon && <IonIcon icon={icon} className="customIcon" />}
         <InputComponent
           className={className ?? "color-text"}
           type={type}

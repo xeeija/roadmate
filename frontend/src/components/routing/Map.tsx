@@ -253,7 +253,8 @@ const Map: FC<MapProps> = ({ route }) => {
         )}
       </IonContent>
 
-      <IonAlert className="customAlert"
+      <IonAlert
+        className="customAlert"
         header="Neue Route"
         trigger={"saveRoute"}
         message="Gib einen Namen für deine neue Route ein"

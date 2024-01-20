@@ -1,9 +1,8 @@
-import { RequestType } from "./DangerRequest";
-
-
 export interface DangerRequestModel {
-    type?: RequestType;
-    timestamp?: Date;
-    userId?: string;
-    dangerId?: string;
+  userId?: string
+  lat?: number
+  lon?: number
+  description?: string
+  categoryId?: string
+  timestamp?: Date
 }
