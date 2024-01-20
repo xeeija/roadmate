@@ -25,6 +25,7 @@ import { DangerService } from "../services/api/DangerService"
 import { DangerMessageService } from "../services/api/MessageService"
 import { Danger } from "../services/entities/Danger"
 import { DangerItemResponseModel } from "../services/entities/response/DangerItemResponseModel"
+import RerenderMapComponent from "../components/RerenderMapComponent"
 import "./DangerZones.css"
 
 type Params = {
@@ -91,7 +92,7 @@ const DangerZones: FC = () => {
 
   useEffect(() => {
     void fetchDanger()
-  }, [])
+  }, [dangerId])
 
   const messages = (danger?.messages ?? []).filter((m) => m.referencedMessageId === null)
 
@@ -100,9 +101,10 @@ const DangerZones: FC = () => {
 
   const leafletOptions = {
     maxZoom: 20,
-    attribution: `Datenquelle: <a href="https://www.basemap.at">basemap.at</a>`,
+    attribution: `<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>`,
+    subdomains: "abcd",
     type: "normal",
-    format: "png",
+    format: "jpeg",
   }
 
   return (
@@ -114,6 +116,7 @@ const DangerZones: FC = () => {
         <IonContent>
           <div id="map" style={{ zIndex: 0 }}>
             <MapContainer
+              key={`${danger?.lat}-${danger?.lon}`}
               center={{
                 lat: (danger?.lat ?? 47) - latDelta,
                 lng: (danger?.lon ?? 15.4) - lonDelta,
@@ -125,8 +128,9 @@ const DangerZones: FC = () => {
               dragging={false}
               doubleClickZoom={false}
             >
+              <RerenderMapComponent />
               <TileLayer
-                url="https://mapsneu.wien.gv.at/basemap/geolandbasemap/{type}/google3857/{z}/{y}/{x}.{format}"
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                 {...leafletOptions}
               />
             </MapContainer>

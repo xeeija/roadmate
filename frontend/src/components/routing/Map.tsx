@@ -24,6 +24,7 @@ import { UserContext } from "../ProtectedRoute"
 import { DangerService } from "../../services/api/DangerService"
 import { Danger } from "../../services/entities/Danger"
 import RoutingMachine, { RouteData } from "./RoutingMachine"
+import { useHistory } from "react-router-dom"
 
 interface MapProps {
   route?: { fromLat: number; fromLng: number; toLat: number; toLng: number }
@@ -98,6 +99,7 @@ const Map: FC<MapProps> = ({ route }) => {
   }
 
   const MarkerWithPopup: FC<{
+    id: string
     position: { lat: number; lng: number }
     type: string
     description: string
@@ -105,10 +107,12 @@ const Map: FC<MapProps> = ({ route }) => {
     createdAt: Date
     isActive: boolean
     title: string
-  }> = ({ position, type, description, address, createdAt, isActive, title }) => {
+  }> = ({ id, position, type, description, address, createdAt, isActive, title }) => {
+    const history = useHistory()
     const icon = type === "Temporary" ? iconTemporary : iconPermanent
 
     const handleClick = (
+      id: string,
       address: string,
       createdAt: Date,
       isActive: boolean,
@@ -123,6 +127,9 @@ const Map: FC<MapProps> = ({ route }) => {
         setIsActive(isActive)
         setTitle(title)
         setDescription(description)
+      } else {
+        // Navigate to dangerzone with id
+        history.push(`/dangerzones/${id}`)
       }
     }
 
@@ -132,7 +139,7 @@ const Map: FC<MapProps> = ({ route }) => {
         icon={icon}
         autoPanOnFocus={true}
         eventHandlers={{
-          click: () => handleClick(address, createdAt, isActive, title, description),
+          click: () => handleClick(id, address, createdAt, isActive, title, description),
         }}
       >
         <CustomPopup description={description} />
@@ -199,12 +206,12 @@ const Map: FC<MapProps> = ({ route }) => {
             <MapContainer
               doubleClickZoom={false}
               id="mapId"
-              zoom={14}
+              zoom={13}
               center={{ lat: 47.06658740529705, lng: 15.446622566627681 }}
               zoomControl={false}
             >
               <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               />
               <RoutingMachine
@@ -228,6 +235,7 @@ const Map: FC<MapProps> = ({ route }) => {
                 {dangerPoints.map((dangerPoint, index) => (
                   <MarkerWithPopup
                     key={index}
+                    id={dangerPoint.id ?? ""}
                     position={{ lat: dangerPoint.lat ?? 0, lng: dangerPoint.lon ?? 0 }}
                     type={dangerPoint.type ?? ""}
                     description={dangerPoint.description ?? ""}
