@@ -14,6 +14,8 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
   private readonly DangerRequestService dangerRequestService;
   private readonly DangerResolveRequestService dangerResolveRequestService;
   private readonly DangerService dangerService;
+  private readonly NotificationService notificationService;
+  private readonly UserService userService;
 
   public DangerRequestController(GlobalService service, IHttpContextAccessor accessor) :
     base(service.DangerRequestService, accessor) {
@@ -23,6 +25,10 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
     dangerResolveRequestService.LoadUser(Email).Wait();
     dangerService = service.DangerService;
     dangerService.LoadUser(Email).Wait();
+    notificationService = service.NotificationService;
+    notificationService.LoadUser(Email).Wait();
+    userService = service.UserService;
+    userService.LoadUser(Email).Wait();
   }
 
   [HttpPost("Create")]
@@ -69,6 +75,16 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
         return BadRequest(createdDanger);
       }
 
+      var users = await userService.GetAll();
+      foreach(var item in users.Data ?? new List<User>()) {
+        await notificationService.Create(new NotificationRequest {
+          Description = request.Description,
+          DangerId = createdDanger.Data?.ID ?? Guid.Empty,
+          //Url = new Uri($"https://localhost:5001/danger/{.DangerId}"),
+          UserId = item.ID,
+        }.ToEntity());
+      }
+      
       if (result.Data != null && createdDanger.Data != null) {
         // TODO: Update many / UpdateRange -> BaseService
         foreach (var dr in requestsInRange) {
