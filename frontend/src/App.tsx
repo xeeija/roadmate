@@ -41,7 +41,6 @@ import "@ionic/react/css/text-alignment.css"
 import "@ionic/react/css/text-transformation.css"
 
 /* Theme variables */
-import CreateDangerTest from "./pages/CreateDangerTest"
 import "./theme/global.css"
 import "./theme/variables.css"
 
@@ -69,14 +68,6 @@ const App: FC = () => (
                 <IonRouterOutlet animated={false}>
                   <Route exact path="/createDanger">
                     <CreateDanger />
-                  </Route>
-
-                  <Route exact path="/createDangerTest">
-                    <CreateDangerTest />
-                  </Route>
-
-                  <Route exact path="/createDangerTest">
-                    <CreateDangerTest />
                   </Route>
 
                   <Route exact path="/saved-routes">
