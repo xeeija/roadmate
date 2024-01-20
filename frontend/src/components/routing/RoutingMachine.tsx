@@ -1,7 +1,7 @@
 import { ToastOptions } from "@ionic/react"
 import { createControlComponent } from "@react-leaflet/core"
 import { warningOutline } from "ionicons/icons"
-import L, { ControlOptions } from "leaflet"
+import { Control, ControlOptions, DomUtil, LatLng, Routing } from "leaflet"
 import "leaflet-control-geocoder"
 import "leaflet-routing-machine"
 import { dismissToast, presentToast } from "../../utils/toastUtils"
@@ -11,7 +11,7 @@ interface ExtendedControlOptions extends ControlOptions {
   userId: string
   userToken: string
   show: boolean
-  waypoints?: L.LatLng[]
+  waypoints?: LatLng[]
   showRouteAlert?: (route: RouteData) => void
   isStatic: boolean
 }
@@ -31,7 +31,7 @@ function createButton(
   container: HTMLElement,
   handleSaveRoute: () => void
 ): HTMLElement {
-  const btn = L.DomUtil.create("button", "", container)
+  const btn = DomUtil.create("button", "", container)
   btn.setAttribute("type", "button")
   btn.innerHTML = label
   btn.id = "saveRoute"
@@ -97,16 +97,16 @@ const createRoutingMachineLayer = () => {
       })
     }
 
-    const ExtendedPlan = L.Routing.Plan.extend({
+    const ExtendedPlan = Routing.Plan.extend({
       createGeocoders: function () {
-        const container: HTMLElement = L.Routing.Plan.prototype.createGeocoders.call(
+        const container: HTMLElement = Routing.Plan.prototype.createGeocoders.call(
           this
         ) as HTMLElement
         createButton("Route speichern", container, handleSaveRoute)
 
         return container
       },
-    }) as typeof L.Routing.Plan
+    }) as typeof Routing.Plan
 
     /*     const waypoints = [
       L.latLng(47.061207394310735, 15.431929877161728),
@@ -114,22 +114,21 @@ const createRoutingMachineLayer = () => {
     ] */
 
     const plan = new ExtendedPlan(waypoints, {
-      geocoder: L.Control.Geocoder.nominatim(),
+      geocoder: Control.Geocoder.nominatim(),
       routeWhileDragging: true,
       addWaypoints: true,
       reverseWaypoints: true,
       draggableWaypoints: !props.isStatic,
     })
 
-    const instance = L.Routing.control({
+    const instance = Routing.control({
       plan: plan,
       lineOptions: {
         styles: [{ color: "#6FA1EC", opacity: 0.8, weight: 4 }],
         extendToWaypoints: true,
         missingRouteTolerance: 5,
-
       },
-      router: L.Routing.osrmv1({
+      router: Routing.osrmv1({
         serviceUrl: "https://routing.openstreetmap.de/routed-bike/route/v1",
         profile: "driving",
         language: "de",
@@ -140,7 +139,6 @@ const createRoutingMachineLayer = () => {
       fitSelectedRoutes: true,
       showAlternatives: false,
       collapsible: false,
-
     })
 
     const container = instance.getContainer()

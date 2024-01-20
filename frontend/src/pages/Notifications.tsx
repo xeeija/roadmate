@@ -55,7 +55,7 @@ const Notifications: FC = () => {
     <IonPage>
       <IonContent>
         <div className="toolbar-container">
-          <ToolBar title="Karte" />
+          <ToolBar title="Benachrichtigungen" />
         </div>
 
         <IonCard className="rounded-modal">
@@ -76,7 +76,16 @@ const Notifications: FC = () => {
               ))}
               {/* Test DangerAcute Component */}
               <IonButton onClick={openModal}>Akute Gefahrenstelle öffnen</IonButton>
-              {showModal && <DangerAcute closeModal={closeModal} />}
+              {showModal && (
+                <DangerAcute
+                  closeModal={closeModal}
+                  addressName={"Adress"}
+                  createdAt={new Date(Date.now())}
+                  isActive={true}
+                  title={"Title"}
+                  description={"Description"}
+                />
+              )}
             </IonList>
           </div>
         </IonCard>
