@@ -8,6 +8,7 @@ import {
   IonInput,
   IonItem,
   IonPage,
+  IonPopover,
   IonToggle,
 } from "@ionic/react"
 import { Form, Formik } from "formik"
@@ -35,9 +36,38 @@ import "./CreateDanger.css"
 // - handleLocationChange
 // - Error handling? (e.g. invalid time/location, geoLocation)
 
+interface LocationResult {
+  results: LocationSuggestion[]
+}
+
+// some properties omitted
+interface LocationSuggestion {
+  country: string
+  country_code: string
+  state: string
+  city: string
+  suburb: string
+  lon: number
+  lat: number
+  formatted: string
+  address_line1: string
+  address_line2: string
+  category?: string
+  plus_code: string
+  plus_code_short: string
+  result_type: string
+  place_id: string
+  name?: string
+  postcode?: string
+  district?: string
+  street?: string
+  housenumber?: string
+}
+
 interface CreateDangerData {
   categoryId: string
   dangerLocation: string
+  address: string
   type: string
   time: "currentTime" | "otherTime"
   description: string
@@ -106,6 +136,9 @@ const CreateDanger: FC = () => {
   }
 
   const [showLocationPicker, setShowLocationPicker] = useState(false)
+  const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([])
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false)
+
   const handleLocationChange = (event: CustomEvent) => {
     const selectedValue = (event.target as HTMLInputElement).value
     setShowLocationPicker(selectedValue === "otherLocation")
@@ -157,6 +190,7 @@ const CreateDanger: FC = () => {
   const initialValues: CreateDangerData = {
     categoryId: "",
     dangerLocation: "currentLocation",
+    address: "",
     type: "",
     time: "currentTime",
     description: "",
@@ -186,76 +220,141 @@ const CreateDanger: FC = () => {
                 await createDangerRequest(values)
               }}
             >
-              <Form>
-                {/* Select Danger Category */}
-                <Select
-                  name="categoryId"
-                  label="Art der Gefahrenstelle"
-                  icon={warningSharp}
-                  className="customItem"
-                  options={
-                    dangerCategories?.map((x) => ({ value: x?.id || "", label: x?.name || "" })) ||
-                    []
-                  }
-                />
-
-                {/* Select Danger Location */}
-                <Select
-                  name="dangerLocation"
-                  label="Wo ist die Gefahrenstelle"
-                  icon={locationSharp}
-                  className="customItem"
-                  options={[
-                    { value: "currentLocation", label: "Mein Standort" },
-                    { value: "otherLocation", label: "Adresse wählen" },
-                  ]}
-                  onChange={handleLocationChange}
-                />
-
-                {/* TODO */}
-                {showLocationPicker && <Input name="adress" label="Adresse" />}
-
-                {/* Toggle Permanent Danger */}
-                <IonItem className="customItem" lines="none">
-                  <IonIcon icon={hammer} className="customIcon" />
-                  <IonInput
-                    label="Permanente Gefahrenstelle?"
-                    labelPlacement={"floating"}
-                    value={isChecked ? "Ja" : "Nein"}
-                    readonly={true}
-                  ></IonInput>
-                  <IonToggle
-                    className="customToggle custom-toggle-input"
-                    checked={isChecked}
-                    onIonChange={handleToggleChange}
+              {({ setFieldValue }) => (
+                <Form>
+                  {/* Select Danger Category */}
+                  <Select
+                    name="categoryId"
+                    label="Art der Gefahrenstelle"
+                    icon={warningSharp}
+                    className="customItem"
+                    options={
+                      dangerCategories?.map((x) => ({
+                        value: x?.id || "",
+                        label: x?.name || "",
+                      })) || []
+                    }
                   />
-                </IonItem>
 
-                {/* Select Timestamp */}
-                <Select
-                  name="time"
-                  label="Wann ist der Vorfall passiert?"
-                  icon={alarm}
-                  className="customItem"
-                  options={[
-                    { value: "currentTime", label: "In diesem Augenblick" },
-                    { value: "otherTime", label: "Uhrzeit wählen" },
-                  ]}
-                  onChange={displayTimePicker}
-                />
-
-                {showTimePicker && (
-                  <input
-                    //style={{ display: "block", margin: "0 auto" }}
-                    className="customDatePicker"
-                    type="datetime-local"
-                    id="danger-time"
-                    name="danger-time"
-                    onChange={handleTimeChange}
+                  {/* Select Danger Location */}
+                  <Select
+                    name="dangerLocation"
+                    label="Wo ist die Gefahrenstelle"
+                    icon={locationSharp}
+                    className="customItem"
+                    options={[
+                      { value: "currentLocation", label: "Mein Standort" },
+                      { value: "otherLocation", label: "Adresse wählen" },
+                    ]}
+                    onChange={handleLocationChange}
                   />
-                )}
 
-                {/* {showTimePicker && (
+                  {/* TODO */}
+                  {showLocationPicker && (
+                    <>
+                      <Input
+                        name="address"
+                        label="Adresse"
+                        debounce={1000}
+                        onInput={(ev) =>
+                          void (async () => {
+                            const query = ev.detail.value
+                            const apiKey = import.meta.env.VITE_GEOAPIFY_API_KEY as string
+
+                            const response = await fetch(
+                              `https://api.geoapify.com/v1/geocode/autocomplete?text=${query}&format=json&lang=de&apiKey=${apiKey}`
+                            )
+
+                            const data = (await response.json()) as LocationResult
+
+                            await setFieldValue("address", query)
+                            setSuggestions(data.results)
+
+                            if (suggestions.length === 1) {
+                              setLocation({
+                                lat: suggestions[0].lat,
+                                lon: suggestions[0].lon,
+                              })
+                              await setFieldValue("address", suggestions[0].formatted)
+                            } else {
+                              setSuggestionsOpen(true)
+                            }
+                          })()
+                        }
+                        onFocus={() => {
+                          // if (suggestions.length > 0 && (location.lat === 0 && location.lon === 0)) {
+                          //   setSuggestionsOpen(true)
+                          // }
+                        }}
+                      />
+                      {/* TODO: Auf Modal umbauen */}
+                      <IonPopover
+                        isOpen={suggestionsOpen}
+                        onDidDismiss={() => setSuggestionsOpen(false)}
+                        showBackdrop={false}
+                        dismissOnSelect
+                        backdropDismiss
+                      >
+                        <IonContent color="light">
+                          {suggestions?.map((s) => (
+                            <IonItem
+                              key={s.place_id}
+                              button
+                              onClick={() => {
+                                console.log("clicked item", s)
+                                setLocation({ lat: s.lat, lon: s.lon })
+                                void setFieldValue("address", s.formatted)
+                              }}
+                            >
+                              {s.formatted}
+                            </IonItem>
+                          ))}
+                        </IonContent>
+                      </IonPopover>
+                    </>
+                  )}
+
+                  {/* Toggle Permanent Danger */}
+                  <IonItem className="customItem" lines="none">
+                    <IonIcon icon={hammer} className="customIcon" />
+                    <IonInput
+                      label="Permanente Gefahrenstelle?"
+                      labelPlacement={"floating"}
+                      value={isChecked ? "Ja" : "Nein"}
+                      readonly={true}
+                    ></IonInput>
+                    <IonToggle
+                      className="customToggle custom-toggle-input"
+                      checked={isChecked}
+                      onIonChange={handleToggleChange}
+                    />
+                  </IonItem>
+
+                  {/* Select Timestamp */}
+                  <Select
+                    name="time"
+                    label="Wann ist der Vorfall passiert?"
+                    icon={alarm}
+                    className="customItem"
+                    options={[
+                      { value: "currentTime", label: "In diesem Augenblick" },
+                      { value: "otherTime", label: "Uhrzeit wählen" },
+                    ]}
+                    onChange={displayTimePicker}
+                  />
+
+                  {showTimePicker && (
+                    <input
+                      //style={{ display: "block", margin: "0 auto" }}
+                      className="customDatePicker"
+                      type="datetime-local"
+                      id="danger-time"
+                      name="danger-time"
+                      onChange={handleTimeChange}
+                    />
+                  )}
+
+                  {/* {showTimePicker && (
                   // React Datepicker doesn't work properly
                   <div style={{ position: "relative", zIndex: 999 }}>
                     <DatePicker
@@ -268,20 +367,21 @@ const CreateDanger: FC = () => {
                   </div>
                 )} */}
 
-                {/* Input additional danger Description */}
-                <Input
-                  multiline
-                  name="description"
-                  label="Beschreibung?"
-                  icon={informationCircleOutline}
-                  placeholder="Beschreibe die Gefahrenstelle etwas näher"
-                />
+                  {/* Input additional danger Description */}
+                  <Input
+                    multiline
+                    name="description"
+                    label="Beschreibung?"
+                    icon={informationCircleOutline}
+                    placeholder="Beschreibe die Gefahrenstelle etwas näher"
+                  />
 
-                {/* Submit Button */}
-                <IonButton className="customButton" type="submit">
-                  Gefahrenstelle melden
-                </IonButton>
-              </Form>
+                  {/* Submit Button */}
+                  <IonButton className="customButton" type="submit">
+                    Gefahrenstelle melden
+                  </IonButton>
+                </Form>
+              )}
             </Formik>
           </IonCardContent>
         </IonCard>
