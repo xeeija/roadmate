@@ -26,4 +26,18 @@ public class NotificationController : BaseController<Notification, NotificationR
   public override Task<ActionResult<ItemResponseModel<Notification>>> Delete(string id) {
     return base.Delete(id);
   }
+  [HttpGet("WithDanger")]
+  public async Task<ActionResult<ItemResponseModel<List<Notification>>>> GetWithDanger() {
+    var response = await Service.GetAll(new List<string> { "Danger", "Route" });
+
+    if (!response.IsAuthorized) {
+      return Forbid();
+    }
+
+    if (response.HasError) {
+      return BadRequest(response);
+    }
+
+    return response;
+  }
 }
