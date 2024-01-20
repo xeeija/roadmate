@@ -13,6 +13,7 @@ interface ExtendedControlOptions extends ControlOptions {
   show: boolean
   waypoints?: L.LatLng[]
   showRouteAlert?: (route: RouteData) => void
+  isStatic: boolean
 }
 
 export type RouteData = {
@@ -117,6 +118,7 @@ const createRoutingMachineLayer = () => {
       routeWhileDragging: true,
       addWaypoints: true,
       reverseWaypoints: true,
+      draggableWaypoints: !props.isStatic,
     })
 
     const instance = L.Routing.control({
@@ -125,6 +127,7 @@ const createRoutingMachineLayer = () => {
         styles: [{ color: "#6FA1EC", opacity: 0.8, weight: 4 }],
         extendToWaypoints: true,
         missingRouteTolerance: 5,
+
       },
       router: L.Routing.osrmv1({
         serviceUrl: "https://routing.openstreetmap.de/routed-bike/route/v1",
@@ -137,6 +140,7 @@ const createRoutingMachineLayer = () => {
       fitSelectedRoutes: true,
       showAlternatives: false,
       collapsible: false,
+
     })
 
     const container = instance.getContainer()

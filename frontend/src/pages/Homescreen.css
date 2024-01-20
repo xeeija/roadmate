@@ -21,7 +21,7 @@
 
 .createDangerButton {
   position: absolute;
-  bottom: 25px;
+  bottom: 13px;
   right: 10px;
 }
 
@@ -30,7 +30,7 @@
   column-gap: 4px;
   z-index: 0;
   position: fixed;
-  bottom: 30px;
+  bottom: 20px;
   left: 15px;
   padding: 7px;
   background-color: rgba(255, 255, 255, 0.7);
@@ -65,4 +65,8 @@
   color: var(--ion-color-warning);
   grid-column: 1;
   grid-row: 2;
+}
+
+.customAlert{
+  --background: white;
 }

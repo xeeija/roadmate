@@ -13,6 +13,7 @@ import ToolBar from "../components/navigation/ToolBar"
 import { UserContext } from "../components/ProtectedRoute"
 import { RouteService } from "../services/api/RouteService"
 import { Route } from "../services/entities/Route"
+import "./SavedRoutes.css"
 
 const SavedRoutes: FC = () => {
   const [allRoutes, setAllRoutes] = useState<Route[]>()
@@ -52,7 +53,7 @@ const SavedRoutes: FC = () => {
   }
 
   return (
-    <IonPage>
+    <IonPage className="background">
       <div className="toolbar-container">
         <ToolBar title="Routen" />
       </div>

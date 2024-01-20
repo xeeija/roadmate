@@ -216,6 +216,7 @@ const Map: FC<MapProps> = ({ route }) => {
                   setSaveRouteData(routeData)
                 }}
                 show={true}
+                isStatic={false}
                 waypoints={
                   route && route.fromLat && route.fromLng && route.toLat && route.toLng
                     ? [L.latLng(route.fromLat, route.fromLng), L.latLng(route.toLat, route.toLng)]
@@ -252,10 +253,10 @@ const Map: FC<MapProps> = ({ route }) => {
         )}
       </IonContent>
 
-      <IonAlert
+      <IonAlert className="customAlert"
         header="Neue Route"
         trigger={"saveRoute"}
-        message="Gib einen Namen für deine Route ein"
+        message="Gib einen Namen für deine neue Route ein"
         isOpen={isRouteAlertOpen}
         inputs={[
           {

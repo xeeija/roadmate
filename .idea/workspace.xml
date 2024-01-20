@@ -5,7 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5d80c0d6-bf88-41a0-8d23-12162fb3d15e" name="Changes" comment="141: add dangerpoints and pop up">
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/DangerAcute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/DangerAcute.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/SavedRoutes.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SavedRoute.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SavedRoute.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/SavedRoute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/SavedRoute.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/StaticMap.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StaticMap.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/StaticMap.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StaticMap.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/Map.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/routing/RoutingMachine.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Homescreen.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Homescreen.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/SavedRoutes.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/SavedRoutes.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
