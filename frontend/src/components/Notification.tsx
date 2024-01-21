@@ -1,5 +1,5 @@
 import { IonIcon, IonItem, IonLabel, IonNote, IonText } from "@ionic/react"
-import { FC } from "react"
+import { FC, useState } from "react"
 
 import "./Notification.css"
 import DangerAcute from "./DangerAcute";
@@ -9,18 +9,16 @@ interface NotificationProps {
   date: Date;
   name: string;
   route: string;
-  id: number;
-  showModal: boolean;
-  setShowModal: (show: boolean) => void;
+  
 }
 
-const Notification: FC<NotificationProps> = ({ date, name, route, id, showModal, setShowModal  }) => {
+const Notification: FC<NotificationProps> = ({ date, name, route  }) => {
   const formattedDate = `${date.getHours()}:${date.getMinutes()} - ${date.getDate()}.${
     date.getMonth() + 1
   }.${date.getFullYear()}`
-
+  const [showModal, setShowModal] = useState(false)
   return (
-    <IonItem lines="full" id={"notification" + id} button onClick={() => console.log(id)}>
+    <IonItem lines="full" button detail={false} onClick={() => setShowModal(true)} >
       <IonLabel>
         <IonNote className="notification-time">{formattedDate}</IonNote>
         <br />
@@ -28,7 +26,7 @@ const Notification: FC<NotificationProps> = ({ date, name, route, id, showModal,
         <br />
         <IonNote className="ion-text-wrap">{route}</IonNote>
       </IonLabel>
-      <IonIcon icon={chevronForwardOutline} onClick={() => setShowModal(true)} />
+      <IonIcon icon={chevronForwardOutline} />
       {showModal && (
         <DangerAcute
           closeModal={() => setShowModal(false)}

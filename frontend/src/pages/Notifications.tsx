@@ -1,5 +1,4 @@
 import {
-  IonButton,
   //IonButton,
   IonCard,
   IonCardHeader,
@@ -10,43 +9,30 @@ import {
 } from "@ionic/react"
 import { FC, useContext, useEffect, useState } from "react"
 //import DangerAcute from "../components/DangerAcute"
-import DangerAcute from "../components/DangerAcute"
-import Notification from "../components/Notification"
+import NotificationComponent from "../components/Notification"
 import { UserContext } from "../components/ProtectedRoute"
 import ToolBar from "../components/navigation/ToolBar"
 import { NotificationService } from "../services/api/NotificationService"
-import { NotificationListItemResponseModel } from "../services/entities/response/NotificationListItemResponseModel"
+import { Notification } from "../services/entities/Notification"
+//import { NotificationListItemResponseModel } from "../services/entities/response/NotificationListItemResponseModel"
 import "./Notifications.css"
 
 const Notifications: FC = () => {
   //The following code is for the AcuteDanger modal
   //const userService = new UserService()
-  const [showModal, setShowModal] = useState(false)
-  const [notifications, setNotifications] = useState<NotificationListItemResponseModel[]>([])
+
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const { currentUserToken } = useContext(UserContext)
   const notificationService = new NotificationService()
-
-  const openModal = () => {
-    setShowModal(true)
-  }
-  const closeModal = () => {
-    setShowModal(false)
-  }
 
   useEffect(() => {
     const fetchData = async () => {
       if (currentUserToken) {
         try {
-          const response = await notificationService.notificationGET2(currentUserToken)
-          setNotifications(
-            response.data?.map((notification) => ({
-              ...notification,
-              description: notification.description || "",
-              danger: notification.danger as string | undefined,
-              route: notification.danger as string | undefined,
-              readAt: new Date(notification.readAt as Date),
-            })) || ([] as NotificationListItemResponseModel[])
-          )
+          const response = await notificationService.notificationWithDanger(currentUserToken)
+          if (response && response.data) {
+            setNotifications(response.data)
+          }
         } catch (error) {
           console.error("Failed to fetch notifications:", error)
         }
@@ -69,29 +55,14 @@ const Notifications: FC = () => {
 
           <div className="notifications-list">
             <IonList style={{ color: "white" }}>
-              {notifications.map((notification, index) => (
-                <Notification
-                  key={index}
-                  name={notification.description}
+              {notifications.map((notification) => (
+                <NotificationComponent
+                  key={notification.id}
+                  name={notification.description ?? ""}
                   date={new Date(notification.readAt ?? "")}
-                  route={notification.danger as string}
-                  id={index}
-                  showModal={showModal}
-                  setShowModal={setShowModal}
+                  route={notification.danger?.addressName ?? ""}
                 />
               ))}
-              {/* Test DangerAcute Component */}
-              <IonButton onClick={openModal}>Akute Gefahrenstelle öffnen</IonButton>
-              {showModal && (
-                <DangerAcute
-                  closeModal={closeModal}
-                  addressName={"Adress"}
-                  createdAt={new Date(Date.now())}
-                  isActive={true}
-                  title={"Title"}
-                  description={"Description"}
-                />
-              )}
             </IonList>
           </div>
         </IonCard>
