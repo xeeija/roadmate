@@ -8,34 +8,35 @@ import {
   IonItem,
   IonModal,
 } from "@ionic/react"
-
 import { cogOutline, locationOutline, timeOutline } from "ionicons/icons"
-
 import { FC } from "react"
 import "./DangerAcute.css"
 
 // Missing props in interface: title, description, position, lastUpdate, status
 interface DangerAcuteProps {
-  closeModal: () => void
+  title: string
+  description: string
   addressName: string
   createdAt: Date
   isActive: boolean
-  title: string
-  description: string
   isOpen: boolean
+  closeModal?: () => void
+  onResolve?: () => void | Promise<void>
+  hideResolve?: boolean
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const DangerAcute: FC<DangerAcuteProps> = ({
-  closeModal,
-  addressName,
-  createdAt,
   title,
   description,
+  addressName,
+  createdAt,
+  isActive,
+  closeModal,
+  onResolve,
+  hideResolve = false,
   isOpen,
 }) => {
-  // const [isModalOpen,setisModalOpen] = useState(true)
-
   const quoteDate = JSON.stringify(createdAt).slice(1, 17)
   const [datePart, timePart] = quoteDate.split("T")
   const [year, month, day] = datePart.split("-")
@@ -62,7 +63,7 @@ const DangerAcute: FC<DangerAcuteProps> = ({
               <IonIcon icon={locationOutline} slot="start"></IonIcon>
               <p className="description-title">Position: &nbsp;</p>
               <p className="description">
-                <b>{addressName ? addressName : "Hauptstraße 42"}</b>
+                <b>{addressName ? addressName : "Fröhlichgasse 42, 8010 Graz"}</b>
               </p>
             </IonItem>
 
@@ -85,26 +86,42 @@ const DangerAcute: FC<DangerAcuteProps> = ({
             */}
 
             <IonItem lines="none">
-              <IonIcon icon={cogOutline} slot="start"></IonIcon>
-              <p className="description-title">Status: &nbsp;</p>
-              <p className="description">
-                <b style={{ paddingLeft: "35px" }}>Aktiv</b>
+              <IonIcon icon={cogOutline} slot="start" />
+              <p className="description-title">Status:</p>
+              <div
+                style={{ marginLeft: "32px" }}
+                className={`status ${isActive ? "status-active" : "status-resolving"}`}
+              />
+              <p className="description" style={{ marginLeft: "8px" }}>
+                <b>{isActive ? "Aktiv" : "Auflösend"}</b>
+                {/* <b>{"Aktiv"}</b> */}
               </p>
-              <div className="status"></div>
             </IonItem>
           </div>
 
-          <div className="acute-danger-buttons">
-            <IonButton className="acute-danger-button" fill="clear">
-              Als behoben melden
-            </IonButton>
+          <div
+            className="acute-danger-buttons"
+            style={{
+              display: "flex",
+              justifyContent: hideResolve ? "flex-end" : "space-between",
+            }}
+          >
+            {!hideResolve && (
+              <IonButton
+                className="acute-danger-button"
+                fill="clear"
+                onClick={() => void onResolve?.()}
+              >
+                Als behoben melden
+              </IonButton>
+            )}
             <IonButton
               className="acute-danger-button"
               fill="clear"
               onClick={() => {
                 console.log("Closing modal")
                 // setisModalOpen(false);
-                closeModal()
+                closeModal?.()
               }}
             >
               Schließen

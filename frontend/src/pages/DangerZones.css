@@ -28,14 +28,14 @@
 }
 
 .icons {
-  color: #156064;
+  color: var(--ion-color-tertiary, #156064);
   display: flex;
   align-items: center;
   margin-right: 10px;
 }
 
 .answer {
-  color: #156064;
+  color: var(--ion-color-tertiary, #156064);
   justify-content: flex-start;
   text-align: left;
   /* margin-right: 60%; */

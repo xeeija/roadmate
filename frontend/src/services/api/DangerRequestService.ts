@@ -118,6 +118,7 @@ export class DangerRequestService {
    * @return Success
    */
   resolve(
+    token: string,
     body: DangerResolveRequestModel | undefined
   ): Promise<DangerResolveRequestItemResponseModel> {
     let url_ = this.baseUrl + "/api/Danger/Request/Resolve"
@@ -131,6 +132,7 @@ export class DangerRequestService {
       headers: {
         "Content-Type": "application/json-patch+json",
         Accept: "text/plain",
+        Authorization: "Bearer " + token,
       },
     }
 

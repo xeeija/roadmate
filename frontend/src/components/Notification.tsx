@@ -53,6 +53,7 @@ const Notification: FC<NotificationProps> = ({
         title=""
         description={description}
         isOpen={showDangerAcute}
+        hideResolve
       />
     </>
   )

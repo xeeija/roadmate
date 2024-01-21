@@ -6,7 +6,7 @@
 
 .acute-danger-title {
   font-size: 18px;
-  color: #156064 !important;
+  color: var(--ion-color-tertiary, #156064) !important;
 }
 
 .description-title {
@@ -15,17 +15,25 @@
   color: rgba(0, 0, 0, 0.7);
 }
 .description {
-  font-size: 15px;
+  font-size: 16px;
 }
 .status {
-  width: 14px;
-  height: 14px;
-  background: #fa7b4c;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   margin-left: 6px;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
+
+.status-active {
+  background: var(--ion-color-danger);
+}
+
+.status-resolving {
+  background: var(--ion-color-success);
+}
+
 .acute-danger-button {
-  color: #156064 !important;
+  color: var(--ion-color-tertiary, #156064) !important;
   font-size: 16px;
 }
