@@ -23,9 +23,9 @@ const Notifications: FC = () => {
 
   const [notifications, setNotifications] = useState<Notification[]>([])
   const { currentUserToken } = useContext(UserContext)
-  const notificationService = new NotificationService()
 
   useEffect(() => {
+    const notificationService = new NotificationService()
     const fetchData = async () => {
       if (currentUserToken) {
         try {
@@ -39,7 +39,7 @@ const Notifications: FC = () => {
       }
     }
     void fetchData()
-  }, [currentUserToken, notificationService])
+  }, [currentUserToken])
 
   return (
     <IonPage>
@@ -58,8 +58,11 @@ const Notifications: FC = () => {
               {notifications.map((notification) => (
                 <NotificationComponent
                   key={notification.id}
-                  name={notification.description ?? ""}
-                  date={new Date(notification.readAt ?? "")}
+                  title={notification.danger?.title ?? notification.danger?.description ?? ""}
+                  address={notification.danger?.addressName ?? ""}
+                  isActive={notification.danger?.isActive ?? false}
+                  date={new Date(notification.createdAt ?? "")}
+                  description={notification.description ?? ""}
                   //route={notification.danger?.addressName ?? ""}
                 />
               ))}

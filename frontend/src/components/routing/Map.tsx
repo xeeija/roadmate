@@ -293,16 +293,17 @@ const Map: FC<MapProps> = ({ route, renderCount }) => {
                 ))}
               </MarkerClusterGroup>
             </MapContainer>
-            {showDangerAcute && (
-              <DangerAcute
-                closeModal={() => setShowDangerAcute(false)}
-                addressName={addressName}
-                createdAt={createdAt}
-                isActive={isActive}
-                title={title}
-                description={description}
-              />
-            )}
+            {/* {showDangerAcute && ( */}
+            <DangerAcute
+              closeModal={() => setShowDangerAcute(false)}
+              addressName={addressName}
+              createdAt={createdAt}
+              isActive={isActive}
+              title={title}
+              description={description}
+              isOpen={showDangerAcute}
+            />
+            {/* )} */}
           </div>
         )}
       </IonContent>
