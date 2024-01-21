@@ -15,22 +15,25 @@
 }
 
 .createDangerIcon {
-  font-size: 36px;
+  font-size: 43px;
   color: white;
 }
 
 .createDangerButton {
   position: absolute;
-  bottom: 13px;
+  bottom: 11px;
   right: 10px;
+  height: 70px;
+  width: 70px;
 }
 
-.legend{
+.legend {
   display: inline-grid;
   column-gap: 4px;
+  row-gap: 1px;
   z-index: 0;
   position: fixed;
-  bottom: 20px;
+  bottom: 16px;
   left: 15px;
   padding: 7px;
   background-color: rgba(255, 255, 255, 0.7);
@@ -38,35 +41,47 @@
   font-size: 12px;
   font-family: "Hammersmith One", sans-serif;
   text-align: left;
-
 }
 
-.legend-text{
-  padding-top: 3px;
+.legend-text {
+  padding-top: 1px;
   grid-column: 2;
   grid-row: 1;
 }
 
-.legend-text2{
-  padding-top: 2px;
+.legend-text2 {
+  padding-top: 1px;
   grid-column: 2;
   grid-row: 2;
 }
 
-.akutIcon {
-  font-size: 17px;
-  color: var(--ion-color-danger);
-  grid-column: 1;
-  grid-row: 1;
+.legend-text3 {
+  padding-top: 1px;
+  grid-column: 2;
+  grid-row: 3;
 }
 
 .permanentIcon {
   font-size: 17px;
   color: var(--ion-color-warning);
   grid-column: 1;
+  grid-row: 1;
+}
+
+.akutIcon {
+  font-size: 17px;
+  color: var(--ion-color-danger);
+  grid-column: 1;
   grid-row: 2;
 }
 
-.customAlert{
+.onRouteIcon {
+  font-size: 17px;
+  color: #ca3939ef;
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.customAlert {
   --background: white;
 }

@@ -8,29 +8,36 @@ import {
   ToastOptions,
   useIonToast,
 } from "@ionic/react"
+import { point as turfPoint } from "@turf/helpers"
+import { booleanPointInPolygon, buffer, lineString } from "@turf/turf"
 import { checkmarkOutline, locationSharp, warningOutline, warningSharp } from "ionicons/icons"
+import { LatLng, icon, latLng } from "leaflet"
 import { FC, useContext, useEffect, useState } from "react"
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet"
 import MarkerClusterGroup from "react-leaflet-cluster"
+import { useHistory } from "react-router-dom"
 import "../../pages/Homescreen.css"
+import DAOnRoute from "../../resources/DAOnRoute.svg"
 import DAPermanent from "../../resources/DAPermanent.svg"
 import DATemporary from "../../resources/DATemporary.svg"
+import { DangerService } from "../../services/api/DangerService"
 import { RouteService } from "../../services/api/RouteService"
+import { Danger, DangerType } from "../../services/entities/Danger"
 import { RouteRequest } from "../../services/entities/request/RouteRequest"
 import DangerAcute from "../DangerAcute"
 import { UserContext } from "../ProtectedRoute"
-
-import { icon, latLng } from "leaflet"
-import { DangerService } from "../../services/api/DangerService"
-import { Danger } from "../../services/entities/Danger"
 import RoutingMachine, { RouteData } from "./RoutingMachine"
-import { useHistory } from "react-router-dom"
 
 interface MapProps {
   route?: { fromLat: number; fromLng: number; toLat: number; toLng: number }
+  renderCount: number
 }
 
-const Map: FC<MapProps> = ({ route }) => {
+interface DangerWithRouteInfo extends Danger {
+  isCloseToRoute?: boolean
+}
+
+const Map: FC<MapProps> = ({ route, renderCount }) => {
   const [renderMap, setRenderMap] = useState(false)
   const [showDangerAcute, setShowDangerAcute] = useState(false)
 
@@ -42,7 +49,26 @@ const Map: FC<MapProps> = ({ route }) => {
 
   const { currentUserToken, currentUser } = useContext(UserContext)
 
-  const [dangerPoints, setDangerPoints] = useState<Danger[]>([])
+  const [dangerPoints, setDangerPoints] = useState<DangerWithRouteInfo[]>([])
+  const [routeCoords, setRouteCoords] = useState<LatLng[][]>([])
+
+  useEffect(() => {
+    if (routeCoords.length > 0) {
+      const routeCoordinates = routeCoords[0].map((point) => [point.lng, point.lat])
+      const line = lineString(routeCoordinates)
+      const buffered = buffer(line, 10, { units: "meters" }) // Adjust buffer size as needed
+
+      const newDangerPoints = dangerPoints.map((dangerPoint) => {
+        const point = turfPoint([dangerPoint.lon ?? 0, dangerPoint.lat ?? 0])
+        return {
+          ...dangerPoint,
+          isCloseToRoute: booleanPointInPolygon(point, buffered),
+        }
+      })
+
+      setDangerPoints(newDangerPoints)
+    }
+  }, [routeCoords])
 
   const dangerService = new DangerService()
 
@@ -59,7 +85,7 @@ const Map: FC<MapProps> = ({ route }) => {
     }
 
     void fetchData()
-  }, [])
+  }, [renderCount])
 
   const [isRouteAlertOpen, setIsRouteAlertOpen] = useState(false)
   const [saveRouteData, setSaveRouteData] = useState<RouteData | null>(null)
@@ -80,16 +106,6 @@ const Map: FC<MapProps> = ({ route }) => {
 
   useEffect(() => {}, [route])
 
-  const iconTemporary = icon({
-    iconUrl: DATemporary,
-    iconSize: [31, 38],
-  })
-
-  const iconPermanent = icon({
-    iconUrl: DAPermanent,
-    iconSize: [31, 38],
-  })
-
   const CustomPopup: FC<{ description: string }> = ({ description }) => {
     return (
       <Popup>
@@ -98,18 +114,33 @@ const Map: FC<MapProps> = ({ route }) => {
     )
   }
 
-  const MarkerWithPopup: FC<{
-    id: string
-    position: { lat: number; lng: number }
-    type: string
-    description: string
-    address: string
-    createdAt: Date
-    isActive: boolean
-    title: string
-  }> = ({ id, position, type, description, address, createdAt, isActive, title }) => {
+  const MarkerWithPopup: FC<DangerWithRouteInfo> = (dangerPoint) => {
+    const {
+      id,
+      lat,
+      lon,
+      type,
+      description,
+      addressName,
+      createdAt,
+      isActive,
+      title,
+      isCloseToRoute,
+    } = dangerPoint
+
     const history = useHistory()
-    const icon = type === "Temporary" ? iconTemporary : iconPermanent
+    const dangerIcon =
+      type === DangerType.Temporary
+        ? icon({
+            iconUrl: isCloseToRoute ? DAOnRoute : DATemporary,
+            iconSize: [31, 38],
+            iconAnchor: [15, 38],
+          })
+        : icon({
+            iconUrl: isCloseToRoute ? DAOnRoute : DAPermanent,
+            iconSize: [31, 38],
+            iconAnchor: [15, 38],
+          })
 
     const handleClick = (
       id: string,
@@ -119,7 +150,7 @@ const Map: FC<MapProps> = ({ route }) => {
       title: string,
       description: string
     ) => {
-      if (type === "Temporary") {
+      if (type === DangerType.Temporary) {
         // Show DangerAcute component when iconTemporary is clicked
         setShowDangerAcute(true)
         setAddressName(address)
@@ -135,14 +166,22 @@ const Map: FC<MapProps> = ({ route }) => {
 
     return (
       <Marker
-        position={position}
-        icon={icon}
+        position={{ lat: lat ?? 0, lng: lon ?? 0 }}
+        icon={dangerIcon}
         autoPanOnFocus={true}
         eventHandlers={{
-          click: () => handleClick(id, address, createdAt, isActive, title, description),
+          click: () =>
+            handleClick(
+              id ?? "",
+              addressName ?? "",
+              createdAt ?? new Date(),
+              isActive ?? false,
+              title ?? "",
+              description ?? ""
+            ),
         }}
       >
-        <CustomPopup description={description} />
+        <CustomPopup description={description ?? ""} />
       </Marker>
     )
   }
@@ -152,7 +191,7 @@ const Map: FC<MapProps> = ({ route }) => {
     const map = useMapEvents({
       click: () => {
         // what happens when map is clicked
-        console.log("Map clicked")
+        console.log(routeCoords)
       },
     })
 
@@ -198,6 +237,10 @@ const Map: FC<MapProps> = ({ route }) => {
     }
   }
 
+  const handleRoutesFound = (coords: LatLng[][]) => {
+    setRouteCoords(coords)
+  }
+
   return (
     <IonPage>
       <IonContent fullscreen>
@@ -222,6 +265,7 @@ const Map: FC<MapProps> = ({ route }) => {
                   setIsRouteAlertOpen(true)
                   setSaveRouteData(routeData)
                 }}
+                onRoutesFound={handleRoutesFound}
                 show={true}
                 isStatic={false}
                 waypoints={
@@ -235,14 +279,16 @@ const Map: FC<MapProps> = ({ route }) => {
                 {dangerPoints.map((dangerPoint, index) => (
                   <MarkerWithPopup
                     key={index}
-                    id={dangerPoint.id ?? ""}
-                    position={{ lat: dangerPoint.lat ?? 0, lng: dangerPoint.lon ?? 0 }}
-                    type={dangerPoint.type ?? ""}
+                    id={dangerPoint.id || ""}
+                    lat={dangerPoint.lat ?? 0}
+                    lon={dangerPoint.lon ?? 0}
+                    type={dangerPoint.type ?? DangerType.Temporary}
                     description={dangerPoint.description ?? ""}
-                    address={dangerPoint.addressName ?? ""}
+                    addressName={dangerPoint.addressName ?? ""}
                     createdAt={dangerPoint.createdAt ?? new Date()}
                     isActive={dangerPoint.isActive ?? false}
                     title={dangerPoint.title ?? ""}
+                    isCloseToRoute={dangerPoint.isCloseToRoute}
                   />
                 ))}
               </MarkerClusterGroup>
@@ -313,10 +359,12 @@ const Map: FC<MapProps> = ({ route }) => {
         </a>
       </IonButton>
       <div className="legend">
-        <IonIcon icon={locationSharp} className="akutIcon" />
-        <IonText className="legend-text">Akute Gefahrenstelle</IonText>
         <IonIcon icon={locationSharp} className="permanentIcon" />
-        <IonText className="legend-text2">Permanente Gefahrenstelle</IonText>
+        <IonText className="legend-text2">Akute Gefahrenstelle</IonText>
+        <IonIcon icon={locationSharp} className="akutIcon" />
+        <IonText className="legend-text">Permanente Gefahrenstelle</IonText>
+        <IonIcon icon={locationSharp} className="onRouteIcon" />
+        <IonText className="legend-text3">Gefahrenstelle auf Route</IonText>
       </div>
     </IonPage>
   )

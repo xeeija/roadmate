@@ -8,10 +8,12 @@ type RouteType = { fromLat: number; fromLng: number; toLat: number; toLng: numbe
 const Homescreen: FC = () => {
   const location = useLocation<{ route: RouteType }>()
   const [route, setRoute] = useState<RouteType>(location.state?.route)
+  const [renderCount, setRenderCount] = useState(0)
 
   useEffect(() => {
     // Update route state when location.state.route changes
     setRoute((prevRoute) => location.state?.route ?? prevRoute)
+    setRenderCount((prevCount) => prevCount + 1)
 
     // Cleanup function to clear route state when component unmounts
     return () => {
@@ -21,7 +23,7 @@ const Homescreen: FC = () => {
 
   return (
     <div className="map">
-      <Map route={route} />
+      <Map route={route} renderCount={renderCount} />
     </div>
   )
 }

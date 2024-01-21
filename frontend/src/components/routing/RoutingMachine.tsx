@@ -1,7 +1,7 @@
 import { ToastOptions } from "@ionic/react"
 import { createControlComponent } from "@react-leaflet/core"
 import { warningOutline } from "ionicons/icons"
-import { Control, ControlOptions, DomUtil, LatLng, Routing } from "leaflet"
+import { Control, ControlOptions, DomUtil, LatLng, Routing, latLng } from "leaflet"
 import "leaflet-control-geocoder"
 import "leaflet-routing-machine"
 import { dismissToast, presentToast } from "../../utils/toastUtils"
@@ -14,6 +14,20 @@ interface ExtendedControlOptions extends ControlOptions {
   waypoints?: LatLng[]
   showRouteAlert?: (route: RouteData) => void
   isStatic: boolean
+  onRoutesFound?: (routes: LatLng[][]) => void
+}
+
+interface RouteEvent {
+  routes: Route[]
+}
+
+interface Route {
+  coordinates: Coordinate[]
+}
+
+interface Coordinate {
+  lat: number
+  lng: number
 }
 
 export type RouteData = {
@@ -68,7 +82,6 @@ const createRoutingMachineLayer = () => {
 
     const handleSaveRoute = () => {
       const waypoints = plan.getWaypoints()
-      console.log(waypoints)
       const fromWaypoint = waypoints[0]
       const toWaypoint = waypoints[waypoints.length - 1]
 
@@ -108,11 +121,6 @@ const createRoutingMachineLayer = () => {
       },
     }) as typeof Routing.Plan
 
-    /*     const waypoints = [
-      L.latLng(47.061207394310735, 15.431929877161728),
-      L.latLng(47.06028439128265, 15.45535951123882),
-    ] */
-
     const plan = new ExtendedPlan(waypoints, {
       geocoder: Control.Geocoder.nominatim(),
       routeWhileDragging: true,
@@ -139,6 +147,10 @@ const createRoutingMachineLayer = () => {
       fitSelectedRoutes: true,
       showAlternatives: false,
       collapsible: false,
+    }).on("routesfound", function (e: RouteEvent) {
+      const routes = e.routes
+      const coords = routes[0].coordinates.map((coord: Coordinate) => latLng(coord.lat, coord.lng))
+      props.onRoutesFound?.([coords])
     })
 
     const container = instance.getContainer()
