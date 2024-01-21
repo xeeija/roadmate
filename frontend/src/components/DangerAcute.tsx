@@ -26,7 +26,7 @@ interface DangerAcuteProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const DangerAcute: FC<DangerAcuteProps> = ({ closeModal, addressName , createdAt, isActive, title, description}) => {
-  const [isModalOpen] = useState(true)
+  const [isModalOpen,setisModalOpen] = useState(true)
 
   const quoteDate = JSON.stringify(createdAt).slice(1, 17);
   const [datePart, timePart] = quoteDate.split("T");
@@ -88,7 +88,14 @@ const DangerAcute: FC<DangerAcuteProps> = ({ closeModal, addressName , createdAt
             <IonButton className="acute-danger-button" fill="clear">
               Als behoben melden
             </IonButton>
-            <IonButton className="acute-danger-button" fill="clear" onClick={closeModal}>
+            <IonButton
+              className="acute-danger-button"
+              fill="clear"
+              onClick={ () => {
+                console.log("Closing modal");
+                setisModalOpen(false);
+                closeModal();
+              }}>
               Schließen
             </IonButton>
           </div>

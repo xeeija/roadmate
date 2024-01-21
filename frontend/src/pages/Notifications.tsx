@@ -60,7 +60,7 @@ const Notifications: FC = () => {
                   key={notification.id}
                   name={notification.description ?? ""}
                   date={new Date(notification.readAt ?? "")}
-                  route={notification.danger?.addressName ?? ""}
+                  //route={notification.danger?.addressName ?? ""}
                 />
               ))}
             </IonList>

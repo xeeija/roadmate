@@ -8,7 +8,7 @@ import { chevronForwardOutline } from "ionicons/icons";
 interface NotificationProps {
   date: Date;
   name: string;
-  route: string;
+  route?: string;
   
 }
 
