@@ -20,6 +20,7 @@ import "../../pages/Homescreen.css"
 import DAOnRoute from "../../resources/DAOnRoute.svg"
 import DAPermanent from "../../resources/DAPermanent.svg"
 import DATemporary from "../../resources/DATemporary.svg"
+import { DangerRequestService } from "../../services/api/DangerRequestService"
 import { DangerService } from "../../services/api/DangerService"
 import { RouteService } from "../../services/api/RouteService"
 import { Danger, DangerType } from "../../services/entities/Danger"
@@ -46,8 +47,10 @@ const Map: FC<MapProps> = ({ route, renderCount }) => {
   const [isActive, setIsActive] = useState<boolean>(false)
   const [title, setTitle] = useState<string>("")
   const [description, setDescription] = useState<string>("")
+  const [id, setId] = useState<string>("")
 
   const { currentUserToken, currentUser } = useContext(UserContext)
+  const dangerRequestService = new DangerRequestService()
 
   const [dangerPoints, setDangerPoints] = useState<DangerWithRouteInfo[]>([])
   const [routeCoords, setRouteCoords] = useState<LatLng[][]>([])
@@ -133,13 +136,13 @@ const Map: FC<MapProps> = ({ route, renderCount }) => {
       type === DangerType.Temporary
         ? icon({
             iconUrl: isCloseToRoute ? DAOnRoute : DATemporary,
-            iconSize: [31, 38],
-            iconAnchor: [15, 38],
+            iconSize: [32, 38],
+            iconAnchor: [16, 38],
           })
         : icon({
             iconUrl: isCloseToRoute ? DAOnRoute : DAPermanent,
-            iconSize: [31, 38],
-            iconAnchor: [15, 38],
+            iconSize: [32, 38],
+            iconAnchor: [16, 38],
           })
 
     const handleClick = (
@@ -152,12 +155,13 @@ const Map: FC<MapProps> = ({ route, renderCount }) => {
     ) => {
       if (type === DangerType.Temporary) {
         // Show DangerAcute component when iconTemporary is clicked
-        setShowDangerAcute(true)
         setAddressName(address)
         setCreatedAt(createdAt)
         setIsActive(isActive)
         setTitle(title)
         setDescription(description)
+        setShowDangerAcute(true)
+        setId(id)
       } else {
         // Navigate to dangerzone with id
         history.push(`/dangerzones/${id}`)
@@ -302,6 +306,40 @@ const Map: FC<MapProps> = ({ route, renderCount }) => {
               title={title}
               description={description}
               isOpen={showDangerAcute}
+              onResolve={async () => {
+                try {
+                  const response = await dangerRequestService.resolve(currentUserToken ?? "", {
+                    dangerId: id,
+                    userId: currentUser?.id ?? "",
+                  })
+
+                  if (!response.hasError) {
+                    await presentToast({
+                      ...toastOptions,
+                      message: "Meldung erfolgreich!",
+                      color: "success",
+                      icon: checkmarkOutline,
+                    })
+                  } else {
+                    await presentToast({
+                      ...toastOptions,
+                      message: `Fehler: ${response.errorMessages?.join("\n")}`,
+                      color: "danger",
+                      icon: warningOutline,
+                    })
+                  }
+                } catch (error) {
+                  // Show an error message
+                  await presentToast({
+                    ...toastOptions,
+                    message: `Fehler: ${(error as Error).message}`,
+                    color: "danger",
+                    icon: warningOutline,
+                  })
+                  console.error(error)
+                  // alert("An error occurred while updating the profile")
+                }
+              }}
             />
             {/* )} */}
           </div>
