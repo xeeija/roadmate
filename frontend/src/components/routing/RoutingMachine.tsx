@@ -6,6 +6,7 @@ import "leaflet-control-geocoder"
 import "leaflet-routing-machine"
 import { dismissToast, presentToast } from "../../utils/toastUtils"
 import "./RoutingMachine.css"
+import L from "leaflet"
 
 interface ExtendedControlOptions extends ControlOptions {
   userId: string
@@ -14,6 +15,20 @@ interface ExtendedControlOptions extends ControlOptions {
   waypoints?: LatLng[]
   showRouteAlert?: (route: RouteData) => void
   isStatic: boolean
+  onRoutesFound?: (routes: L.LatLng[][]) => void
+}
+
+interface RouteEvent {
+  routes: Route[]
+}
+
+interface Route {
+  coordinates: Coordinate[]
+}
+
+interface Coordinate {
+  lat: number
+  lng: number
 }
 
 export type RouteData = {
@@ -68,7 +83,6 @@ const createRoutingMachineLayer = () => {
 
     const handleSaveRoute = () => {
       const waypoints = plan.getWaypoints()
-      console.log(waypoints)
       const fromWaypoint = waypoints[0]
       const toWaypoint = waypoints[waypoints.length - 1]
 
@@ -106,12 +120,7 @@ const createRoutingMachineLayer = () => {
 
         return container
       },
-    }) as typeof Routing.Plan
-
-    /*     const waypoints = [
-      L.latLng(47.061207394310735, 15.431929877161728),
-      L.latLng(47.06028439128265, 15.45535951123882),
-    ] */
+    }) as typeof L.Routing.Plan
 
     const plan = new ExtendedPlan(waypoints, {
       geocoder: Control.Geocoder.nominatim(),
@@ -139,6 +148,12 @@ const createRoutingMachineLayer = () => {
       fitSelectedRoutes: true,
       showAlternatives: false,
       collapsible: false,
+    }).on("routesfound", function (e: RouteEvent) {
+      const routes = e.routes
+      const coords = routes[0].coordinates.map((coord: Coordinate) =>
+        L.latLng(coord.lat, coord.lng)
+      )
+      props.onRoutesFound?.([coords])
     })
 
     const container = instance.getContainer()
