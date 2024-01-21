@@ -22,7 +22,7 @@ const Notifications: FC = () => {
   //const userService = new UserService()
 
   const [notifications, setNotifications] = useState<Notification[]>([])
-  const { currentUserToken } = useContext(UserContext)
+  const { currentUserToken, currentUser } = useContext(UserContext)
 
   useEffect(() => {
     const notificationService = new NotificationService()
@@ -31,7 +31,7 @@ const Notifications: FC = () => {
         try {
           const response = await notificationService.notificationWithDanger(currentUserToken)
           if (response && response.data) {
-            setNotifications(response.data)
+            setNotifications(response.data.filter((n) => n.userId === currentUser?.id))
           }
         } catch (error) {
           console.error("Failed to fetch notifications:", error)
@@ -54,7 +54,7 @@ const Notifications: FC = () => {
           </IonCardHeader>
 
           <div className="notifications-list">
-            <IonList style={{ color: "white" }}>
+            <IonList style={{ color: "white", marginBottom: "1rem" }}>
               {notifications.map((notification) => (
                 <NotificationComponent
                   key={notification.id}
