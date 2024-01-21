@@ -1,10 +1,10 @@
+import { latLng } from "leaflet"
 import { useContext, useEffect, useState } from "react"
 import { MapContainer, TileLayer, useMapEvents } from "react-leaflet"
+import { useHistory } from "react-router"
+import { UserContext } from "./ProtectedRoute"
 import "./StaticMap.css"
 import RoutingMachine from "./routing/RoutingMachine"
-import { UserContext } from "./ProtectedRoute"
-import * as L from "leaflet"
-import { useHistory } from "react-router"
 
 const StaticMap = ({
   route,
@@ -58,10 +58,7 @@ const StaticMap = ({
               userToken={currentUserToken ?? ""}
               show={false}
               isStatic={true}
-              waypoints={[
-                L.latLng(route.fromLat, route.fromLng),
-                L.latLng(route.toLat, route.toLng),
-              ]}
+              waypoints={[latLng(route.fromLat, route.fromLng), latLng(route.toLat, route.toLng)]}
             />
           </MapContainer>
         </div>

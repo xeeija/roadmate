@@ -1,4 +1,11 @@
-import { PredefinedColors, TextFieldTypes } from "@ionic/core"
+import {
+  InputInputEventDetail,
+  IonInputCustomEvent,
+  IonTextareaCustomEvent,
+  PredefinedColors,
+  TextFieldTypes,
+  TextareaInputEventDetail,
+} from "@ionic/core"
 import {
   InputChangeEventDetail,
   InputCustomEvent,
@@ -22,14 +29,25 @@ interface Props {
   lines?: "inset" | "full" | "none"
   className?: string
   clearInput?: boolean
-  onChange?: (
-    ev: InputCustomEvent<InputChangeEventDetail> | TextareaCustomEvent<TextareaChangeEventDetail>
-  ) => void
+  onChange?: (ev: InputChangeEvent) => void
+  onInput?: (ev: InputInputEvent) => void
+  onFocus?: (ev: InputFocusEvent) => void
+  debounce?: number
   children?: ReactNode
   iconPosition?: "start" | "end"
   autoGrow?: boolean
   icon?: string
 }
+
+export type InputChangeEvent =
+  | InputCustomEvent<InputChangeEventDetail>
+  | TextareaCustomEvent<TextareaChangeEventDetail>
+
+export type InputInputEvent =
+  | IonTextareaCustomEvent<TextareaInputEventDetail>
+  | IonInputCustomEvent<InputInputEventDetail>
+
+export type InputFocusEvent = IonTextareaCustomEvent<FocusEvent> | IonInputCustomEvent<FocusEvent>
 
 export const Input: FC<Props> = ({
   name,
@@ -42,10 +60,13 @@ export const Input: FC<Props> = ({
   clearInput = false,
   color = "light",
   onChange,
+  onInput,
+  onFocus,
   iconPosition = "end",
   autoGrow = true,
   children,
   icon,
+  debounce = 500,
 }) => {
   const [field, { touched, error }] = useField(name)
 
@@ -64,11 +85,22 @@ export const Input: FC<Props> = ({
           labelPlacement="floating"
           placeholder={placeholder}
           clearInput={clearInput}
+          debounce={debounce}
           onIonChange={(ev) => {
             field.onChange(ev)
 
             if (onChange) {
               onChange(ev)
+            }
+          }}
+          onIonInput={(ev) => {
+            if (onInput) {
+              onInput(ev)
+            }
+          }}
+          onIonFocus={(ev) => {
+            if (onFocus) {
+              onFocus(ev)
             }
           }}
           onIonBlur={field.onBlur}

@@ -9,7 +9,6 @@ import {
   useIonToast,
 } from "@ionic/react"
 import { checkmarkOutline, locationSharp, warningOutline, warningSharp } from "ionicons/icons"
-import * as L from "leaflet"
 import { FC, useContext, useEffect, useState } from "react"
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet"
 import MarkerClusterGroup from "react-leaflet-cluster"
@@ -21,6 +20,7 @@ import { RouteRequest } from "../../services/entities/request/RouteRequest"
 import DangerAcute from "../DangerAcute"
 import { UserContext } from "../ProtectedRoute"
 
+import { icon, latLng } from "leaflet"
 import { DangerService } from "../../services/api/DangerService"
 import { Danger } from "../../services/entities/Danger"
 import RoutingMachine, { RouteData } from "./RoutingMachine"
@@ -80,12 +80,12 @@ const Map: FC<MapProps> = ({ route }) => {
 
   useEffect(() => {}, [route])
 
-  const iconTemporary = L.icon({
+  const iconTemporary = icon({
     iconUrl: DATemporary,
     iconSize: [31, 38],
   })
 
-  const iconPermanent = L.icon({
+  const iconPermanent = icon({
     iconUrl: DAPermanent,
     iconSize: [31, 38],
   })
@@ -226,7 +226,7 @@ const Map: FC<MapProps> = ({ route }) => {
                 isStatic={false}
                 waypoints={
                   route && route.fromLat && route.fromLng && route.toLat && route.toLng
-                    ? [L.latLng(route.fromLat, route.fromLng), L.latLng(route.toLat, route.toLng)]
+                    ? [latLng(route.fromLat, route.fromLng), latLng(route.toLat, route.toLng)]
                     : []
                 }
               />
@@ -270,7 +270,7 @@ const Map: FC<MapProps> = ({ route }) => {
         inputs={[
           {
             name: "name",
-            placeholder: "Name",
+            placeholder: saveRouteData?.name ?? "Name",
             label: "Name",
           },
         ]}
