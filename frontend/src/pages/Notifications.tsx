@@ -1,5 +1,6 @@
 import {
   IonButton,
+  //IonButton,
   IonCard,
   IonCardHeader,
   IonContent,
@@ -8,6 +9,7 @@ import {
   IonText,
 } from "@ionic/react"
 import { FC, useContext, useEffect, useState } from "react"
+//import DangerAcute from "../components/DangerAcute"
 import DangerAcute from "../components/DangerAcute"
 import Notification from "../components/Notification"
 import { UserContext } from "../components/ProtectedRoute"
@@ -40,8 +42,10 @@ const Notifications: FC = () => {
             response.data?.map((notification) => ({
               ...notification,
               description: notification.description || "",
+              danger: notification.danger as string | undefined,
+              route: notification.danger as string | undefined,
               readAt: new Date(notification.readAt as Date),
-            })) || []
+            })) || ([] as NotificationListItemResponseModel[])
           )
         } catch (error) {
           console.error("Failed to fetch notifications:", error)
@@ -70,8 +74,10 @@ const Notifications: FC = () => {
                   key={index}
                   name={notification.description}
                   date={new Date(notification.readAt ?? "")}
-                  route="Arbeitsweg"
+                  route={notification.danger as string}
                   id={index}
+                  showModal={showModal}
+                  setShowModal={setShowModal}
                 />
               ))}
               {/* Test DangerAcute Component */}
