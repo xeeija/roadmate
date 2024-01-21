@@ -73,15 +73,17 @@
 }
 
 .customDatePicker {
-  display: block;
-  margin: 0 auto;
+  display: flex;
+  margin: 4px auto;
   height: 40px;
   width: 100%;
   color: #3e3e3e;
   border: none;
   border-radius: 10px;
-  padding-left: 15px;
-  padding-right: 18px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 25px;
+  background-color: white;
+  font-size: 1rem;
 }
