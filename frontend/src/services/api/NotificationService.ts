@@ -279,6 +279,23 @@ export class NotificationService {
         return this.processNotificationGET2(_response)
       })
     }
+
+    notificationWithDanger(token?: string): Promise<NotificationListItemResponseModel> {
+      let url_ = this.baseUrl + "/api/Notification/WithDanger"
+      url_ = url_.replace(/[?&]$/, "")
+  
+      let options_: RequestInit = {
+        method: "GET",
+        headers: {
+          Accept: "text/plain",
+          Authorization: "Bearer " + token,
+        },
+      }
+  
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.processNotificationGET2(_response)
+      })
+    }
   
     protected processNotificationGET2(
       response: Response

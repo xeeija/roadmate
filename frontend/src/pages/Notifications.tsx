@@ -1,5 +1,5 @@
 import {
-  IonButton,
+  //IonButton,
   IonCard,
   IonCardHeader,
   IonContent,
@@ -8,48 +8,38 @@ import {
   IonText,
 } from "@ionic/react"
 import { FC, useContext, useEffect, useState } from "react"
-import DangerAcute from "../components/DangerAcute"
-import Notification from "../components/Notification"
+//import DangerAcute from "../components/DangerAcute"
+import NotificationComponent from "../components/Notification"
 import { UserContext } from "../components/ProtectedRoute"
 import ToolBar from "../components/navigation/ToolBar"
 import { NotificationService } from "../services/api/NotificationService"
-import { NotificationListItemResponseModel } from "../services/entities/response/NotificationListItemResponseModel"
+import { Notification } from "../services/entities/Notification"
+//import { NotificationListItemResponseModel } from "../services/entities/response/NotificationListItemResponseModel"
 import "./Notifications.css"
 
 const Notifications: FC = () => {
   //The following code is for the AcuteDanger modal
   //const userService = new UserService()
-  const [showModal, setShowModal] = useState(false)
-  const [notifications, setNotifications] = useState<NotificationListItemResponseModel[]>([])
-  const { currentUserToken } = useContext(UserContext)
-  const notificationService = new NotificationService()
 
-  const openModal = () => {
-    setShowModal(true)
-  }
-  const closeModal = () => {
-    setShowModal(false)
-  }
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const { currentUserToken, currentUser } = useContext(UserContext)
 
   useEffect(() => {
+    const notificationService = new NotificationService()
     const fetchData = async () => {
       if (currentUserToken) {
         try {
-          const response = await notificationService.notificationGET2(currentUserToken)
-          setNotifications(
-            response.data?.map((notification) => ({
-              ...notification,
-              description: notification.description || "",
-              readAt: new Date(notification.readAt as Date),
-            })) || []
-          )
+          const response = await notificationService.notificationWithDanger(currentUserToken)
+          if (response && response.data) {
+            setNotifications(response.data.filter((n) => n.userId === currentUser?.id))
+          }
         } catch (error) {
           console.error("Failed to fetch notifications:", error)
         }
       }
     }
     void fetchData()
-  }, [currentUserToken, notificationService])
+  }, [currentUserToken])
 
   return (
     <IonPage>
@@ -64,28 +54,18 @@ const Notifications: FC = () => {
           </IonCardHeader>
 
           <div className="notifications-list">
-            <IonList style={{ color: "white" }}>
-              {notifications.map((notification, index) => (
-                <Notification
-                  key={index}
-                  name={notification.description}
-                  date={new Date(notification.readAt ?? "")}
-                  route="Arbeitsweg"
-                  id={index}
+            <IonList style={{ color: "white", marginBottom: "1rem" }}>
+              {notifications.map((notification) => (
+                <NotificationComponent
+                  key={notification.id}
+                  title={notification.danger?.title ?? notification.danger?.description ?? ""}
+                  address={notification.danger?.addressName ?? ""}
+                  isActive={notification.danger?.isActive ?? false}
+                  date={new Date(notification.createdAt ?? "")}
+                  description={notification.description ?? ""}
+                  //route={notification.danger?.addressName ?? ""}
                 />
               ))}
-              {/* Test DangerAcute Component */}
-              <IonButton onClick={openModal}>Akute Gefahrenstelle öffnen</IonButton>
-              {showModal && (
-                <DangerAcute
-                  closeModal={closeModal}
-                  addressName={"Adress"}
-                  createdAt={new Date(Date.now())}
-                  isActive={true}
-                  title={"Title"}
-                  description={"Description"}
-                />
-              )}
             </IonList>
           </div>
         </IonCard>
