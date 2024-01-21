@@ -5,4 +5,5 @@ export interface DangerRequestModel {
   description?: string
   categoryId?: string
   timestamp?: Date
+  addressName?: string
 }

@@ -63,6 +63,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
         // TODO: Category modal (most occurences)?
         CategoryId = request.CategoryId,
         Description = request.Description,
+        AddressName = request.AddressName,
         ActiveAt = DateTime.UtcNow
       }.ToEntity());
 
@@ -76,7 +77,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       }
 
       var users = await userService.GetAll();
-      foreach(var item in users.Data ?? new List<User>()) {
+      foreach (var item in users.Data ?? new List<User>()) {
         await notificationService.Create(new NotificationRequest {
           Description = request.Description,
           DangerId = createdDanger.Data?.ID ?? Guid.Empty,
@@ -84,7 +85,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
           UserId = item.ID,
         }.ToEntity());
       }
-      
+
       if (result.Data != null && createdDanger.Data != null) {
         // TODO: Update many / UpdateRange -> BaseService
         foreach (var dr in requestsInRange) {

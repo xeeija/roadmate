@@ -14,7 +14,7 @@ public class DangerController : BaseController<Danger, DangerModel> {
 
   [HttpGet("{id}/WithMessages")]
   public async Task<ActionResult<ItemResponseModel<Danger>>> GetWithMessages(string id) {
-    var response = await Service.Get(id, new List<string> { "Messages" });
+    var response = await Service.Get(id, new List<string> { "Messages", "Messages.User" });
 
     if (!response.IsAuthorized) {
       return Forbid();

@@ -180,7 +180,21 @@ const CreateDanger: FC = () => {
     const lat = location.lat
     const lon = location.lon
 
-    console.log("submit request", values, time, lat, lon)
+    let addressName = values.address
+
+    if (values.address === "") {
+      const apiKey = import.meta.env.VITE_GEOAPIFY_API_KEY as string
+
+      const response = await fetch(
+        `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&lang=de&format=json&apiKey=${apiKey}`
+      )
+
+      const data = (await response.json()) as LocationResult
+      addressName = data.results[0].formatted
+      console.log("address", addressName)
+    }
+
+    console.log("submit request", addressName, values, time, lat, lon)
 
     try {
       // console.log(dangerRequestData)
@@ -192,6 +206,7 @@ const CreateDanger: FC = () => {
           userId: currentUser?.id,
           lat: lat,
           lon: lon,
+          addressName: addressName,
         },
         currentUserToken || ""
       )
