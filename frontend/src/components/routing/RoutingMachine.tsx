@@ -1,12 +1,11 @@
 import { ToastOptions } from "@ionic/react"
 import { createControlComponent } from "@react-leaflet/core"
 import { warningOutline } from "ionicons/icons"
-import { Control, ControlOptions, DomUtil, LatLng, Routing } from "leaflet"
+import { Control, ControlOptions, DomUtil, LatLng, Routing, latLng } from "leaflet"
 import "leaflet-control-geocoder"
 import "leaflet-routing-machine"
 import { dismissToast, presentToast } from "../../utils/toastUtils"
 import "./RoutingMachine.css"
-import L from "leaflet"
 
 interface ExtendedControlOptions extends ControlOptions {
   userId: string
@@ -15,7 +14,7 @@ interface ExtendedControlOptions extends ControlOptions {
   waypoints?: LatLng[]
   showRouteAlert?: (route: RouteData) => void
   isStatic: boolean
-  onRoutesFound?: (routes: L.LatLng[][]) => void
+  onRoutesFound?: (routes: LatLng[][]) => void
 }
 
 interface RouteEvent {
@@ -120,7 +119,7 @@ const createRoutingMachineLayer = () => {
 
         return container
       },
-    }) as typeof L.Routing.Plan
+    }) as typeof Routing.Plan
 
     const plan = new ExtendedPlan(waypoints, {
       geocoder: Control.Geocoder.nominatim(),
@@ -150,9 +149,7 @@ const createRoutingMachineLayer = () => {
       collapsible: false,
     }).on("routesfound", function (e: RouteEvent) {
       const routes = e.routes
-      const coords = routes[0].coordinates.map((coord: Coordinate) =>
-        L.latLng(coord.lat, coord.lng)
-      )
+      const coords = routes[0].coordinates.map((coord: Coordinate) => latLng(coord.lat, coord.lng))
       props.onRoutesFound?.([coords])
     })
 

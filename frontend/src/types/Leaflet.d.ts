@@ -1,4 +1,4 @@
-import L from "leaflet"
+import "leaflet"
 
 declare module "leaflet" {
   namespace Control {
@@ -6,7 +6,7 @@ declare module "leaflet" {
       constructor()
       geocode(query: string, cb: (results: GeocoderResult[]) => void): void
       reverse(
-        location: L.LatLngLiteral,
+        location: LatLngLiteral,
         scale: number,
         cb: (results: GeocoderResult[]) => void,
         context: unknown

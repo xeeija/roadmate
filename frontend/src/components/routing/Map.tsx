@@ -8,26 +8,25 @@ import {
   ToastOptions,
   useIonToast,
 } from "@ionic/react"
+import { point as turfPoint } from "@turf/helpers"
+import { booleanPointInPolygon, buffer, lineString } from "@turf/turf"
 import { checkmarkOutline, locationSharp, warningOutline, warningSharp } from "ionicons/icons"
-import L from "leaflet"
+import { LatLng, icon, latLng } from "leaflet"
 import { FC, useContext, useEffect, useState } from "react"
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet"
 import MarkerClusterGroup from "react-leaflet-cluster"
+import { useHistory } from "react-router-dom"
 import "../../pages/Homescreen.css"
+import DAOnRoute from "../../resources/DAOnRoute.svg"
 import DAPermanent from "../../resources/DAPermanent.svg"
 import DATemporary from "../../resources/DATemporary.svg"
-import DAOnRoute from "../../resources/DAOnRoute.svg"
+import { DangerService } from "../../services/api/DangerService"
 import { RouteService } from "../../services/api/RouteService"
+import { Danger, DangerType } from "../../services/entities/Danger"
 import { RouteRequest } from "../../services/entities/request/RouteRequest"
 import DangerAcute from "../DangerAcute"
 import { UserContext } from "../ProtectedRoute"
-import { latLng } from "leaflet"
-import { DangerService } from "../../services/api/DangerService"
-import { Danger, DangerType } from "../../services/entities/Danger"
 import RoutingMachine, { RouteData } from "./RoutingMachine"
-import { useHistory } from "react-router-dom"
-import { lineString, buffer, booleanPointInPolygon } from "@turf/turf"
-import { point as turfPoint } from "@turf/helpers"
 
 interface MapProps {
   route?: { fromLat: number; fromLng: number; toLat: number; toLng: number }
@@ -51,7 +50,7 @@ const Map: FC<MapProps> = ({ route, renderCount }) => {
   const { currentUserToken, currentUser } = useContext(UserContext)
 
   const [dangerPoints, setDangerPoints] = useState<DangerWithRouteInfo[]>([])
-  const [routeCoords, setRouteCoords] = useState<L.LatLng[][]>([])
+  const [routeCoords, setRouteCoords] = useState<LatLng[][]>([])
 
   useEffect(() => {
     if (routeCoords.length > 0) {
@@ -130,14 +129,14 @@ const Map: FC<MapProps> = ({ route, renderCount }) => {
     } = dangerPoint
 
     const history = useHistory()
-    const icon =
+    const dangerIcon =
       type === DangerType.Temporary
-        ? L.icon({
+        ? icon({
             iconUrl: isCloseToRoute ? DAOnRoute : DATemporary,
             iconSize: [31, 38],
             iconAnchor: [15, 38],
           })
-        : L.icon({
+        : icon({
             iconUrl: isCloseToRoute ? DAOnRoute : DAPermanent,
             iconSize: [31, 38],
             iconAnchor: [15, 38],
@@ -168,7 +167,7 @@ const Map: FC<MapProps> = ({ route, renderCount }) => {
     return (
       <Marker
         position={{ lat: lat ?? 0, lng: lon ?? 0 }}
-        icon={icon}
+        icon={dangerIcon}
         autoPanOnFocus={true}
         eventHandlers={{
           click: () =>
@@ -238,7 +237,7 @@ const Map: FC<MapProps> = ({ route, renderCount }) => {
     }
   }
 
-  const handleRoutesFound = (coords: L.LatLng[][]) => {
+  const handleRoutesFound = (coords: LatLng[][]) => {
     setRouteCoords(coords)
   }
 
