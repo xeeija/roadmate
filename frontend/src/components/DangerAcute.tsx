@@ -63,7 +63,7 @@ const DangerAcute: FC<DangerAcuteProps> = ({
               <IonIcon icon={locationOutline} slot="start"></IonIcon>
               <p className="description-title">Position: &nbsp;</p>
               <p className="description">
-                <b>{addressName ? addressName : "Hauptstraße 42"}</b>
+                <b>{addressName ? addressName : "Fröhlichgasse 42, 8010 Graz"}</b>
               </p>
             </IonItem>
 
@@ -99,7 +99,13 @@ const DangerAcute: FC<DangerAcuteProps> = ({
             </IonItem>
           </div>
 
-          <div className="acute-danger-buttons">
+          <div
+            className="acute-danger-buttons"
+            style={{
+              display: "flex",
+              justifyContent: hideResolve ? "flex-end" : "space-between",
+            }}
+          >
             {!hideResolve && (
               <IonButton
                 className="acute-danger-button"
