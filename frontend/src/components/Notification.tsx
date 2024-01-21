@@ -26,7 +26,6 @@ const Notification: FC<NotificationProps> = ({
     date.getMonth() + 1
   }.${date.getFullYear()}`
 
-  const [showModal, setShowModal] = useState(false)
   const [showDangerAcute, setShowDangerAcute] = useState(false)
 
   return (
