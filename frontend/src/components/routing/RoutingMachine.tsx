@@ -49,19 +49,19 @@ function createButton(
   btn.setAttribute("type", "button")
   btn.innerHTML = label
   btn.id = "saveRoute"
-  btn.style.width = "135px"
-  btn.style.height = "35px"
-  btn.style.fontSize = "13px"
+  btn.style.width = "136px"
+  btn.style.height = "36px"
+  btn.style.fontSize = "14px"
   btn.style.fontFamily = "Hammersmith One"
   btn.style.fontWeight = "lighter"
-  btn.style.backgroundColor = "#156064"
+  btn.style.backgroundColor = "var(--ion-color-tertiary, #156064)"
   btn.style.color = "white"
   btn.style.borderColor = "transparent"
-  btn.style.padding = "5px"
-  btn.style.borderRadius = "5px"
+  btn.style.padding = "4px"
+  btn.style.borderRadius = "4px"
   btn.style.position = "absolute"
   btn.style.top = "110px"
-  btn.style.right = "50px"
+  btn.style.right = "52px"
 
   btn.addEventListener("click", () => {
     handleSaveRoute()

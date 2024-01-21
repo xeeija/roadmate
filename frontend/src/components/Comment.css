@@ -1,5 +1,5 @@
 .fontColors {
-  color: #156064;
+  color: var(--ion-color-tertiary, #156064);
   margin-top: 8px;
 }
 
