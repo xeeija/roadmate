@@ -44,6 +44,8 @@ const DangerAcute: FC<DangerAcuteProps> = ({
 
   const formattedDate = `${day}.${month}.${year} um ${hours}:${minutes} Uhr`
 
+  const positionRowLayout = addressName.length > 36
+
   return (
     <>
       <IonModal isOpen={isOpen} animated={false}>
@@ -59,13 +61,24 @@ const DangerAcute: FC<DangerAcuteProps> = ({
           </IonCardContent>
 
           <div className="description-list">
-            <IonItem lines="full" className="ion-item-no-padding">
+            <IonItem lines="none" className="ion-item-no-padding">
               <IonIcon icon={locationOutline} slot="start"></IonIcon>
-              <p className="description-title">Position: &nbsp;</p>
+              <p className="description-title" style={{ marginRight: "8px" }}>
+                Position: &nbsp;
+              </p>
               <p className="description">
-                <b>{addressName ? addressName : "Fröhlichgasse 42, 8010 Graz"}</b>
+                {!positionRowLayout && (
+                  <b>{addressName ? addressName : "Fröhlichgasse 42, 8010 Graz"}</b>
+                )}
               </p>
             </IonItem>
+            {positionRowLayout && (
+              <IonItem lines="full" style={{ marginTop: "-1.5rem" }}>
+                <p className="description" style={{ marginLeft: "2.5rem" }}>
+                  <b>{addressName ? addressName : "Fröhlichgasse 42, 8010 Graz"}</b>
+                </p>
+              </IonItem>
+            )}
 
             <IonItem lines="full">
               <IonIcon icon={timeOutline} slot="start"></IonIcon>
