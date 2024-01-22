@@ -1,6 +1,7 @@
 import { IonGrid, IonItem } from "@ionic/react"
 import { FC } from "react"
 import { DangerMessage } from "../services/entities/DangerMessage"
+import { Role } from "../services/entities/User"
 import { Comment } from "./Comment"
 
 interface Props {
@@ -20,6 +21,7 @@ const MessageList: FC<Props> = ({ messages }) => {
             date={message.createdAt}
             avatar={message.userId ?? ""}
             answers={message.answers}
+            isExpert={message.user?.role === Role.Expert}
           >
             {message.message}
           </Comment>
