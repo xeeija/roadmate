@@ -47,7 +47,7 @@ import "./theme/variables.css"
 setupIonicReact()
 
 const App: FC = () => (
-  <IonApp>
+  <IonApp className="page-background">
     <IonReactRouter>
       {/* Switch helps not to display the Taskbar (IonTabBar) in Login, Register and PasswordReset */}
       <Switch>
