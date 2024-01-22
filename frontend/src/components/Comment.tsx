@@ -1,7 +1,8 @@
 import { IonAvatar, IonButton, IonCol, IonIcon, IonImg, IonRow, IonText } from "@ionic/react"
-import { arrowRedo, caretDown, caretUp, send } from "ionicons/icons"
+import { arrowRedo, caretDown, caretUp, send, shieldCheckmark } from "ionicons/icons"
 import { FC, ReactNode, useState } from "react"
 import { DangerMessage } from "../services/entities/DangerMessage"
+import { Role } from "../services/entities/User"
 import { formatDate } from "../utils/date"
 import "./Comment.css"
 import { Input } from "./Input"
@@ -15,6 +16,7 @@ export interface CommentProps {
   messageId: string
   // onAnswer?: (message: string, referencedMessageId?: string) => Promise<void>
   disableAnswer?: boolean
+  isExpert?: boolean
 }
 
 export const Comment: FC<CommentProps> = ({
@@ -25,6 +27,7 @@ export const Comment: FC<CommentProps> = ({
   children,
   messageId,
   disableAnswer,
+  isExpert,
 }) => {
   const [showMore, setShowMore] = useState(false)
   const [showAnswer, setShowAnswer] = useState(false)
@@ -47,16 +50,24 @@ export const Comment: FC<CommentProps> = ({
 
   return (
     <IonRow style={{ marginTop: "0.5rem", width: "100%" }}>
-      <IonCol size-md="6" style={{ display: "flex", alignItems: "center" }}>
-        <IonAvatar style={{ width: "24px", height: "24px", marginRight: "10px" }}>
+      <IonCol size-md="6" style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+        <IonAvatar style={{ width: "24px", height: "24px", marginRight: "8px" }}>
           <IonImg
             src={`https://api.dicebear.com/7.x/personas/svg?seed=${avatar}&scale=120&translateY=0`}
           />
         </IonAvatar>
 
-        <IonText color="tertiary">
+        <IonText color="tertiary" style={{ marginTop: "2px" }}>
           <p>{username}</p>
         </IonText>
+
+        {isExpert && (
+          <IonIcon
+            icon={shieldCheckmark}
+            color="success"
+            style={{ width: "18px", height: "18px" }}
+          />
+        )}
       </IonCol>
 
       <IonCol
@@ -121,6 +132,7 @@ export const Comment: FC<CommentProps> = ({
               avatar={answer.userId ?? ""}
               disableAnswer
               messageId={answer.id ?? ""}
+              isExpert={answer.user?.role === Role.Expert}
             >
               {answer.message}
             </Comment>

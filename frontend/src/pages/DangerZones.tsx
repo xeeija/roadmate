@@ -20,12 +20,13 @@ import { useParams } from "react-router"
 import { Comment } from "../components/Comment"
 import { Input } from "../components/Input"
 import { UserContext } from "../components/ProtectedRoute"
+import RerenderMapComponent from "../components/RerenderMapComponent"
 import ToolBar from "../components/navigation/ToolBar"
 import { DangerService } from "../services/api/DangerService"
 import { DangerMessageService } from "../services/api/MessageService"
 import { Danger } from "../services/entities/Danger"
+import { Role } from "../services/entities/User"
 import { DangerItemResponseModel } from "../services/entities/response/DangerItemResponseModel"
-import RerenderMapComponent from "../components/RerenderMapComponent"
 import "./DangerZones.css"
 
 type Params = {
@@ -250,6 +251,7 @@ const DangerZones: FC = () => {
                               avatar={message.userId ?? ""}
                               answers={message.answers}
                               messageId={message.id ?? ""}
+                              isExpert={message.user?.role === Role.Expert}
                             >
                               {message.message}
                             </Comment>
