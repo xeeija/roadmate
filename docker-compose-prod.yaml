@@ -27,8 +27,13 @@ services:
     restart: unless-stopped
     ports:
       - 5200:80
-    volumes:
-      - ./backend/API/credentials.json:/app/credentials.json
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      # all except schema are required
+      ASPNETCORE_ENVIRONMENT: Production
+      # GEOAPIFY_API_KEY:
       POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: roadmate
+      POSTGRES_USER: roadmate
+      POSTGRES_PASSWORD: Pa55w.rd
+      # POSTGRES_SCHEMA: public
