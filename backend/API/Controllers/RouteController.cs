@@ -46,7 +46,9 @@ public class RouteController : BaseController<Route, RouteRequest> {
   public async Task<ActionResult<ItemResponseModel<LocationResult>>> GetAddressAutocomplete([FromQuery(Name = "text")] string query) {
     try {
       var response = await httpClient.GetFromJsonAsync<LocationResult>($"autocomplete?text={query}&{geoapifyQuery}");
-      return Ok(response);
+      return Ok(new ItemResponseModel<LocationResult> {
+        Data = response
+      });
     }
     catch {
       // return 500 response
@@ -66,7 +68,9 @@ public class RouteController : BaseController<Route, RouteRequest> {
 
     try {
       var response = await httpClient.GetFromJsonAsync<LocationResult>($"reverse?lat={latString}&lon={lonString}&{geoapifyQuery}");
-      return Ok(response);
+      return Ok(new ItemResponseModel<LocationResult> {
+        Data = response
+      });
     }
     catch {
       // return 500 response
