@@ -252,6 +252,7 @@ const DangerZones: FC = () => {
                               answers={message.answers}
                               messageId={message.id ?? ""}
                               isExpert={message.user?.role === Role.Expert}
+                              isAdmin={message.user?.role === Role.Admin}
                             >
                               {message.message}
                             </Comment>

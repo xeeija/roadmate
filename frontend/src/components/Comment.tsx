@@ -1,5 +1,5 @@
 import { IonAvatar, IonButton, IonCol, IonIcon, IonImg, IonRow, IonText } from "@ionic/react"
-import { arrowRedo, caretDown, caretUp, send, shieldCheckmark } from "ionicons/icons"
+import { arrowRedo, caretDown, caretUp, send, shieldCheckmark, shieldHalf } from "ionicons/icons"
 import { FC, ReactNode, useState } from "react"
 import { DangerMessage } from "../services/entities/DangerMessage"
 import { Role } from "../services/entities/User"
@@ -17,6 +17,7 @@ export interface CommentProps {
   // onAnswer?: (message: string, referencedMessageId?: string) => Promise<void>
   disableAnswer?: boolean
   isExpert?: boolean
+  isAdmin?: boolean
 }
 
 export const Comment: FC<CommentProps> = ({
@@ -28,6 +29,7 @@ export const Comment: FC<CommentProps> = ({
   messageId,
   disableAnswer,
   isExpert,
+  isAdmin,
 }) => {
   const [showMore, setShowMore] = useState(false)
   const [showAnswer, setShowAnswer] = useState(false)
@@ -67,6 +69,10 @@ export const Comment: FC<CommentProps> = ({
             color="success"
             style={{ width: "18px", height: "18px" }}
           />
+        )}
+
+        {isAdmin && (
+          <IonIcon icon={shieldHalf} color="danger" style={{ width: "18px", height: "18px" }} />
         )}
       </IonCol>
 
@@ -133,6 +139,7 @@ export const Comment: FC<CommentProps> = ({
               disableAnswer
               messageId={answer.id ?? ""}
               isExpert={answer.user?.role === Role.Expert}
+              isAdmin={answer.user?.role === Role.Admin}
             >
               {answer.message}
             </Comment>

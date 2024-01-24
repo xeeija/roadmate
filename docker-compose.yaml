@@ -34,7 +34,7 @@ services:
       POSTGRES_HOST: postgres
 
   frontend:
-    image: xeeija/roadmate-frontend:1.0.0
+    image: xeeija/roadmate-frontend:1.0.1
     restart: unless-stopped
     ports:
       - 4180:80
