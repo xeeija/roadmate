@@ -2,7 +2,7 @@
 http://ionicframework.com/docs/theming/ */
 
 @font-face {
-  font-family: "Hammersmith One", sans-serif;
+  font-family: "Hammersmith One";
   src: url("../resources/fonts/HammersmithOne-Regular.ttf");
 }
 
