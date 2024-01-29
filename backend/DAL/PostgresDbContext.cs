@@ -19,7 +19,6 @@ public class PostgresDbContext : DbContext {
   public DbSet<User> User { get; set; }
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-
     var settings = SettingsReader.GetSettings<DBSettings>("Postgres");
     var port = settings?.Port ?? 5432;
     var schema = settings?.Schema != null ? $"SearchPath={settings.Schema};" : "";

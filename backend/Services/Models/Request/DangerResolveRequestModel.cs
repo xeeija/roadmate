@@ -5,6 +5,7 @@ namespace Services.Models.Request;
 public class DangerResolveRequestModel : IRequestModel<DangerResolveRequest> {
   public Guid UserId { get; set; }
   public Guid DangerId { get; set; }
+
   public DateTime? Timestamp { get; set; }
   // public Guid? CategoryId { get; set; }
 

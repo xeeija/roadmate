@@ -1,18 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Globalization;
+using DAL.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.Models.Request;
 using Services.Models.Response;
-using Route = DAL.Entities.Route;
-using DAL.Helpers;
 using Utils;
-using System.Globalization;
+using Route = DAL.Entities.Route;
 
 namespace API.Controllers;
 
 public class RouteController : BaseController<Route, RouteRequest> {
-  private readonly RouteService routeService;
-  private readonly HttpClient httpClient;
   private readonly string geoapifyQuery;
+  private readonly HttpClient httpClient;
+  private readonly RouteService routeService;
+
   public RouteController(GlobalService service, IHttpContextAccessor accessor) : base(service.RouteService, accessor) {
     routeService = service.RouteService;
 
@@ -43,7 +44,8 @@ public class RouteController : BaseController<Route, RouteRequest> {
   /// </summary>
   /// <returns>All entities.</returns>
   [HttpGet("Geocode/Autocomplete")]
-  public async Task<ActionResult<ItemResponseModel<LocationResult>>> GetAddressAutocomplete([FromQuery(Name = "text")] string query) {
+  public async Task<ActionResult<ItemResponseModel<LocationResult>>>
+    GetAddressAutocomplete([FromQuery(Name = "text")] string query) {
     try {
       var response = await httpClient.GetFromJsonAsync<LocationResult>($"autocomplete?text={query}&{geoapifyQuery}");
       return Ok(new ItemResponseModel<LocationResult> {
@@ -54,7 +56,6 @@ public class RouteController : BaseController<Route, RouteRequest> {
       // return 500 response
       return StatusCode(504);
     }
-
   }
 
   /// <summary>
@@ -62,7 +63,10 @@ public class RouteController : BaseController<Route, RouteRequest> {
   /// </summary>
   /// <returns>All entities.</returns>
   [HttpGet("Geocode/Reverse")]
-  public async Task<ActionResult<ItemResponseModel<LocationResult>>> GetAddressByCoordinates([FromQuery] double lat, [FromQuery] double lon) {
+  public async Task<ActionResult<ItemResponseModel<LocationResult>>> GetAddressByCoordinates(
+    [FromQuery] double lat,
+    [FromQuery] double lon
+  ) {
     var latString = lat.ToString(CultureInfo.InvariantCulture);
     var lonString = lon.ToString(CultureInfo.InvariantCulture);
 

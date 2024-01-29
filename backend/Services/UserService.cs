@@ -66,8 +66,8 @@ public class UserService : BaseService<User> {
 
     // If new email is provided, update it
     // Note: If email is changed, the user has to reauthenticate
-    if (request.Email != user.Email && !string.IsNullOrEmpty(request.Email)) {
-      user.Email = request.Email;
+    if (request.Email?.ToLower() != user.Email.ToLower() && !string.IsNullOrEmpty(request.Email)) {
+      user.Email = request.Email.ToLower();
     }
 
     if (request.Username != user.Username && !string.IsNullOrEmpty(request.Username)) {
@@ -131,7 +131,7 @@ public class UserService : BaseService<User> {
       return response;
     }
 
-    var user = Context.User.FirstOrDefault(x => x.Email == loginRequest.Email);
+    var user = Context.User.FirstOrDefault(x => x.Email.ToLower() == loginRequest.Email.ToLower());
 
     // Check email
     if (user == null) {
@@ -188,6 +188,8 @@ public class UserService : BaseService<User> {
       response.ErrorMessages.AddRange(validation.ErrorMessages);
       return response;
     }
+
+    user.Email = user.Email.ToLower();
 
     // Encrypt Password
     user.Password = Password.EncryptPassword(user.Password);
@@ -285,7 +287,7 @@ public class UserService : BaseService<User> {
     }
 
     // Check if email exists
-    var dbResponse = await Context.User.Where(x => x.Email == entity.Email).FirstOrDefaultAsync();
+    var dbResponse = await Context.User.Where(x => x.Email.ToLower() == entity.Email.ToLower()).FirstOrDefaultAsync();
 
     if (dbResponse != null) {
       response.ErrorMessages.Add("Email already exists!");
@@ -311,7 +313,9 @@ public class UserService : BaseService<User> {
     }
 
     // Check if email exists
-    var dbResponse = await Context.User.Where(x => x.Email == entity.Email && x.ID != entity.ID).FirstOrDefaultAsync();
+    var dbResponse = await Context.User
+      .Where(x => x.Email.ToLower() == entity.Email.ToLower() && x.ID != entity.ID)
+      .FirstOrDefaultAsync();
 
     if (dbResponse != null) {
       response.ErrorMessages.Add("Email already exists!");

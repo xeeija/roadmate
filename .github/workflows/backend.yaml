@@ -79,7 +79,7 @@ jobs:
           workingDirectory: ./backend
           solutionPath: ./roadmate.sln
           minimumReportSeverity: WARNING
-          version: 2023.3.0-eap08
+          version: 2023.3.3
         timeout-minutes: 3
 
       - name: Apply database migrations
