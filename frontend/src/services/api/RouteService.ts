@@ -1,6 +1,7 @@
 import { ProblemDetails } from "../entities/ProblemDetails"
 import { Route } from "../entities/Route"
 import { RouteRequest } from "../entities/request/RouteRequest"
+import { LocationResultItemResponseModel } from "../entities/response/LocationResultItemResponseModel"
 import { RouteItemResponseModel } from "../entities/response/RouteItemResponseModel"
 import { RouteListItemResponseModel } from "../entities/response/RouteListItemResponseModel"
 import { throwException } from "../error/throwException"
@@ -425,4 +426,164 @@ export class RouteService {
     }
     return Promise.resolve<RouteItemResponseModel>(null as any)
   }
+
+    /**
+   * Get location autocomplete from Geoapify
+   * @param query The ID of the entity to get.
+   * @return Success
+   */
+    routeGeocodeAutocompleteGET(token: string, query: string): Promise<LocationResultItemResponseModel> {
+      let url_ = this.baseUrl + "/api/Route/Geocode/Autocomplete?text={query}"
+      if (query === undefined || query === null) throw new Error("The parameter 'query' must be defined.")
+      url_ = url_.replace("{query}", encodeURIComponent("" + query))
+
+      let options_: RequestInit = {
+        method: "GET",
+        headers: {
+          Accept: "text/plain",
+          Authorization: "Bearer " + token,
+        },
+      }
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.processRouteGeocodeAutocompleteGET(_response)
+      })
+    }
+
+    protected processRouteGeocodeAutocompleteGET(response: Response): Promise<LocationResultItemResponseModel> {
+      const status = response.status
+      let _headers: any = {}
+      if (response.headers && response.headers.forEach) {
+        response.headers.forEach((v: any, k: any) => (_headers[k] = v))
+      }
+      if (status === 200) {
+        return response.text().then((_responseText) => {
+          let result200: any = null
+          result200 =
+            _responseText === ""
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as LocationResultItemResponseModel)
+          return result200
+        })
+      } else if (status === 400) {
+        return response.text().then((_responseText) => {
+          let result400: any = null
+          result400 =
+            _responseText === ""
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails)
+          return throwException("Bad Request", status, _responseText, _headers, result400)
+        })
+      } else if (status === 401) {
+        return response.text().then((_responseText) => {
+          let result401: any = null
+          result401 =
+            _responseText === ""
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails)
+          return throwException("Unauthorized", status, _responseText, _headers, result401)
+        })
+      } else if (status === 404) {
+        return response.text().then((_responseText) => {
+          let result404: any = null
+          result404 =
+            _responseText === ""
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails)
+          return throwException("Not Found", status, _responseText, _headers, result404)
+        })
+      } else if (status !== 200 && status !== 204) {
+        return response.text().then((_responseText) => {
+          return throwException(
+            "An unexpected server error occurred.",
+            status,
+            _responseText,
+            _headers
+          )
+        })
+      }
+      return Promise.resolve<LocationResultItemResponseModel>(null as any)
+    }
+
+    /**
+   * Get address by coordinates from Geoapify
+   * @param lat Latitude to get.
+   * @param lon Longitude to get.
+   * @return Success
+   */
+    routeGeocodeReverseGET(token: string, lat: number, lon: number): Promise<LocationResultItemResponseModel> {
+      let url_ = this.baseUrl + "/api/Route/Geocode/Reverse?lat={lat}&lon={lon}"
+      if (lat === undefined || lat === null) throw new Error("The parameter 'lat' must be defined.")
+      if (lon === undefined || lon === null) throw new Error("The parameter 'lon' must be defined.")
+      url_ = url_.replace("{lat}", encodeURIComponent("" + lat))
+      url_ = url_.replace("{lon}", encodeURIComponent("" + lon))
+
+      let options_: RequestInit = {
+        method: "GET",
+        headers: {
+          Accept: "text/plain",
+          Authorization: "Bearer " + token,
+        },
+      }
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.processRouteGeocodeReverseGET(_response)
+      })
+    }
+
+    protected processRouteGeocodeReverseGET(response: Response): Promise<LocationResultItemResponseModel> {
+      const status = response.status
+      let _headers: any = {}
+      if (response.headers && response.headers.forEach) {
+        response.headers.forEach((v: any, k: any) => (_headers[k] = v))
+      }
+      if (status === 200) {
+        return response.text().then((_responseText) => {
+          let result200: any = null
+          result200 =
+            _responseText === ""
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as LocationResultItemResponseModel)
+          return result200
+        })
+      } else if (status === 400) {
+        return response.text().then((_responseText) => {
+          let result400: any = null
+          result400 =
+            _responseText === ""
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails)
+          return throwException("Bad Request", status, _responseText, _headers, result400)
+        })
+      } else if (status === 401) {
+        return response.text().then((_responseText) => {
+          let result401: any = null
+          result401 =
+            _responseText === ""
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails)
+          return throwException("Unauthorized", status, _responseText, _headers, result401)
+        })
+      } else if (status === 404) {
+        return response.text().then((_responseText) => {
+          let result404: any = null
+          result404 =
+            _responseText === ""
+              ? null
+              : (JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails)
+          return throwException("Not Found", status, _responseText, _headers, result404)
+        })
+      } else if (status !== 200 && status !== 204) {
+        return response.text().then((_responseText) => {
+          return throwException(
+            "An unexpected server error occurred.",
+            status,
+            _responseText,
+            _headers
+          )
+        })
+      }
+      return Promise.resolve<LocationResultItemResponseModel>(null as any)
+    }
+
 }

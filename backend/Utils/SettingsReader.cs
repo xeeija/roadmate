@@ -17,23 +17,14 @@ public static class SettingsReader {
       // builder.AddJsonFile("dbconnection.json");
     }
 
-    // If we are in production, we want to read the AWS credentials from the environment variables,
-    // otherwise, we want to use the local ones stored in the awscredentials.json
-    if (Constants.IsProduction) {
-      builder.AddEnvironmentVariables("AWS_");
-    }
-    // else {
-    // builder.AddJsonFile("awscredentials.json");
-    // }
-
-    // If we are in production, we want to read the AWS credentials from the environment variables,
-    // otherwise, we want to use the local ones stored in the awscredentials.json
+    // If we are in production, we want to read credentials from the environment variables,
+    // otherwise, we want to use the local ones stored in the credentials.json
     if (Constants.IsProduction) {
       builder.AddEnvironmentVariables();
     }
-    // else {
-    // builder.AddJsonFile("smtpconnection.json");
-    // }
+    else {
+      builder.AddJsonFile("credentials.json");
+    }
 
     return builder.Build().GetSection(section).Get<T>();
   }

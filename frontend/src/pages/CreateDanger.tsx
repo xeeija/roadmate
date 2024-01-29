@@ -37,7 +37,9 @@ import { Select } from "../components/Select"
 import ToolBar from "../components/navigation/ToolBar"
 import { DangerCategoryService } from "../services/api/DangerCategoryService"
 import { DangerRequestService } from "../services/api/DangerRequestService"
+import { RouteService } from "../services/api/RouteService"
 import { DangerCategory } from "../services/entities/DangerCategory"
+import { LocationSuggestion } from "../services/entities/LocationResult"
 import "./CreateDanger.css"
 //import DatePicker from "react-datepicker"
 
@@ -45,33 +47,33 @@ import "./CreateDanger.css"
 // - handleLocationChange
 // - Error handling? (e.g. invalid time/location, geoLocation)
 
-interface LocationResult {
-  results: LocationSuggestion[]
-}
+// interface LocationResult {
+//   results: LocationSuggestion[]
+// }
 
 // some properties omitted
-interface LocationSuggestion {
-  country: string
-  country_code: string
-  state: string
-  city: string
-  suburb: string
-  lon: number
-  lat: number
-  formatted: string
-  address_line1: string
-  address_line2: string
-  category?: string
-  plus_code: string
-  plus_code_short: string
-  result_type: string
-  place_id: string
-  name?: string
-  postcode?: string
-  district?: string
-  street?: string
-  housenumber?: string
-}
+// interface LocationSuggestion {
+//   country: string
+//   country_code: string
+//   state: string
+//   city: string
+//   suburb: string
+//   lon: number
+//   lat: number
+//   formatted: string
+//   address_line1: string
+//   address_line2: string
+//   category?: string
+//   plus_code: string
+//   plus_code_short: string
+//   result_type: string
+//   place_id: string
+//   name?: string
+//   postcode?: string
+//   district?: string
+//   street?: string
+//   housenumber?: string
+// }
 
 interface CreateDangerData {
   categoryId: string
@@ -90,6 +92,7 @@ const CreateDanger: FC = () => {
 
   // Get user token and userId
   const dangerRequestService = new DangerRequestService()
+  const routeService = new RouteService()
   const { currentUserToken, currentUser } = useContext(UserContext)
 
   const [isChecked, setIsChecked] = useState(false)
@@ -183,14 +186,19 @@ const CreateDanger: FC = () => {
     let addressName = values.address
 
     if (values.address === "") {
-      const apiKey = import.meta.env.VITE_GEOAPIFY_API_KEY as string
+      const response = await routeService.routeGeocodeReverseGET(currentUserToken ?? "", lat, lon)
 
-      const response = await fetch(
-        `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&lang=de&format=json&apiKey=${apiKey}`
-      )
+      if (!response.data || response.hasError) {
+        await presentToast({
+          ...toastOptions,
+          message: `Fehler: Adresse nicht gefunden: ${response.errorMessages?.join("\n")}`,
+          color: "danger",
+          icon: warningOutline,
+        })
+        return
+      }
 
-      const data = (await response.json()) as LocationResult
-      addressName = data.results[0].formatted
+      addressName = response.data?.results[0].formatted
       console.log("address", addressName)
     }
 
@@ -399,7 +407,6 @@ const CreateDanger: FC = () => {
                           onInput={(ev) =>
                             void (async () => {
                               const query = ev.detail.value
-                              const apiKey = import.meta.env.VITE_GEOAPIFY_API_KEY as string
 
                               if (query?.length === 0) {
                                 setSuggestions([])
@@ -410,14 +417,27 @@ const CreateDanger: FC = () => {
                                 return
                               }
 
-                              const response = await fetch(
-                                `https://api.geoapify.com/v1/geocode/autocomplete?text=${query}&format=json&lang=de&apiKey=${apiKey}`
+                              const response = await routeService.routeGeocodeAutocompleteGET(
+                                currentUserToken ?? "",
+                                query ?? ""
                               )
 
-                              const data = (await response.json()) as LocationResult
+                              console.log("respo", response)
+
+                              if (!response.data || response.hasError) {
+                                await presentToast({
+                                  ...toastOptions,
+                                  message: `Fehler beim Laden der Vorschläge: ${response.errorMessages?.join(
+                                    "\n"
+                                  )}`,
+                                  color: "danger",
+                                  icon: warningOutline,
+                                })
+                                return
+                              }
 
                               await setFieldValue("address", query)
-                              setSuggestions(data.results)
+                              setSuggestions(response.data.results)
 
                               if (suggestions.length === 1) {
                                 setLocation({

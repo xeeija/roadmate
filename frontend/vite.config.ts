@@ -8,6 +8,25 @@ export default defineConfig({
   plugins: [
     react(),
     legacy(),
-    VitePWA({ registerType: "autoUpdate" }),
+    VitePWA({
+      registerType: "autoUpdate",
+      manifestFilename: "manifest.json",
+      manifest: {
+        short_name: "RoadMate",
+        name: "RoadMate",
+        icons: [
+          {
+            src: "favicon.png",
+            sizes: "64x64 32x32 24x24 16x16",
+            type: "image/png",
+          },
+        ],
+        display: "standalone",
+        theme_color: "#00c49a",
+        background_color: "#f0f8f9",
+        lang: "de",
+        orientation: "portrait",
+      },
+    }),
   ],
 })

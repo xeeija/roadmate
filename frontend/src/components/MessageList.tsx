@@ -22,6 +22,7 @@ const MessageList: FC<Props> = ({ messages }) => {
             avatar={message.userId ?? ""}
             answers={message.answers}
             isExpert={message.user?.role === Role.Expert}
+            isAdmin={message.user?.role === Role.Admin}
           >
             {message.message}
           </Comment>

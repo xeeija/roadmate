@@ -42,7 +42,7 @@ ion-tab-button {
   font-size: 36px;
 }
 /* background image */
-body {
+.page-background {
   background-image: url("../resources/images/Background.svg");
   background-size: cover;
   --ion-background-color: transparent;

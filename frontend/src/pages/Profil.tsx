@@ -13,13 +13,15 @@ import {
   IonList,
   IonPage,
   IonToggle,
-  ToastOptions
+  ToastOptions,
 } from "@ionic/react"
 import {
   checkmarkOutline,
   chevronForward,
   notifications,
   power,
+  shieldCheckmark,
+  shieldHalf,
   warningOutline,
 } from "ionicons/icons"
 import { FC, useContext, useEffect, useState } from "react"
@@ -29,8 +31,8 @@ import { UserContext } from "../components/ProtectedRoute"
 import ToolBar from "../components/navigation/ToolBar"
 import AppStorage from "../services/AppStorage"
 import { UserService } from "../services/api/UserService"
-import { User } from "../services/entities/User"
-import { presentToast, dismissToast } from "../utils/toastUtils";
+import { Role, User } from "../services/entities/User"
+import { dismissToast, presentToast } from "../utils/toastUtils"
 import "./Profil.css"
 
 const Profile: FC = () => {
@@ -89,7 +91,7 @@ const Profile: FC = () => {
       // Call the API to update the user profile
       await userService.userPUT(profileUser?.id ?? "", profileUser, currentUserToken)
       // Show a success message
-       presentToast({
+      presentToast({
         ...toastOptions,
         message: "Profil gespeichert",
         color: "success",
@@ -97,7 +99,7 @@ const Profile: FC = () => {
       })
     } catch (error) {
       // Show an error message
-       presentToast({
+      presentToast({
         ...toastOptions,
         message: `Fehler: ${(error as Error).message}`,
         color: "danger",
@@ -158,11 +160,30 @@ const Profile: FC = () => {
                   labelPlacement="floating"
                   placeholder="Helmi69"
                   value={profileUser?.username}
+                  style={{ display: "flex", alignItems: "center", flexDirection: "row-reverse" }}
                   onIonChange={(e) => {
                     const updatedUser = { ...profileUser, username: e.detail.value! }
                     setProfileUser(updatedUser)
                   }}
-                />
+                >
+                  {currentUser?.role === Role.Expert && (
+                    <IonIcon
+                      icon={shieldCheckmark}
+                      color="success"
+                      slot="end"
+                      style={{ width: "24px", height: "24px" }}
+                    />
+                  )}
+
+                  {currentUser?.role === Role.Admin && (
+                    <IonIcon
+                      icon={shieldHalf}
+                      color="danger"
+                      slot="end"
+                      style={{ width: "24px", height: "24px" }}
+                    />
+                  )}
+                </IonInput>
               </IonItem>
               <br />
               <IonItem className="backgroundInput">
