@@ -2,12 +2,12 @@
 
 namespace DAL.Helpers;
 
-public partial class LocationResult {
+public class LocationResult {
   [JsonProperty("results")]
   public LocationSuggestion[] Results { get; set; }
 }
 
-public partial class LocationSuggestion {
+public class LocationSuggestion {
   [JsonProperty("name")]
   public string Name { get; set; }
 

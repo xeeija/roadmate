@@ -332,7 +332,6 @@ public class BaseService<TEntity> where TEntity : Entity {
     catch (InvalidOperationException) {
       CurrentUser = null;
     }
-    return;
   }
 
   #endregion

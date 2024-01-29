@@ -13,7 +13,8 @@ public class NotificationController : BaseController<Notification, NotificationR
   }
 
   /// <summary>
-  /// Manually create a Notification. This should not be used, as Notifications are generated automatically in other controllers/services.
+  ///   Manually create a Notification. This should not be used, as Notifications are generated automatically in other
+  ///   controllers/services.
   /// </summary>
   /// <param name="request"></param>
   /// <returns></returns>
@@ -26,6 +27,7 @@ public class NotificationController : BaseController<Notification, NotificationR
   public override Task<ActionResult<ItemResponseModel<Notification>>> Delete(string id) {
     return base.Delete(id);
   }
+
   [HttpGet("WithDanger")]
   public async Task<ActionResult<ItemResponseModel<List<Notification>>>> GetWithDanger() {
     var response = await Service.GetAll(new List<string> { "Danger", "Route" });

@@ -28,7 +28,8 @@ public class DangerController : BaseController<Danger, DangerModel> {
   }
 
   /// <summary>
-  /// Manually create a Danger. This should not be used usually, because Dangers are created automatically, if the DangerRequest threshold in an area is met.
+  ///   Manually create a Danger. This should not be used usually, because Dangers are created automatically, if the DangerRequest
+  ///   threshold in an area is met.
   /// </summary>
   /// <param name="request"></param>
   /// <returns></returns>

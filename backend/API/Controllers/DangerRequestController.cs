@@ -82,7 +82,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
           Description = request.Description,
           DangerId = createdDanger.Data?.ID ?? Guid.Empty,
           //Url = new Uri($"https://localhost:5001/danger/{.DangerId}"),
-          UserId = item.ID,
+          UserId = item.ID
         }.ToEntity());
       }
 
