@@ -1,4 +1,4 @@
-<p align="center"><a rel="noopener"><img src="./frontend/public/logo_roadmate.svg" alt="RoadMate Logo" height="144px"></a></p>
+<p align="center"><a rel="noopener"><img src="./frontend/src/resources/logo/logo_roadmate.svg" alt="RoadMate Logo" height="144px"></a></p>
 
 <!-- # RoadMate -->
 <h1 align="center">RoadMate</h1>
