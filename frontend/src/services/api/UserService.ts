@@ -24,7 +24,7 @@ export class UserService {
    * @param body (optional) UpdateBasicUserRequest that contains the properties to be updated
    * @return Success
    */
-  userPUT(id: string, body: UpdateUserRequest | undefined): Promise<UserItemResponseModel> {
+  userPUT(id: string, body: UpdateUserRequest | undefined, token: string): Promise<UserItemResponseModel> {
     let url_ = this.baseUrl + "/api/User/{id}"
     if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.")
     url_ = url_.replace("{id}", encodeURIComponent("" + id))
@@ -38,6 +38,7 @@ export class UserService {
       headers: {
         "Content-Type": "application/json-patch+json",
         Accept: "text/plain",
+        Authorization: "Bearer " + token
       },
     }
 

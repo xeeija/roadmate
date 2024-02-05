@@ -8,6 +8,7 @@ public class DangerRequestModel : IRequestModel<DangerRequest> {
   public double Lat { get; set; }
   public double Lon { get; set; }
   public string Description { get; set; }
+  public string AddressName { get; set; }
   public Guid CategoryId { get; set; }
 
   public DateTime? Timestamp { get; set; }

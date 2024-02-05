@@ -88,6 +88,9 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("Order")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -119,11 +122,16 @@ namespace DAL.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("ID");
 
                     b.HasIndex("DangerId");
 
                     b.HasIndex("ReferencedMessageId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("DangerMessage");
                 });
@@ -175,6 +183,36 @@ namespace DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("DangerRequest");
+                });
+
+            modelBuilder.Entity("DAL.Entities.DangerResolveRequest", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DangerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("DangerId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DangerResolveRequest");
                 });
 
             modelBuilder.Entity("DAL.Entities.ExpertRequest", b =>
@@ -232,7 +270,7 @@ namespace DAL.Migrations
                     b.Property<DateTime?>("ReadAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("RouteId")
+                    b.Property<Guid?>("RouteId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -365,9 +403,17 @@ namespace DAL.Migrations
                         .WithMany("Answers")
                         .HasForeignKey("ReferencedMessageId");
 
+                    b.HasOne("DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Danger");
 
                     b.Navigation("ReferencedMessage");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DAL.Entities.DangerRequest", b =>
@@ -389,6 +435,25 @@ namespace DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("Danger");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DAL.Entities.DangerResolveRequest", b =>
+                {
+                    b.HasOne("DAL.Entities.Danger", "Danger")
+                        .WithMany("ResolveRequests")
+                        .HasForeignKey("DangerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Entities.User", "User")
+                        .WithMany("DangerResolveRequests")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Danger");
 
@@ -422,9 +487,7 @@ namespace DAL.Migrations
 
                     b.HasOne("DAL.Entities.Route", "Route")
                         .WithMany("Notifications")
-                        .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RouteId");
 
                     b.HasOne("DAL.Entities.User", "User")
                         .WithMany("Notifications")
@@ -457,6 +520,8 @@ namespace DAL.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Requests");
+
+                    b.Navigation("ResolveRequests");
                 });
 
             modelBuilder.Entity("DAL.Entities.DangerCategory", b =>
@@ -479,6 +544,8 @@ namespace DAL.Migrations
                     b.Navigation("ApprovedExpertRequests");
 
                     b.Navigation("DangerRequests");
+
+                    b.Navigation("DangerResolveRequests");
 
                     b.Navigation("ExpertRequests");
 

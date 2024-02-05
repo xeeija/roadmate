@@ -12,16 +12,26 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
   private const int resolveDangerThreshold = 2;
 
   private readonly DangerRequestService dangerRequestService;
+  private readonly DangerResolveRequestService dangerResolveRequestService;
   private readonly DangerService dangerService;
+  private readonly NotificationService notificationService;
+  private readonly UserService userService;
 
   public DangerRequestController(GlobalService service, IHttpContextAccessor accessor) :
     base(service.DangerRequestService, accessor) {
     dangerRequestService = service.DangerRequestService;
     dangerRequestService.LoadUser(Email).Wait();
+    dangerResolveRequestService = service.DangerResolveRequestService;
+    dangerResolveRequestService.LoadUser(Email).Wait();
     dangerService = service.DangerService;
     dangerService.LoadUser(Email).Wait();
+    notificationService = service.NotificationService;
+    notificationService.LoadUser(Email).Wait();
+    userService = service.UserService;
+    userService.LoadUser(Email).Wait();
   }
 
+  [HttpPost("Create")]
   public override async Task<ActionResult<ItemResponseModel<DangerRequest>>> Create([FromBody] DangerRequestModel request) {
     // var result = await base.Create(request);
     var result = await Service.Create(request.ToEntity());
@@ -53,6 +63,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
         // TODO: Category modal (most occurences)?
         CategoryId = request.CategoryId,
         Description = request.Description,
+        AddressName = request.AddressName,
         ActiveAt = DateTime.UtcNow
       }.ToEntity());
 
@@ -63,6 +74,16 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
 
       if (createdDanger.HasError) {
         return BadRequest(createdDanger);
+      }
+
+      var users = await userService.GetAll();
+      foreach (var item in users.Data ?? new List<User>()) {
+        await notificationService.Create(new NotificationRequest {
+          Description = request.Description,
+          DangerId = createdDanger.Data?.ID ?? Guid.Empty,
+          //Url = new Uri($"https://localhost:5001/danger/{.DangerId}"),
+          UserId = item.ID
+        }.ToEntity());
       }
 
       if (result.Data != null && createdDanger.Data != null) {
@@ -78,11 +99,11 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
   }
 
   [HttpPost("Resolve")]
-  public async Task<ActionResult<ItemResponseModel<DangerRequest>>> Resolve([FromBody] DangerResolveRequestModel request) {
-    var danger = await dangerService.Get(request.DangerId.ToString(), new List<string> { "Requests" });
+  public async Task<ActionResult<ItemResponseModel<DangerResolveRequest>>> Resolve([FromBody] DangerResolveRequestModel request) {
+    var danger = await dangerService.Get(request.DangerId.ToString(), new List<string> { "Requests", "ResolveRequests" });
 
     if (!danger.IsAuthorized) {
-      danger.ErrorMessages.Add("Unauthorized to create danger");
+      danger.ErrorMessages.Add("Unauthorized to resolve danger");
       return BadRequest(danger);
     }
 
@@ -95,10 +116,8 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       return BadRequest(danger);
     }
 
-    request.CategoryId = danger.Data.CategoryId;
-
     // Resolve
-    var result = await Service.Create(request.ToEntity());
+    var result = await dangerResolveRequestService.Create(request.ToEntity());
 
     if (!result.IsAuthorized) {
       return Forbid();
@@ -108,8 +127,7 @@ public class DangerRequestController : BaseController<DangerRequest, DangerReque
       return BadRequest(result);
     }
 
-    var resolveRequests = danger.Data.Requests.Where(dr => dr.Type == RequestType.Resolve);
-    var distinctCount = resolveRequests.DistinctBy(dr => dr.UserId).Count();
+    var distinctCount = danger.Data.ResolveRequests.DistinctBy(dr => dr.UserId).Count();
 
     // Resolve danger
     if (distinctCount >= resolveDangerThreshold) {

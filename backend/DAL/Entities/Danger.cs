@@ -24,6 +24,7 @@ public class Danger : Entity {
   // Reverse Navigation
   public ICollection<DangerMessage> Messages { get; set; }
   public ICollection<DangerRequest> Requests { get; set; }
+  public ICollection<DangerResolveRequest> ResolveRequests { get; set; }
   public ICollection<Notification> Notifications { get; set; }
 }
 

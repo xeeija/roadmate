@@ -325,9 +325,13 @@ public class BaseService<TEntity> where TEntity : Entity {
   ///   Sets the current user by email.
   /// </summary>
   /// <param name="email">Defines the email.</param>
-  public Task LoadUser(string email) {
-    CurrentUser = Context.User.First(x => x.Email.ToLower() == email.ToLower());
-    return Task.CompletedTask;
+  public async Task LoadUser(string email) {
+    try {
+      CurrentUser = await Context.User.FirstAsync(x => x.Email.ToLower() == email.ToLower());
+    }
+    catch (InvalidOperationException) {
+      CurrentUser = null;
+    }
   }
 
   #endregion

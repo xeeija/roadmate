@@ -7,7 +7,7 @@ public class NotificationRequest : IRequestModel<Notification> {
   public Uri? Url { get; set; }
   public DateTime? ReadAt { get; set; }
   public Guid UserId { get; set; }
-  public Guid RouteId { get; set; }
+  public Guid? RouteId { get; set; }
   public Guid DangerId { get; set; }
 
   public Notification ToEntity() {

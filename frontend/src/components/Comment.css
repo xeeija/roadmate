@@ -1,0 +1,16 @@
+.fontColors {
+  color: var(--ion-color-tertiary, #156064);
+  margin-top: 8px;
+}
+
+.date-icons {
+  display: flex;
+  align-items: center;
+  /* justify-content: end; */
+  margin-top: 8px;
+}
+
+.date {
+  margin-right: 10px;
+  margin-top: 3px;
+}

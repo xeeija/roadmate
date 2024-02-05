@@ -1,0 +1,95 @@
+/* routing-machine-styles.css */
+
+/* Background Container*/
+.leaflet-routing-container {
+  background-color: rgba(255, 255, 255, 0.86);
+  border-radius: 0 0 20px 20px;
+}
+
+/* Remove Border Whole Container */
+.leaflet-touch .leaflet-bar {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-clip: border-box;
+}
+
+/* Reverse Route Button Position*/
+.leaflet-routing-reverse-waypoints {
+  padding: 5px;
+  position: absolute;
+  top: 110px;
+  right: 5px;
+  height: 35px;
+  width: 35px;
+}
+
+/* Reverse Route Button Outline*/
+.leaflet-routing-geocoders button {
+  box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.05);
+  border-color: #f0f8f9;
+  border-style: ridge;
+}
+
+/* Reverse Route Button Icon */
+.leaflet-routing-reverse-waypoints::after {
+  font-size: 23px;
+  font-weight: lighter;
+  color: var(--ion-color-tertiary, #156064);
+}
+
+/* Remove Input Buttons */
+.leaflet-routing-remove-waypoint::after {
+  color: #555555;
+  height: 15px;
+  padding-top: 3px;
+  border-radius: 5px;
+  background-color: transparent;
+  font-size: 20px;
+  font-weight: lighter;
+}
+
+/* inner square */
+.leaflet-routing-geocoders {
+  width: 368px;
+  margin: 10px;
+  position: relative;
+  border: none;
+  font-family: "Hammersmith One", sans-serif;
+  font-size: 12px;
+  color: #4d4c4c;
+  height: 150px;
+}
+
+/* Input Fields */
+.leaflet-routing-geocoders input {
+  box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.06);
+  border: none;
+  font-family: "Hammersmith One", sans-serif;
+  font-size: 13px;
+  color: #4d4c4c;
+  background-color: white;
+  border-radius: 7px;
+  padding: 5px 25px 5px 10px;
+  margin-bottom: 7px;
+}
+
+/* Input Fields Focus */
+.leaflet-routing-geocoder input:focus {
+  background-color: #f0f8f9;
+  outline: none;
+}
+
+/* Input Search Result List */
+.leaflet-routing-geocoder-result-open {
+  background-color: #f0f8f9;
+  font-family: "Hammersmith One", sans-serif;
+  color: #4d4c4c;
+}
+
+/* Disables the display of the turn-by-turn instructions of the routing */
+.leaflet-control-container .leaflet-routing-alternatives-container {
+  display: none;
+}
+
+.leaflet-control-container .leaflet-routing-add-waypoint {
+  display: none;
+}

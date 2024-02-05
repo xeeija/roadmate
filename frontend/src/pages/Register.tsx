@@ -9,7 +9,7 @@ import {
   IonText,
 } from "@ionic/react"
 import { Form, Formik } from "formik" //Formik: https://formik.org/docs
-import { useState } from "react"
+import { FC, useState } from "react"
 import { useHistory } from "react-router-dom"
 import * as yup from "yup"
 import { Input } from "../components/Input"
@@ -27,7 +27,7 @@ interface RegisterData {
   description?: string
 }
 
-const Register: React.FC = () => {
+const Register: FC = () => {
   const history = useHistory()
 
   // AUTH SERVICE AND REGISTER

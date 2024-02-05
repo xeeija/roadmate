@@ -34,6 +34,7 @@ public class User : Entity {
   public ICollection<ExpertRequest> ApprovedExpertRequests { get; set; }
 
   public ICollection<DangerRequest> DangerRequests { get; set; }
+  public ICollection<DangerResolveRequest> DangerResolveRequests { get; set; }
   public ICollection<Notification> Notifications { get; set; }
 }
 

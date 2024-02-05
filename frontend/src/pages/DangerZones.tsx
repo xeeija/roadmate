@@ -1,63 +1,111 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   IonButton,
   IonCard,
   IonCardContent,
   IonContent,
+  IonGrid,
   IonHeader,
   IonIcon,
-  IonInput,
   IonItem,
   IonPage,
+  IonText,
+  useIonToast,
 } from "@ionic/react"
-import { caretDown, caretUp, link } from "ionicons/icons"
-import { FC, useEffect, useState } from "react"
+import { Form, Formik } from "formik"
+import { send, warningOutline } from "ionicons/icons"
+import { FC, useContext, useEffect, useState } from "react"
 import { MapContainer, TileLayer } from "react-leaflet"
-import Comment from "../components/Comment"
+import { useParams } from "react-router"
+import { Comment } from "../components/Comment"
+import { Input } from "../components/Input"
+import { UserContext } from "../components/ProtectedRoute"
+import RerenderMapComponent from "../components/RerenderMapComponent"
 import ToolBar from "../components/navigation/ToolBar"
+import { DangerService } from "../services/api/DangerService"
+import { DangerMessageService } from "../services/api/MessageService"
+import { Danger } from "../services/entities/Danger"
+import { Role } from "../services/entities/User"
+import { DangerItemResponseModel } from "../services/entities/response/DangerItemResponseModel"
 import "./DangerZones.css"
 
+type Params = {
+  dangerId: string
+}
+
 const DangerZones: FC = () => {
-  const [inputValue, setInputValue] = useState<string>("")
-  const [showMore, setShowMore] = useState(false)
+  const dangerService = new DangerService()
+  const messageService = new DangerMessageService()
+
+  const { currentUserToken, currentUser } = useContext(UserContext)
+
+  const [danger, setDanger] = useState<Danger>()
+
+  const { dangerId } = useParams<Params>()
+  const [presentToast, dismissToast] = useIonToast()
 
   const [renderMap, setRenderMap] = useState(false)
+  const [notFound, setNotFound] = useState(false)
 
-  useEffect(() => {
-    setRenderMap(true)
-  })
+  const fetchDanger = async () => {
+    if (currentUser?.id && currentUserToken) {
+      try {
+        const response = await dangerService.dangerWithMessagesGET(dangerId, currentUserToken)
 
-  const commentData = [
-    {
-      avatarSrc: "https://i.pravatar.cc/300?u=b",
-      username: "Alice",
-      date: "03.06.2012",
-      question:
-        "Habe ich als Radfahrerin kommend von der Münzgrabenstraße Richtung Dietrichsteinplatz Vorrang gegenüber dem von links kommenden Verkehr aus der Grazbachgasse?",
-    },
+        if (response.data) {
+          setDanger(response.data)
+          setRenderMap(true)
+        } else {
+          const errorMessage = response.errorMessages?.join("\n") || "404 Not Found"
 
-    {
-      avatarSrc: "https://i.pravatar.cc/300?u=d",
-      username: "David",
-      date: "04.12.2022",
-      question:
-        "Hallo, wie ist das eigenltich wenn ich von der Reitschulgasse komme, wo die Bimschienen sind, an welcher Ampel muss ich mich da orientieren und wie darf ich fahren?",
-    },
-    // weitere Einträge....
-  ]
+          // todo: refactor
+          if (errorMessage === "404 Not Found") {
+            setNotFound(true)
+          }
 
-  const toggleShowMore = () => {
-    setShowMore(!showMore)
+          await presentToast({
+            duration: 5000,
+            position: "bottom",
+            buttons: [{ text: "OK", handler: () => dismissToast() }],
+            message: `Fehler: ${errorMessage}`,
+            color: "danger",
+            icon: warningOutline,
+          })
+        }
+
+        // console.log(userResponse?.data)
+      } catch (error) {
+        const errorMessage = (error as Error)?.message
+        const errorMessages = (error as DangerItemResponseModel)?.errorMessages?.join("\n")
+
+        await presentToast({
+          duration: 5000,
+          position: "bottom",
+          buttons: [{ text: "OK", handler: () => dismissToast() }],
+          message: `Fehler: ${errorMessage ?? errorMessages}`,
+          color: "danger",
+          icon: warningOutline,
+        })
+        console.error("error fetching user:", error)
+      }
+    }
   }
 
-  const locationCenter = [47.06658740529705, 15.446622566627681]
+  useEffect(() => {
+    void fetchDanger()
+  }, [dangerId])
+
+  const messages = (danger?.messages ?? []).filter((m) => m.referencedMessageId === null)
+
   const latDelta = 0.00065655287861
-  const lngDelta = 0.000134937615081
+  const lonDelta = 0.000134937615081
 
   const leafletOptions = {
     maxZoom: 20,
-    attribution: `Datenquelle: <a href="https://www.basemap.at">basemap.at</a>`,
+    attribution: `<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>`,
+    subdomains: "abcd",
     type: "normal",
-    format: "png",
+    format: "jpeg",
   }
 
   return (
@@ -65,11 +113,15 @@ const DangerZones: FC = () => {
       <IonHeader>
         <ToolBar title="Forum" />
       </IonHeader>
-      <IonContent>
-        {renderMap && (
+      {renderMap && (
+        <IonContent>
           <div id="map" style={{ zIndex: 0 }}>
             <MapContainer
-              center={{ lat: locationCenter[0] - latDelta, lng: locationCenter[1] - lngDelta }}
+              key={`${danger?.lat}-${danger?.lon}`}
+              center={{
+                lat: (danger?.lat ?? 47) - latDelta,
+                lng: (danger?.lon ?? 15.4) - lonDelta,
+              }}
               zoom={18}
               zoomControl={false}
               scrollWheelZoom={false}
@@ -77,64 +129,154 @@ const DangerZones: FC = () => {
               dragging={false}
               doubleClickZoom={false}
             >
+              <RerenderMapComponent />
               <TileLayer
-                url="https://mapsneu.wien.gv.at/basemap/geolandbasemap/{type}/google3857/{z}/{y}/{x}.{format}"
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                 {...leafletOptions}
               />
             </MapContainer>
           </div>
-        )}
-        <div style={{ zIndex: 1 }}>
-          <IonCard style={{ marginTop: "-100%" }} className="rounded-card">
-            <IonCardContent>
-              <h1 className="fontColors">Dietrichsteinplatz</h1>
-              <h3 style={{ marginTop: "15px" }}>Problemstellung</h3>
-              <p>
-                Der Dietrichsteinplatz in der Grazer Innenstadt ist ein gefährlicher
-                Verkehrsknotenpunkt, besonders für Radfahrerinnen. Die unübersichtliche
-                Straßenführung sorgt, gemeinsam mit der hohen Frequentierung für eine große
-                Gefahrenstelle mit hohem Unfallpotential.
-              </p>
 
-              <IonItem className="questionBackground">
-                <IonInput
-                  style={{ minHeight: "10px" }}
-                  type="text"
-                  labelPlacement="stacked"
-                  clearInput={true}
-                  placeholder="Eine Frage stellen ..."
-                  value={inputValue}
-                  onIonChange={(e) => setInputValue(e.detail.value!)}
-                ></IonInput>
-                <IonIcon className="icons" icon={link} size="small"></IonIcon>
-              </IonItem>
+          <div style={{ zIndex: 1 }}>
+            <IonCard style={{ marginTop: "-100%" }} className="rounded-card" color="light">
+              <IonCardContent>
+                <IonText color="tertiary">
+                  <h1 style={{ marginBottom: "0.5rem" }}>{danger?.title}</h1>
+                </IonText>
 
-              <h2 className="fontColors"> Letzte Fragen </h2>
+                <IonText color="dark">
+                  <p style={{ marginBottom: "1rem" }}>{danger?.description}</p>
+                </IonText>
 
-              <Comment data={commentData.slice(0, showMore ? commentData.length : 1)} />
+                <Formik
+                  initialValues={{
+                    message: "",
+                  }}
+                  enableReinitialize={true}
+                  validateOnChange={true}
+                  onSubmit={async ({ message }, { resetForm }) => {
+                    if (!message) {
+                      return
+                    }
 
-              {commentData.length > 1 && (
-                <IonButton className="answer" expand="block" fill="clear" onClick={toggleShowMore}>
-                  Antworten
-                  <IonIcon icon={showMore ? caretUp : caretDown} size="small" slot="start" />
-                </IonButton>
-              )}
+                    try {
+                      const response = await messageService.messagePOST(
+                        dangerId,
+                        { message },
+                        currentUserToken || ""
+                      )
 
-              <IonItem className="questionBackground">
-                <IonInput
-                  style={{ minHeight: "10px" }}
-                  type="text"
-                  labelPlacement="stacked"
-                  clearInput={true}
-                  placeholder="Antwort..."
-                  value={inputValue}
-                  onIonChange={(e) => setInputValue(e.detail.value!)}
-                ></IonInput>
-              </IonItem>
-            </IonCardContent>
+                      console.log(response)
+
+                      resetForm()
+
+                      // Reload messages
+                      await fetchDanger()
+                    } catch (error) {
+                      console.error("Failed to post question", error)
+                    }
+                  }}
+                >
+                  {() => (
+                    <Form>
+                      <Input name="message" label="Stelle eine Frage..." className="message-input">
+                        <IonButton type="submit" fill="clear" aria-label="Send" id="question-input">
+                          <IonIcon
+                            slot="icon-only"
+                            color="tertiary"
+                            icon={send}
+                            size="small"
+                            aria-hidden="true"
+                          />
+                        </IonButton>
+                      </Input>
+                    </Form>
+                  )}
+                </Formik>
+
+                <IonText color="tertiary">
+                  <h2>Letzte Fragen</h2>
+                </IonText>
+
+                {/* <MessageList messages={(danger?.messages ?? []).filter((m) => m.referencedMessageId === null)} /> */}
+
+                <IonGrid className="backgroundCard">
+                  {messages.map((message, index) => (
+                    <IonItem
+                      key={message.id}
+                      style={{ flexDirection: "column" }}
+                      lines={index + 1 === messages.length ? "none" : "inset"}
+                    >
+                      <Formik
+                        initialValues={{
+                          answer: "",
+                        }}
+                        enableReinitialize={true}
+                        // validateOnChange={true}
+                        validateOnBlur={true}
+                        onSubmit={async ({ answer }, { resetForm }) => {
+                          if (!answer) {
+                            return
+                          }
+
+                          console.log("submit answer", answer, message.id)
+
+                          try {
+                            const response = await messageService.messagePOST(
+                              dangerId,
+                              {
+                                message: answer,
+                                referencedMessageId: message.id,
+                              },
+                              currentUserToken || ""
+                            )
+
+                            console.log(response)
+
+                            resetForm()
+
+                            // Reload messages
+                            await fetchDanger()
+                          } catch (error) {
+                            console.error("Failed to post answer", error)
+                          }
+                        }}
+                      >
+                        {({ values, errors }) => (
+                          <Form style={{ width: "100%" }} id={`form-${message.id}`}>
+                            <Comment
+                              key={message.id}
+                              username={message.user?.username ?? "User"}
+                              date={message.createdAt}
+                              avatar={message.userId ?? ""}
+                              answers={message.answers}
+                              messageId={message.id ?? ""}
+                              isExpert={message.user?.role === Role.Expert}
+                              isAdmin={message.user?.role === Role.Admin}
+                            >
+                              {message.message}
+                            </Comment>
+                          </Form>
+                        )}
+                      </Formik>
+                    </IonItem>
+                  ))}
+                </IonGrid>
+              </IonCardContent>
+            </IonCard>
+          </div>
+        </IonContent>
+      )}
+
+      {notFound && (
+        <IonContent>
+          <IonCard style={{ marginTop: "" }} color="light">
+            <IonText color="tertiary">
+              <h2 style={{ marginLeft: "1rem" }}>404 Not Found</h2>
+            </IonText>
           </IonCard>
-        </div>
-      </IonContent>
+        </IonContent>
+      )}
     </IonPage>
   )
 }

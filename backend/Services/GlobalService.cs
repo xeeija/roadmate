@@ -14,6 +14,7 @@ public class GlobalService {
     DangerCategoryService = new DangerCategoryService(context);
     DangerMessageService = new DangerMessageService(context);
     DangerRequestService = new DangerRequestService(context);
+    DangerResolveRequestService = new DangerResolveRequestService(context);
     ExpertRequestService = new ExpertRequestService(context);
     NotificationService = new NotificationService(context);
     RouteService = new RouteService(context);
@@ -24,6 +25,7 @@ public class GlobalService {
   public DangerCategoryService DangerCategoryService { get; set; }
   public DangerMessageService DangerMessageService { get; set; }
   public DangerRequestService DangerRequestService { get; set; }
+  public DangerResolveRequestService DangerResolveRequestService { get; set; }
   public ExpertRequestService ExpertRequestService { get; set; }
   public NotificationService NotificationService { get; set; }
   public RouteService RouteService { get; set; }

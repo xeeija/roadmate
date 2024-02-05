@@ -22,18 +22,21 @@ public class PostgresDbContext : DbContext {
     var settings = SettingsReader.GetSettings<DBSettings>("Postgres");
     var port = settings?.Port ?? 5432;
     var schema = settings?.Schema != null ? $"SearchPath={settings.Schema};" : "";
+    // var host = runningInContainer ? Environment.GetEnvironmentVariable("POSTGRES_HOST") : settings?.Host;
 
     // For debugging only
     var includeErrorDetail = (Environment.GetEnvironmentVariable("INCLUDE_ERROR_DETAIL") ?? "") == "1";
+    var runningInContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
 
     var connectionString =
       $"Host={settings?.Host}:{port};Database={settings?.Database};Username={settings?.Username};Password={settings?.Password};{schema}{(includeErrorDetail ? ";Include Error Detail=true" : "")}";
-    if (Constants.IsProduction) {
-      var host = Environment.GetEnvironmentVariable("POSTGRES_HOST");
+
+    if (Constants.IsProduction || runningInContainer) {
+      var host = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? settings?.Host;
       var prodPort = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? port.ToString();
-      var database = Environment.GetEnvironmentVariable("POSTGRES_DATABASE");
-      var username = Environment.GetEnvironmentVariable("POSTGRES_USER");
-      var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+      var database = Environment.GetEnvironmentVariable("POSTGRES_DATABASE") ?? settings?.Database;
+      var username = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? settings?.Username;
+      var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? settings?.Password;
       var prodSchemaEnv = Environment.GetEnvironmentVariable("POSTGRES_SCHEMA");
       var prodSchema = prodSchemaEnv != null ? $"SearchPath={prodSchemaEnv};" : schema;
 

@@ -1,0 +1,47 @@
+version: "3.1"
+name: roadmate
+services:
+  postgres:
+    image: postgres:14.8
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: roadmate
+      POSTGRES_USER: roadmate
+      POSTGRES_PASSWORD: Pa55w.rd
+    volumes:
+      - ./docker/data/PostgresData:/var/lib/postgresql/data
+      - ./docker/config/postgres/docker-entrypoint-initdb:/docker-entrypoint-initdb.d/
+  # cloudbeaver:
+  #   image: dbeaver/cloudbeaver:23.2.3
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8090:8978
+  #   volumes:
+  #     - ./docker/data/Cloudbeaver/logs:/opt/cloudbeaver/logs
+  #     - ./docker/data/Cloudbeaver/workspace:/opt/cloudbeaver/workspace
+
+  backend:
+    image: xeeija/roadmate-backend:1.0.1
+    restart: unless-stopped
+    ports:
+      - 5200:80
+    environment:
+      # all except schema are required
+      ASPNETCORE_ENVIRONMENT: Production
+      # GEOAPIFY_API_KEY:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: roadmate
+      POSTGRES_USER: roadmate
+      POSTGRES_PASSWORD: Pa55w.rd
+      # POSTGRES_SCHEMA: public
+
+  frontend:
+    image: xeeija/roadmate-frontend:1.0.2
+    restart: unless-stopped
+    ports:
+      - 4180:80
+    environment:
+      API_URL: http://backend:80/api/

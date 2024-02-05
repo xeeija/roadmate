@@ -1,19 +1,87 @@
-import { IonContent, IonPage } from "@ionic/react"
-import { FC } from "react"
+import {
+  IonContent,
+  IonPage,
+  IonRefresher,
+  IonRefresherContent,
+  IonSpinner,
+  RefresherEventDetail,
+} from "@ionic/react"
+import { FC, useContext, useEffect, useState } from "react"
 import SavedRoute from "../components/SavedRoute"
+import PlaceholderCard from "../components/PlaceholderCard"
 import ToolBar from "../components/navigation/ToolBar"
+import { UserContext } from "../components/ProtectedRoute"
+import { RouteService } from "../services/api/RouteService"
+import { Route } from "../services/entities/Route"
+import "./SavedRoutes.css"
 
 const SavedRoutes: FC = () => {
-  return (
-    <IonPage>
-      <IonContent>
-        <div className="toolbar-container">
-          <ToolBar title="Routen" backButton={true} />
-        </div>
+  const [allRoutes, setAllRoutes] = useState<Route[]>()
+  const [isLoading, setIsLoading] = useState(true)
+  const [refreshKey, setRefreshKey] = useState(0)
+  const { currentUserToken, currentUser } = useContext(UserContext)
 
+  const routeService = new RouteService()
+
+  const fetchData = async () => {
+    setIsLoading(true)
+    if (currentUser?.id && currentUserToken) {
+      try {
+        const allRoutesResponse = await routeService.routeGET2(currentUserToken)
+        setAllRoutes(allRoutesResponse?.data)
+      } catch (error) {
+        console.error("error fetching routes", error)
+      }
+    }
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    void fetchData()
+  }, [refreshKey])
+
+  const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
+    fetchData()
+      .then(() => {
+        setTimeout(() => {
+          event.detail.complete()
+        }, 1000)
+      })
+      .catch((error) => {
+        console.error("Error refreshing data", error)
+      })
+  }
+
+  return (
+    <IonPage className="background">
+      <div className="toolbar-container">
+        <ToolBar title="Routen" />
+      </div>
+      <IonContent>
+        <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
         <div className="saved-routes-list">
-          <SavedRoute name="Route 1" id={1} />
-          <SavedRoute name="Route zum Helmi" id={2} />
+          {isLoading ? (
+            <IonSpinner />
+          ) : allRoutes && allRoutes.length > 0 ? (
+            allRoutes.map((route, index) => (
+              <SavedRoute
+                key={index}
+                name={route.name ?? ""}
+                id={route.id || ""}
+                position={{
+                  fromLat: route.fromLat ?? 0,
+                  fromLng: route.fromLon ?? 0,
+                  toLat: route.toLat ?? 0,
+                  toLng: route.toLon ?? 0,
+                }}
+                setRefreshKey={setRefreshKey}
+              />
+            ))
+          ) : (
+            <PlaceholderCard />
+          )}
         </div>
       </IonContent>
     </IonPage>

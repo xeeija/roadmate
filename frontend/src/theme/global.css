@@ -42,8 +42,18 @@ ion-tab-button {
   font-size: 36px;
 }
 /* background image */
-body {
+.page-background {
   background-image: url("../resources/images/Background.svg");
   background-size: cover;
   --ion-background-color: transparent;
+}
+
+/* Fix page jumping up when focus is in an input field */
+ion-content {
+  --keyboard-offset: 0 !important;
+}
+
+/* Fix weird bug that buttons in input are only working 1 in 10 times clicked */
+ion-input > ion-button {
+  pointer-events: auto !important;
 }
