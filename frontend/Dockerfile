@@ -1,4 +1,4 @@
-FROM node:20-alpine as base
+FROM node:20-alpine AS base
 
 FROM base AS deps
 # why libc6-compat might be needed:

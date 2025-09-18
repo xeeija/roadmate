@@ -1,4 +1,3 @@
-import legacy from "@vitejs/plugin-legacy"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { VitePWA } from "vite-plugin-pwa"
@@ -7,7 +6,6 @@ import { VitePWA } from "vite-plugin-pwa"
 export default defineConfig({
   plugins: [
     react(),
-    legacy(),
     VitePWA({
       registerType: "autoUpdate",
       manifestFilename: "manifest.json",
@@ -26,6 +24,9 @@ export default defineConfig({
         background_color: "#f0f8f9",
         lang: "de",
         orientation: "portrait",
+      },
+      workbox: {
+        maximumFileSizeToCacheInBytes: 2621440, // 2.5 MB (1024*1024*2.5)
       },
     }),
   ],
