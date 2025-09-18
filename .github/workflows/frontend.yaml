@@ -20,10 +20,10 @@ jobs:
       checks: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup NodeJS 20.x
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: "npm"
@@ -53,7 +53,7 @@ jobs:
         if: always()
 
       - name: Upload ESLint report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: eslint_report.txt
           path: ./frontend/eslint_report.txt
